@@ -1,0 +1,24 @@
+name: format
+
+on: [push, pull_request]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python
+      uses: actions/setup-python@v1
+
+    - name: Install dependencies
+      run: pip3 install .[dev]
+
+    - name: Run tests
+      run: |
+        oj-api -h
+        pylint --disable=all --enable=unused-import,missing-final-newline onlinejudge onlinejudge_api tests setup.py
+        isort --check-only --diff --recursive onlinejudge onlinejudge_api tests setup.py
+        yapf --diff --recursive onlinejudge onlinejudge_api tests setup.py | tee yapf.patch && test ! -s yapf.patch
+        mypy onlinejudge onlinejudge_api setup.py
