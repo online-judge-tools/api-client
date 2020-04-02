@@ -19,7 +19,9 @@ jobs:
         python-version: 3.5
 
     - name: Install dependencies
-      run: pip3 install .[dev]
+      run: |
+        pip3 install --upgrade setuptools
+        pip3 install .[dev]
 
     - name: Run tests
       run: |
