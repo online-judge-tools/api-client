@@ -87,10 +87,10 @@ def main(contest: Contest, *, is_full: bool, session: requests.Session) -> Dict[
     :raises Exception:
     """
 
-    result: Dict[str, Any] = {
+    result = {
         "url": contest.get_url(),
         "problems": [],
-    }
+    }  # type: Dict[str, Any]
 
     data = None  # type: Optional[ContestData]
     problem_data = None  # type: Optional[ProblemData]
