@@ -26,4 +26,11 @@ jobs:
     - name: Run tests
       run: |
         oj-api -h
-        pytest tests/*.py -v
+        pytest -v tests/*.py
+      if: runner.os != 'Windows'
+
+    - name: Run tests (Windows)
+      run: |
+        oj-api -h
+        pytest -v $(dir tests\*.py | % {$_.FullName})
+      if: runner.os == 'Windows'
