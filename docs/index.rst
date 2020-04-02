@@ -1,21 +1,11 @@
-.. online-judge-tools documentation master file, created by
-   sphinx-quickstart on Tue Dec  4 23:28:53 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to online-judge-tools's documentation!
-==============================================
+Welcome to online-judge-template-generator's documentation!
+===========================================================
 
 .. toctree::
-   :maxdepth: 10
+   :maxdepth: 100
    :caption: Contents:
 
-   modules
-
-   introduction.en
-   introduction.ja
-   run-ci-on-your-library.en
-   run-ci-on-your-library.ja
+   onlinejudge
 
 
 Indices and tables
