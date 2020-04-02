@@ -157,8 +157,8 @@ def run(args: Optional[List[str]] = None) -> None:
             if parsed.yukicoder_token and is_yukicoder:
                 session.headers['Authorization'] = 'Bearer {}'.format(parsed.yukicoder_token)
 
-            result: Optional[Dict[str, Any]]
-            schema: Dict[str, Any]
+            result = None  # type: Optional[Dict[str, Any]]
+            schema = {}  # type: Dict[str, Any]
             if parsed.subcommand == 'get-problem':
                 if problem is None:
                     parser.error("unsupported URL: {}".format(repr(parsed.url)))
