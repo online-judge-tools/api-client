@@ -2,11 +2,11 @@ from typing import *
 
 from onlinejudge.type import *
 
-schema_example: Dict[str, Any] = {
+schema_example = {
     "loggedIn": True,
-}
+}  # type: Dict[str, Any]
 
-schema: Dict[str, Any] = {
+schema = {
     "type": "object",
     "properties": {
         "loggedIn": {
@@ -14,7 +14,7 @@ schema: Dict[str, Any] = {
         },
     },
     "required": ["loggedIn"],
-}
+}  # type: Dict[str, Any]
 
 
 def main(service: Service, *, username: Optional[str], password: Optional[str], check_only: bool, session: requests.Session) -> Dict[str, Any]:
@@ -23,7 +23,7 @@ def main(service: Service, *, username: Optional[str], password: Optional[str], 
     :raises LoginError:
     """
 
-    result: Dict[str, Any] = {}
+    result = {}  # type: Dict[str, Any]
     if check_only:
         assert username is None
         assert password is None

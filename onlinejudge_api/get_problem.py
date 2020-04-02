@@ -6,7 +6,8 @@ from onlinejudge.service.codeforces import CodeforcesProblem
 from onlinejudge.type import *
 
 logger = getLogger()
-schema_example: Dict[str, Any] = {
+
+schema_example = {
     "url": "https://atcoder.jp/contests/abc160/tasks/abc160_c",
     "name": "Traveling Salesman around Lake",
     "context": {
@@ -28,9 +29,9 @@ schema_example: Dict[str, Any] = {
             "output": "10\n",
         },
     ],
-}
+}  # type: Dict[str, Any]
 
-schema: Dict[str, Any] = {
+schema = {
     "$schema": "http://json-schema.org/schema#",
     "type": "object",
     "properties": {
@@ -137,9 +138,9 @@ schema: Dict[str, Any] = {
         "tests",
         "context",
     ],
-}
+}  # type: Dict[str, Any]
 
-schema_compatibility: Dict[str, Any] = {
+schema_compatibility = {
     "$schema": "http://json-schema.org/schema#",
     "type": "object",
     "properties": {
@@ -244,7 +245,7 @@ schema_compatibility: Dict[str, Any] = {
         "tests",
     ],
     "additionalProperties": False,
-}
+}  # type: Dict[str, Any]
 
 
 def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: bool, session: requests.Session) -> Dict[str, Any]:
@@ -254,10 +255,10 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
 
     assert not (is_compatibility and is_full)
 
-    result: Dict[str, Any] = {
+    result = {
         "url": problem.get_url(),
         "tests": [],
-    }
+    }  # type: Dict[str, Any]
 
     # download test cases
     if is_system:
@@ -265,51 +266,50 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
     else:
         tests = problem.download_sample_cases(session=session)
     for test in tests:
-        data_ = {
+        result_ = {
             "input": test.input_data.decode(),
             "output": test.output_data.decode(),
         }
         if is_system and not is_compatibility:
-            data_['name'] = test.name
-        result['tests'].append(data_)
-
-    detail: ProblemData
-    contest_detail: ContestData
+            result_['name'] = test.name
+        result['tests'].append(result_)
 
     # download detailed result
+    data = None  # type: Optional[ProblemData]
+    contest_data = None  # type: Optional[ContestData]
     if isinstance(problem, AtCoderProblem):
-        detail = problem.download_data(session=session)
-        contest_detail = problem.get_contest().download_data(session=session)
+        data = problem.download_data(session=session)
+        contest_data = problem.get_contest().download_data(session=session)
         if is_compatibility:
-            result["name"] = '{}. {}'.format(detail.alphabet, detail.name)
-            result["group"] = contest_detail.name
+            result["name"] = '{}. {}'.format(data.alphabet, data.name)
+            result["group"] = contest_data.name
         else:
-            result["name"] = detail.name
+            result["name"] = data.name
             result["context"] = {
                 "contest": {
-                    "name": contest_detail.name,
+                    "name": contest_data.name,
                     "url": problem.get_contest().get_url(),
                 },
-                "alphabet": detail.alphabet,
+                "alphabet": data.alphabet,
             }
-        result["memoryLimit"] = detail.memory_limit_byte // 1000 // 1000
-        result["timeLimit"] = detail.time_limit_msec
+        result["memoryLimit"] = data.memory_limit_byte // 1000 // 1000
+        result["timeLimit"] = data.time_limit_msec
         if is_full:
             result["raw"] = {
-                "html": detail.html.decode(),
+                "html": data.html.decode(),
             }
 
     elif isinstance(problem, CodeforcesProblem):
-        detail = problem.download_data(session=session)
-        contest_detail = problem.get_contest().download_data(session=session)
+        data = problem.download_data(session=session)
+        contest_data = problem.get_contest().download_data(session=session)
         if is_compatibility:
-            result["name"] = '{}. {}'.format(problem.index, detail.name)
-            result["group"] = contest_detail.name
+            result["name"] = '{}. {}'.format(problem.index, data.name)
+            result["group"] = contest_data.name
         else:
-            result["name"] = detail.name
+            result["name"] = data.name
             result["context"] = {
                 "contest": {
-                    "name": contest_detail.name,
+                    "name": contest_data.name,
                     "url": problem.get_contest().get_url(),
                 },
                 "alphabet": problem.index,
@@ -319,7 +319,7 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
             result["timeLimit"] = 0
         if is_full:
             result["raw"] = {
-                "json": detail.json.decode(),
+                "json": data.json.decode(),
             }
 
     else:

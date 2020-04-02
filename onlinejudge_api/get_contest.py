@@ -4,7 +4,7 @@ from onlinejudge.service.atcoder import AtCoderContest
 from onlinejudge.service.codeforces import CodeforcesContest
 from onlinejudge.type import *
 
-schema_example: Dict[str, Any] = {
+schema_example = {
     "url": "https://atcoder.jp/contests/cf16-exhibition",
     "name": "CODE FESTIVAL 2016 Exhibition",
     "problems": [
@@ -31,9 +31,9 @@ schema_example: Dict[str, Any] = {
             }
         },
     ],
-}
+}  # type: Dict[str, Any]
 
-schema: Dict[str, Any] = {
+schema = {
     "$schema": "http://json-schema.org/schema#",
     "type": "object",
     "properties": {
@@ -79,7 +79,7 @@ schema: Dict[str, Any] = {
         },
     },
     "required": ["url", "problems"],
-}
+}  # type: Dict[str, Any]
 
 
 def main(contest: Contest, *, is_full: bool, session: requests.Session) -> Dict[str, Any]:
@@ -87,41 +87,38 @@ def main(contest: Contest, *, is_full: bool, session: requests.Session) -> Dict[
     :raises Exception:
     """
 
-    data: Dict[str, Any] = {
+    result: Dict[str, Any] = {
         "url": contest.get_url(),
         "problems": [],
     }
 
-    detail: ContestData
-    problem_data: ProblemData
-    problem: Problem
-    data_: Dict[str, Any]
-
+    data = None  # type: Optional[ContestData]
+    problem_data = None  # type: Optional[ProblemData]
     if isinstance(contest, AtCoderContest):
-        detail = contest.download_data(session=session)
-        data["name"] = detail.name
+        data = contest.download_data(session=session)
+        result["name"] = data.name
         for problem_data in contest.list_problem_data(session=session):
-            problem = problem_data.problem
+            problem = problem_data.problem  # type: Problem
             data_ = {
                 "url": problem.get_url(),
                 "name": problem_data.name,
                 "context": {
                     "contest": {
-                        "name": detail.name,
+                        "name": data.name,
                         "url": contest.get_url(),
                     },
                     "alphabet": problem_data.alphabet,
                 },
-            }
-            data["problems"].append(data_)
+            }  # type: Dict[str, Any]
+            result["problems"].append(data_)
         if is_full:
-            data["raw"] = {
-                "html": detail.html.decode(),
+            result["raw"] = {
+                "html": data.html.decode(),
             }
 
     elif isinstance(contest, CodeforcesContest):
-        detail = contest.download_data(session=session)
-        data["name"] = detail.name
+        data = contest.download_data(session=session)
+        result["name"] = data.name
         for problem_data in contest.list_problem_data(session=session):
             problem = problem_data.problem
             data_ = {
@@ -129,19 +126,19 @@ def main(contest: Contest, *, is_full: bool, session: requests.Session) -> Dict[
                 "name": problem_data.name,
                 "context": {
                     "contest": {
-                        "name": detail.name,
+                        "name": data.name,
                         "url": contest.get_url(),
                     },
                     "alphabet": problem.index,
                 },
             }
-            data["problems"].append(data_)
+            result["problems"].append(data_)
         if is_full:
-            data["raw"] = {
-                "json": detail.json.decode(),
+            result["raw"] = {
+                "json": data.json.decode(),
             }
 
     else:
         assert False
 
-    return data
+    return result
