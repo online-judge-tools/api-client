@@ -21,7 +21,7 @@ setup(
     author_email='kimiyuki95@gmail.com',
     url='https://github.com/kmyk/online-judge-api-client',
     license='MIT License',
-    description='command and library to develop tools for competitive programming',
+    description='API client to develop tools for competitive programming',
     python_requires='>=3.5',
     install_requires=[
         'appdirs >= 1',
