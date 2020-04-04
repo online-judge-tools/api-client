@@ -33,7 +33,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip3 install --upgrade setuptools pip
+        pip3 install --upgrade setuptools
         pip3 install .[dev]
 
     - name: Load balancing
