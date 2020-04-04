@@ -7,6 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        pattern: [stable, unstable]
 
     runs-on: ${{ matrix.os }}
 
@@ -35,14 +36,12 @@ jobs:
         pip3 install --upgrade setuptools
         pip3 install .[dev]
 
+    - name: Load balancing
+      id: load-balancing
+      run: |
+          python -m tests.load_balancer ${{ matrix.pattern }}
+
     - name: Run tests
       run: |
         oj-api -h
-        pytest -v tests/*.py
-      if: runner.os != 'Windows'
-
-    - name: Run tests (Windows)
-      run: |
-        oj-api -h
-        pytest -v $(dir tests\*.py | % {$_.FullName})
-      if: runner.os == 'Windows'
+        pytest -v ${{ steps.load-balancing.outputs.files }}
