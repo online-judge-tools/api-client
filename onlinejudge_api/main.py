@@ -5,7 +5,7 @@ import pathlib
 import sys
 import textwrap
 import traceback
-from logging import getLogger
+from logging import DEBUG, basicConfig, getLogger
 from typing import *
 
 import jsonschema
@@ -143,9 +143,12 @@ def get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run(args: Optional[List[str]] = None) -> None:
+def main(args: Optional[List[str]] = None) -> None:
     parser = get_parser()
     parsed = parser.parse_args(args=args)
+
+    if parsed.verbose:
+        basicConfig(level=DEBUG)
 
     problem = onlinejudge.dispatch.problem_from_url(getattr(parsed, 'url', ''))
     contest = onlinejudge.dispatch.contest_from_url(getattr(parsed, 'url', ''))
@@ -163,6 +166,13 @@ def run(args: Optional[List[str]] = None) -> None:
         if parsed.yukicoder_token and is_yukicoder:
             session.headers['Authorization'] = 'Bearer {}'.format(parsed.yukicoder_token)
 
+    # set password to login from the environment variable
+    if parsed.subcommand == 'login-service':
+        if parsed.password is not None:
+            parser.error("don't use --password. use $PASSWORD")
+        else:
+            parsed.password = os.environ.get('PASSWORD')
+
     try:
         with utils.with_cookiejar(session, path=parsed.cookie) as session:
             result = None  # type: Optional[Dict[str, Any]]
@@ -170,7 +180,7 @@ def run(args: Optional[List[str]] = None) -> None:
 
             if parsed.subcommand == 'get-problem':
                 if problem is None:
-                    parser.error("unsupported URL: {}".format(repr(parsed.url)))
+                    raise ValueError("unsupported URL: {}".format(repr(parsed.url)))
                 result = get_problem.main(problem, is_system=parsed.system, is_full=parsed.full, is_compatibility=parsed.compatibility, session=session)
                 if parsed.compatibility:
                     schema = get_problem.schema_compatibility
@@ -179,23 +189,19 @@ def run(args: Optional[List[str]] = None) -> None:
 
             elif parsed.subcommand == 'get-contest':
                 if contest is None:
-                    parser.error("unsupported URL: {}".format(repr(parsed.url)))
+                    raise ValueError("unsupported URL: {}".format(repr(parsed.url)))
                 result = get_contest.main(contest, is_full=parsed.full, session=session)
                 schema = get_contest.schema
 
             elif parsed.subcommand == 'login-service':
-                if parsed.password is not None:
-                    parser.error("don't use --password. use $PASSWORD")
-                else:
-                    parsed.password = os.environ.get('PASSWORD')
                 if service is None:
-                    parser.error("unsupported URL: {}".format(repr(parsed.url)))
+                    raise ValueError("unsupported URL: {}".format(repr(parsed.url)))
                 result = login_service.main(service, username=parsed.username, password=parsed.password, check_only=parsed.check, session=session)
                 schema = login_service.schema
 
             elif parsed.subcommand == 'submit-code':
                 if problem is None:
-                    parser.error("unsupported URL: {}".format(repr(parsed.url)))
+                    raise ValueError("unsupported URL: {}".format(repr(parsed.url)))
                 result = submit_code.main(problem, file=parsed.file, language_id=parsed.language, session=session)
                 schema = submit_code.schema
 
@@ -213,7 +219,8 @@ def run(args: Optional[List[str]] = None) -> None:
             "messages": [*map(lambda line: line.strip(), traceback.format_exception_only(etype, evalue))],
             "result": None,
         }))
-        raise
+        logger.debug('%s', evalue, stack_info=True)
+        raise SystemExit(1)
 
     else:
         if result is not None:
@@ -225,18 +232,8 @@ def run(args: Optional[List[str]] = None) -> None:
 
             try:
                 jsonschema.validate(result, schema)
-            except jsonschema.exceptions.ValidationError:
-                logger.exception('validation failure')
-
-
-def main() -> None:
-    try:
-        run()
-    except SystemExit:
-        raise
-    except:
-        logger.exception('something wrong')
-        sys.exit(1)
+            except jsonschema.exceptions.ValidationError as e:
+                logger.debug('%s', e)
 
 
 if __name__ == '__main__':
