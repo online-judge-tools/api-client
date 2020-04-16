@@ -136,8 +136,8 @@ def get_parser() -> argparse.ArgumentParser:
     jsonschema.validate(submit_code.schema_example, submit_code.schema)
 
     subparser = subparsers.add_parser('submit-code', help='submit your solution', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
-    subparser.add_argument('file', type=pathlib.Path)
     subparser.add_argument('url', help='the URL of the problem to submit. if not given, guessed from history of download command.')
+    subparser.add_argument('--file', required=True, type=pathlib.Path)
     subparser.add_argument('--language', required=True, type=LanguageId, help='''a language ID; you can get the values from "availableLanguages" field of "get-problem" subcommand with "--full" option''')
 
     return parser
