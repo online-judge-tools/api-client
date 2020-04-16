@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import pathlib
 import sys
 import textwrap
@@ -25,7 +26,7 @@ def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Tools for online judge services')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-c', '--cookie', type=pathlib.Path, default=utils.default_cookie_path, help='path to cookie. (default: {})'.format(utils.default_cookie_path))
-    parser.add_argument('--yukicoder-token', type=str)
+    parser.add_argument('--yukicoder-token', help='This option is a dummy. For a security reason, use the $YUKICODER_TOKEN envvar.  (default: $YUKICODER_TOKEN)')
     subparsers = parser.add_subparsers(dest='subcommand', help='for details, see "{} COMMAND --help"'.format(sys.argv[0]))
 
     # get-problem
@@ -108,8 +109,8 @@ def get_parser() -> argparse.ArgumentParser:
 
     subparser = subparsers.add_parser('login-service', help='login to a service', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     subparser.add_argument('url')
-    subparser.add_argument('--username')
-    subparser.add_argument('--password')
+    subparser.add_argument('--username', default=os.environ.get('USERNAME'), help='(default: $USERNAME)')
+    subparser.add_argument('--password', help="This option is a dummy. For a security reason, use the $PASSWORD envvar.  (default: $PASSWORD)")
     subparser.add_argument('--check', action='store_true', help='check whether you are logged in or not')
 
     # submit-code
@@ -149,6 +150,11 @@ def run(args: Optional[List[str]] = None) -> None:
     service = onlinejudge.dispatch.service_from_url(getattr(parsed, 'url', ''))
 
     try:
+        if parsed.yukicoder_token is not None:
+            parser.error("don't use --yukicoder-token. use $YUKICODER_TOKEN")
+        else:
+            parsed.yukicoder_token = os.environ.get('YUKICODER_TOKEN')
+
         with utils.with_cookiejar(utils.new_session_with_our_user_agent(), path=parsed.cookie) as session:
             is_yukicoder = isinstance(problem, YukicoderProblem) or isinstance(service, YukicoderService)
             if parsed.yukicoder_token and is_yukicoder:
@@ -172,6 +178,10 @@ def run(args: Optional[List[str]] = None) -> None:
                 schema = get_contest.schema
 
             elif parsed.subcommand == 'login-service':
+                if parsed.password is not None:
+                    parser.error("don't use --password. use $PASSWORD")
+                else:
+                    parsed.password = os.environ.get('PASSWORD')
                 if service is None:
                     parser.error("unsupported URL: {}".format(repr(parsed.url)))
                 result = login_service.main(service, username=parsed.username, password=parsed.password, check_only=parsed.check, session=session)
