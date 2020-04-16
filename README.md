@@ -345,7 +345,7 @@ $ oj-api submit-code https://atcoder.jp/contests/abc160/tasks/abc160_a --file ma
 ### example
 
 ``` json
-$ USERNAME=chokudai PASSWORD=hoge oj-api login-service https://atcoder.jp/
+$ USERNAME=chokudai PASSWORD=hoge oj-api login-service https://atcoder.jp/ | jq .
 {
   "status": "error",
   "messages": [
