@@ -137,9 +137,6 @@ def get_parser() -> argparse.ArgumentParser:
     subparser.add_argument('url', help='the URL of the problem to submit. if not given, guessed from history of download command.')
     subparser.add_argument('--language', required=True, type=LanguageId, help='''a language ID; you can get the values from "availableLanguages" field of "get-problem" subcommand with "--full" option''')
 
-    # spawn-server
-    subparser = subparsers.add_parser('spawn-server')
-
     return parser
 
 
