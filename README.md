@@ -45,7 +45,30 @@ $ pip3 install -e .
 | [yukicoder](https://yukicoder.me/)                                             | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :white_check_mark: | :heavy_check_mark: |
 
 
-## Examples
+## Supported subcommands of `oj-api` command
+
+### `get-problem`
+
+`oj-api get-problem PROBLEM_URL` parses the given problem and prints the results as JSON compatible with [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
+
+
+#### format
+
+-   `url`: the URL of the problem
+-   `name`: the name of the problem. This doesn't include alphabets (e.g. just "Xor Sum" is used instead of "D. Xor Sum") because such alphabets are attributes belonging to the relation between problems and contests rather than belonging to only problems. (not compatible to [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion))
+-   `context`:
+    -    `contest` (optional):
+        -    `url`: the URL of the contest
+        -    `name`: the name of the contest
+    -    `alphabet` (optional): the alphabet of the problem in the contest
+-   `memoryLimit`: the memory limit in megabytes (MB); not mebibytes (MiB). They sometimes become non-integers, but be rounded down for the compatibility reason with [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
+-   `timeLimit`: the time limit in milliseconds (msec)
+-   `tests`:
+    -   `input`: inputs of test cases
+    -   `output`: outputs of test cases
+
+
+#### example
 
 ``` json
 $ oj-api get-problem https://atcoder.jp/contests/arc100/tasks/arc100_b | jq .result
@@ -54,8 +77,8 @@ $ oj-api get-problem https://atcoder.jp/contests/arc100/tasks/arc100_b | jq .res
   "name": "Equal Cut",
   "context": {
     "contest": {
-      "name": "AtCoder Regular Contest 100",
-      "url": "https://atcoder.jp/contests/arc100"
+      "url": "https://atcoder.jp/contests/arc100",
+      "name": "AtCoder Regular Contest 100"
     },
     "alphabet": "D"
   },
@@ -78,8 +101,20 @@ $ oj-api get-problem https://atcoder.jp/contests/arc100/tasks/arc100_b | jq .res
 }
 ```
 
+
+### `get-problem --compatibility`
+
+`oj-api get-problem --compatibility PROBLEM_URL` is the variant of `get-problem` strictly compatible with [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
+
+
+#### format
+
+See the document of [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
+
+
+#### example
+
 ``` json
-$ oj-api get-problem --compatibility https://atcoder.jp/contests/arc100/tasks/arc100_b | jq .result
 {
   "name": "D. Equal Cut",
   "group": "AtCoder Regular Contest 100",
@@ -117,6 +152,21 @@ $ oj-api get-problem --compatibility https://atcoder.jp/contests/arc100/tasks/ar
 }
 ```
 
+
+### `get-contest`
+
+`oj-api get-contest CONTEST_URL` parses the given contest and prints the results as JSON.
+
+
+#### format
+
+-   `url`: the URL of the contest
+-   `name`: the name of the contest
+-   `problems`: problems. For details, see the description of `get-problem`.
+
+
+#### example
+
 ``` json
 $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
 {
@@ -128,8 +178,8 @@ $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
       "name": "Linear Approximation",
       "context": {
         "contest": {
-          "name": "AtCoder Regular Contest 100",
-          "url": "https://atcoder.jp/contests/arc100"
+          "url": "https://atcoder.jp/contests/arc100",
+          "name": "AtCoder Regular Contest 100"
         },
         "alphabet": "C"
       }
@@ -139,8 +189,8 @@ $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
       "name": "Equal Cut",
       "context": {
         "contest": {
-          "name": "AtCoder Regular Contest 100",
-          "url": "https://atcoder.jp/contests/arc100"
+          "url": "https://atcoder.jp/contests/arc100",
+          "name": "AtCoder Regular Contest 100"
         },
         "alphabet": "D"
       }
@@ -150,8 +200,8 @@ $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
       "name": "Or Plus Max",
       "context": {
         "contest": {
-          "name": "AtCoder Regular Contest 100",
-          "url": "https://atcoder.jp/contests/arc100"
+          "url": "https://atcoder.jp/contests/arc100",
+          "name": "AtCoder Regular Contest 100"
         },
         "alphabet": "E"
       }
@@ -161,8 +211,8 @@ $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
       "name": "Colorful Sequences",
       "context": {
         "contest": {
-          "name": "AtCoder Regular Contest 100",
-          "url": "https://atcoder.jp/contests/arc100"
+          "url": "https://atcoder.jp/contests/arc100",
+          "name": "AtCoder Regular Contest 100"
         },
         "alphabet": "F"
       }
@@ -170,3 +220,13 @@ $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
   ]
 }
 ```
+
+
+### `login-service`
+
+TODO: write description here
+
+
+### `submit-code`
+
+TODO: write description here
