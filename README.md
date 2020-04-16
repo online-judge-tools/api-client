@@ -243,9 +243,40 @@ $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
 
 ### `login-service`
 
-TODO: write description here
+`USERNAME=USERNAME PASSWORD=PASSWORD oj-api login-service SERVICE_URL` logs in the given service.
+
+
+#### format
+
+-   `loggedIn`: the result
+
+
+#### example
+
+``` json
+$ USERNAME=kimiyuki PASSWORD='????????????????' oj-api login-service https://atcoder.jp/ | jq .result
+{
+  "loggedIn": true
+}
+```
 
 
 ### `submit-code`
 
-TODO: write description here
+`oj-api submit-code PROBLEM_URL --file FILE --language LANGUAGE_ID` submits the file to the given problem.
+You can obtrain the `LANGUAGE_ID` from the list `availableLanguages` of `oj-api get-problem --full PROBLEM_URL`.
+
+
+#### format
+
+-   `url`: the URL of the submission result
+
+
+#### example
+
+``` json
+$ oj-api submit-code https://atcoder.jp/contests/abc160/tasks/abc160_a --file main.py --language 3023 | jq .result
+{
+  "url": "https://atcoder.jp/contests/abc160/submissions/11991846"
+}
+```
