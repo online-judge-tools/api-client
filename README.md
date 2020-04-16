@@ -52,6 +52,12 @@ $ pip3 install -e .
 `oj-api get-problem PROBLEM_URL` parses the given problem and prints the results as JSON compatible with [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
 
 
+#### options
+
+-   `--system`: get system cases, instead of sample cases
+-   `--full`: dump all additional data
+
+
 #### format
 
 -   `url`: the URL of the problem
@@ -64,8 +70,21 @@ $ pip3 install -e .
 -   `memoryLimit`: the memory limit in megabytes (MB); not mebibytes (MiB). They sometimes become non-integers, but be rounded down for the compatibility reason with [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
 -   `timeLimit`: the time limit in milliseconds (msec)
 -   `tests`:
-    -   `input`: inputs of test cases
-    -   `output`: outputs of test cases
+    -   `input`: the input of the test case
+    -   `output`: the output of the test case
+
+
+#### format (additional)
+
+-   `tests`:
+    -   `name` (optional, when `--system`): the name of the system case (e.g. `random-004.in`, `fft_killer_01`, `99_hand.txt`)
+-   `availableLanguages` (optional, when `--full`):
+    -   `id`: the ID of language to submit the server (e.g. `3003`)
+    -   `description`: the description of the language to show to users (e.g. `C++14 (GCC 5.4.1)`)
+-   `raw` (optional, when `--full`):
+    -   `html` (optional): the raw HTML used internally. This might contain sensitive info like CSRF tokens.
+    -   `json` (optional): the raw JSON used internally. This might contain sensitive info like access tokens.
+    -   etc.
 
 
 #### example
