@@ -9,7 +9,7 @@
 ## What is this?
 
 This is an API client for various online judges, used as the backend library of [`oj` command](https://github.com/kmyk/online-judge-tools).
-You can use a Python library (`onlinejudge` module) and a command `oj-api` which talks JSON compatible to [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
+You can use the Python library (`onlinejudge` module) and the command-line interface (`oj-api` command) which talks JSON compatible with [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
 
 
 ## How to install
