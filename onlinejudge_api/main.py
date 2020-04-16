@@ -12,6 +12,7 @@ from typing import *
 import jsonschema
 import onlinejudge_api.get_contest as get_contest
 import onlinejudge_api.get_problem as get_problem
+import onlinejudge_api.get_service as get_service
 import onlinejudge_api.login_service as login_service
 import onlinejudge_api.submit_code as submit_code
 import requests
@@ -93,6 +94,26 @@ def get_parser() -> argparse.ArgumentParser:
     subparser = subparsers.add_parser('get-contest', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     subparser.add_argument('url')
     subparser.add_argument('--full', action='store_true')
+
+    # get-service
+    epilog = textwrap.dedent('''\
+        supported services:
+          all services
+
+        JSON schema:
+        {}
+
+        JSON example:
+        {}
+        ''').format(
+        textwrap.indent(json.dumps(get_service.schema, indent=2), '  '),
+        textwrap.indent(json.dumps(get_service.schema_example, indent=2), '  '),
+    )
+    jsonschema.validate(get_service.schema_example, get_service.schema)
+
+    subparser = subparsers.add_parser('get-service', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
+    subparser.add_argument('url')
+    subparser.add_argument('--list-contests', action='store_true')
 
     # login-service
     epilog = textwrap.dedent('''\
@@ -198,6 +219,12 @@ def main(args: Optional[List[str]] = None) -> None:
                     raise ValueError("unsupported URL: {}".format(repr(parsed.url)))
                 result = get_contest.main(contest, is_full=parsed.full, session=session)
                 schema = get_contest.schema
+
+            elif parsed.subcommand == 'get-service':
+                if service is None:
+                    raise ValueError("unsupported URL: {}".format(repr(parsed.url)))
+                result = get_service.main(service, does_list_contests=parsed.list_contests, session=session)
+                schema = get_service.schema
 
             elif parsed.subcommand == 'login-service':
                 if service is None:
