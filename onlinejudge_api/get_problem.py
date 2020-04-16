@@ -66,7 +66,7 @@ schema = {
         },
         "memoryLimit": {
             "type": "integer",
-            "description": "in megabytes (MB); not in mebibytes (MiB)",
+            "description": "in megabytes (MB), not in mebibytes (MiB); Decimals are truncated for compatibility to competitive-companion",
         },
         "timeLimit": {
             "type": "integer",
@@ -248,12 +248,41 @@ schema_compatibility = {
 }  # type: Dict[str, Any]
 
 
+def translate_to_competitive_companion_format(data: Dict[str, Any]) -> Dict[str, Any]:
+    name = "{}. {}".format(data["context"].get("alphabet", "Z"), data.get("name", "Dummy Name"))
+    group = data["context"].get("contest", {}).get("name", "Dummy Group")
+    url = data["url"]
+    memory_limit = data.get("memoryLimit", 0)
+    time_limit = data.get("timeLimit", 0)
+    tests = [{"input": test["input"], "output": test["output"]} for test in data["tests"]]
+    return {
+        "name": name,
+        "group": group,
+        "url": url,
+        "interactive": False,
+        "memoryLimit": memory_limit,
+        "timeLimit": time_limit,
+        "tests": tests,
+        "testType": "single",
+        "input": {
+            "type": "stdin",
+        },
+        "output": {
+            "type": "stdout",
+        },
+        "languages": {
+            "java": {
+                "mainClass": "Main",
+                "taskClass": "Task",
+            },
+        },
+    }
+
+
 def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: bool, session: requests.Session) -> Dict[str, Any]:
     """
     :raises Exception:
     """
-
-    assert not (is_compatibility and is_full)
 
     result = {
         "url": problem.get_url(),
@@ -270,7 +299,7 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
             "input": test.input_data.decode(),
             "output": test.output_data.decode(),
         }
-        if is_system and not is_compatibility:
+        if is_system:
             result_['name'] = test.name
         result['tests'].append(result_)
 
@@ -280,18 +309,14 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
     if isinstance(problem, AtCoderProblem):
         data = problem.download_data(session=session)
         contest_data = problem.get_contest().download_data(session=session)
-        if is_compatibility:
-            result["name"] = '{}. {}'.format(data.alphabet, data.name)
-            result["group"] = contest_data.name
-        else:
-            result["name"] = data.name
-            result["context"] = {
-                "contest": {
-                    "name": contest_data.name,
-                    "url": problem.get_contest().get_url(),
-                },
-                "alphabet": data.alphabet,
-            }
+        result["name"] = data.name
+        result["context"] = {
+            "contest": {
+                "name": contest_data.name,
+                "url": problem.get_contest().get_url(),
+            },
+            "alphabet": data.alphabet,
+        }
         result["memoryLimit"] = data.memory_limit_byte // 1000 // 1000
         result["timeLimit"] = data.time_limit_msec
         if is_full:
@@ -302,34 +327,21 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
     elif isinstance(problem, CodeforcesProblem):
         data = problem.download_data(session=session)
         contest_data = problem.get_contest().download_data(session=session)
-        if is_compatibility:
-            result["name"] = '{}. {}'.format(problem.index, data.name)
-            result["group"] = contest_data.name
-        else:
-            result["name"] = data.name
-            result["context"] = {
-                "contest": {
-                    "name": contest_data.name,
-                    "url": problem.get_contest().get_url(),
-                },
-                "alphabet": problem.index,
-            }
-        if is_compatibility:
-            result["memoryLimit"] = 0
-            result["timeLimit"] = 0
+        result["name"] = data.name
+        result["context"] = {
+            "contest": {
+                "name": contest_data.name,
+                "url": problem.get_contest().get_url(),
+            },
+            "alphabet": problem.index,
+        }
         if is_full:
             result["raw"] = {
                 "json": data.json.decode(),
             }
 
     else:
-        if is_compatibility:
-            result["name"] = "Z. Dummy Name"
-            result["group"] = "Dummy Group"
-            result["memoryLimit"] = 0
-            result["timeLimit"] = 0
-        else:
-            result["context"] = {}
+        result["context"] = {}
 
     if is_full:
         try:
@@ -344,22 +356,7 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
                     "description": language.name,
                 })
 
-    # add some fields for compatibility
     if is_compatibility:
-        result.update({
-            "input": {
-                "type": "stdin",
-            },
-            "output": {
-                "type": "stdout",
-            },
-            "testType": "single",
-            "languages": {
-                "java": {
-                    "mainClass": "Main",
-                    "taskClass": "Task",
-                },
-            },
-        })
-
-    return result
+        return translate_to_competitive_companion_format(result)
+    else:
+        return result
