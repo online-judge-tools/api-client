@@ -13,6 +13,7 @@ import onlinejudge_api.get_contest as get_contest
 import onlinejudge_api.get_problem as get_problem
 import onlinejudge_api.login_service as login_service
 import onlinejudge_api.submit_code as submit_code
+import requests
 
 import onlinejudge
 import onlinejudge._implementation.utils as utils
@@ -26,6 +27,7 @@ def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Tools for online judge services')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('--cookie', type=pathlib.Path, default=utils.default_cookie_path, help='specify the path to the cookie.jar. (default: {})'.format(utils.default_cookie_path))
+    parser.add_argument('--user-agent', help="specify the User Agent. We recommend you set this because some websites ban the default User Agent of Python's requests library.  (default: {})".format(requests.utils.default_user_agent()))
     parser.add_argument('--yukicoder-token', help='specify the token of yukicoder. This option is a dummy. For a security reason, use the $YUKICODER_TOKEN envvar.  (default: $YUKICODER_TOKEN)')
     subparsers = parser.add_subparsers(dest='subcommand', help='for details, see "{} COMMAND --help"'.format(sys.argv[0]))
 
@@ -149,19 +151,23 @@ def run(args: Optional[List[str]] = None) -> None:
     contest = onlinejudge.dispatch.contest_from_url(getattr(parsed, 'url', ''))
     service = onlinejudge.dispatch.service_from_url(getattr(parsed, 'url', ''))
 
+    session = requests.Session()
+    session.headers['User-Agent'] = parsed.user_agent
+
+    # set yukicoder's token
+    if parsed.yukicoder_token is not None:
+        parser.error("don't use --yukicoder-token. use $YUKICODER_TOKEN")
+    else:
+        parsed.yukicoder_token = os.environ.get('YUKICODER_TOKEN')
+        is_yukicoder = isinstance(problem, YukicoderProblem) or isinstance(service, YukicoderService)
+        if parsed.yukicoder_token and is_yukicoder:
+            session.headers['Authorization'] = 'Bearer {}'.format(parsed.yukicoder_token)
+
     try:
-        if parsed.yukicoder_token is not None:
-            parser.error("don't use --yukicoder-token. use $YUKICODER_TOKEN")
-        else:
-            parsed.yukicoder_token = os.environ.get('YUKICODER_TOKEN')
-
-        with utils.with_cookiejar(utils.new_session_with_our_user_agent(), path=parsed.cookie) as session:
-            is_yukicoder = isinstance(problem, YukicoderProblem) or isinstance(service, YukicoderService)
-            if parsed.yukicoder_token and is_yukicoder:
-                session.headers['Authorization'] = 'Bearer {}'.format(parsed.yukicoder_token)
-
+        with utils.with_cookiejar(session, path=parsed.cookie) as session:
             result = None  # type: Optional[Dict[str, Any]]
             schema = {}  # type: Dict[str, Any]
+
             if parsed.subcommand == 'get-problem':
                 if problem is None:
                     parser.error("unsupported URL: {}".format(repr(parsed.url)))

@@ -20,24 +20,18 @@ user_cache_dir = pathlib.Path(appdirs.user_cache_dir(version.__package_name__))
 _default_session = None  # Optional[requests.Session]
 
 
-def _new_session_with_our_user_agent():
-    session = requests.Session()
-    session.headers['User-Agent'] = '{}/{} (+{})'.format(version.__package_name__, version.__version__, version.__url__)
-    log.debug('User-Agent: %s', session.headers['User-Agent'])
-    return session
-
-
 # NOTE: this function should not be used internally; if used, we may make bugs that given sessions are ignored
 def get_default_session() -> requests.Session:
     """
     get the default session used in online-judge-tools
 
     :note: cookie is not saved to disk by default. check :py:func:`with_cookiejar`
+    :note: the user agent is the default of the requests library.
     """
 
     global _default_session
     if _default_session is None:
-        _default_session = _new_session_with_our_user_agent()
+        _default_session = requests.session()
     return _default_session
 
 

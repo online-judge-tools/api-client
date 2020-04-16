@@ -23,11 +23,9 @@ from typing.io import *
 import bs4
 
 import onlinejudge.__about__ as version
-import onlinejudge.utils
 from onlinejudge.type import *
 from onlinejudge.utils import *  # re-export
 
-new_session_with_our_user_agent = onlinejudge.utils._new_session_with_our_user_agent
 html_parser = 'lxml'
 
 
