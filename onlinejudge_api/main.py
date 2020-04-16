@@ -4,6 +4,7 @@ import os
 import pathlib
 import sys
 import textwrap
+import time
 import traceback
 from logging import DEBUG, basicConfig, getLogger
 from typing import *
@@ -27,6 +28,7 @@ def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Tools for online judge services')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('--cookie', type=pathlib.Path, default=utils.default_cookie_path, help='specify the path to the cookie.jar. (default: {})'.format(utils.default_cookie_path))
+    parser.add_argument('--wait', type=float, default=1.0, help='specify the duration to sleep to prevent impolite scraping. Please set --wait=0.0 after understanding why this option exists.  (default: 1.0)')
     parser.add_argument('--user-agent', help="specify the User Agent. We recommend you set this because some websites ban the default User Agent of Python's requests library.  (default: {})".format(requests.utils.default_user_agent()))
     parser.add_argument('--yukicoder-token', help='specify the token of yukicoder. This option is a dummy. For a security reason, use the $YUKICODER_TOKEN envvar.  (default: $YUKICODER_TOKEN)')
     subparsers = parser.add_subparsers(dest='subcommand', help='for details, see "{} COMMAND --help"'.format(sys.argv[0]))
@@ -149,6 +151,10 @@ def main(args: Optional[List[str]] = None) -> None:
 
     if parsed.verbose:
         basicConfig(level=DEBUG)
+
+    # do sleep to prevent impolite scraping
+    logger.info('sleep %f sec', parsed.wait)
+    time.sleep(parsed.wait)
 
     problem = onlinejudge.dispatch.problem_from_url(getattr(parsed, 'url', ''))
     contest = onlinejudge.dispatch.contest_from_url(getattr(parsed, 'url', ''))
