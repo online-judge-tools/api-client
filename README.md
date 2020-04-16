@@ -241,6 +241,53 @@ $ oj-api get-contest https://atcoder.jp/contests/arc100 | jq .result
 ```
 
 
+### `get-service`
+
+`oj-api get-service SERVICE_URL` prints the data of the service.
+
+
+#### options
+
+-   `--list-contests`: list all contests in the service
+
+
+#### format
+
+-   `url`: the URL of the service
+-   `name`: the name of the service
+-   `contests` (when `--list-contests`): contests. For details, see the description of `get-problem`.
+
+
+#### example
+
+``` json
+$ oj-api get-service https://atcoder.jp/ --list-contests | jq .result
+{
+  "url": "https://atcoder.jp/",
+  "name": "AtCoder",
+  "contests": [
+    {
+      "url": "https://atcoder.jp/contests/abc162",
+      "name": "AtCoder Beginner Contest 162"
+    },
+    {
+      "url": "https://atcoder.jp/contests/judge-update-202004",
+      "name": "Judge System Update Test Contest 202004"
+    },
+    {
+      "url": "https://atcoder.jp/contests/abc161",
+      "name": "AtCoder Beginner Contest 161"
+    },
+    {
+      "url": "https://atcoder.jp/contests/abc160",
+      "name": "AtCoder Beginner Contest 160"
+    },
+    ...
+  ]
+}
+```
+
+
 ### `login-service`
 
 `USERNAME=USERNAME PASSWORD=PASSWORD oj-api login-service SERVICE_URL` logs in the given service.
