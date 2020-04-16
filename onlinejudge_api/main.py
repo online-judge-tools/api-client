@@ -25,8 +25,8 @@ logger = getLogger()
 def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Tools for online judge services')
     parser.add_argument('-v', '--verbose', action='store_true')
-    parser.add_argument('-c', '--cookie', type=pathlib.Path, default=utils.default_cookie_path, help='path to cookie. (default: {})'.format(utils.default_cookie_path))
-    parser.add_argument('--yukicoder-token', help='This option is a dummy. For a security reason, use the $YUKICODER_TOKEN envvar.  (default: $YUKICODER_TOKEN)')
+    parser.add_argument('--cookie', type=pathlib.Path, default=utils.default_cookie_path, help='specify the path to the cookie.jar. (default: {})'.format(utils.default_cookie_path))
+    parser.add_argument('--yukicoder-token', help='specify the token of yukicoder. This option is a dummy. For a security reason, use the $YUKICODER_TOKEN envvar.  (default: $YUKICODER_TOKEN)')
     subparsers = parser.add_subparsers(dest='subcommand', help='for details, see "{} COMMAND --help"'.format(sys.argv[0]))
 
     # get-problem
@@ -109,8 +109,8 @@ def get_parser() -> argparse.ArgumentParser:
 
     subparser = subparsers.add_parser('login-service', help='login to a service', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     subparser.add_argument('url')
-    subparser.add_argument('--username', default=os.environ.get('USERNAME'), help='(default: $USERNAME)')
-    subparser.add_argument('--password', help="This option is a dummy. For a security reason, use the $PASSWORD envvar.  (default: $PASSWORD)")
+    subparser.add_argument('--username', default=os.environ.get('USERNAME'), help='specify the username.  (default: $USERNAME)')
+    subparser.add_argument('--password', help="specify the password. This option is a dummy. For a security reason, use the $PASSWORD envvar.  (default: $PASSWORD)")
     subparser.add_argument('--check', action='store_true', help='check whether you are logged in or not')
 
     # submit-code
