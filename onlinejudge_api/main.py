@@ -6,7 +6,7 @@ import sys
 import textwrap
 import time
 import traceback
-from logging import DEBUG, basicConfig, getLogger
+from logging import DEBUG, INFO, basicConfig, getLogger
 from typing import *
 
 import jsonschema
@@ -37,24 +37,27 @@ def get_parser() -> argparse.ArgumentParser:
     # get-problem
     epilog = textwrap.dedent("""\
         supported services:
+          Aizu Online Judge
           Anarchy Golf
-          Aizu Online Judge (including the Arena)
           AtCoder
-          Codeforces
-          yukicoder
-          CS Academy
-          HackerRank
-          PKU JudgeOnline
-          Kattis
-          Toph (Problem Archive)
           CodeChef
+          Codeforces
+          CS Academy
           Facebook Hacker Cup
-          Library Checker (https://judge.yosupo.jp/)
+          Google Code Jam
+          Google KickStart
+          HackerRank
+          Kattis
+          Library Checker
+          PKU JudgeOnline
+          Toph
+          yukicoder
 
         supported services with --system:
           Aizu Online Judge
+          HackerRank
+          Library Checker
           yukicoder
-          Library Checker (https://judge.yosupo.jp/)
 
         JSON schema:
         {}
@@ -143,9 +146,9 @@ def get_parser() -> argparse.ArgumentParser:
         supported services:
           AtCoder
           Codeforces
-          yukicoder
           HackerRank
-          Toph (Problem Archive)
+          Toph
+          yukicoder
 
         JSON schema:
         {}
@@ -172,15 +175,19 @@ def main(args: Optional[List[str]] = None) -> None:
 
     if parsed.verbose:
         basicConfig(level=DEBUG)
+    else:
+        basicConfig(level=INFO)
 
     # do sleep to prevent impolite scraping
     logger.info('sleep %f sec', parsed.wait)
     time.sleep(parsed.wait)
 
+    # parse the URL
     problem = onlinejudge.dispatch.problem_from_url(getattr(parsed, 'url', ''))
     contest = onlinejudge.dispatch.contest_from_url(getattr(parsed, 'url', ''))
     service = onlinejudge.dispatch.service_from_url(getattr(parsed, 'url', ''))
 
+    # prepare a session
     session = requests.Session()
     session.headers['User-Agent'] = parsed.user_agent
 
@@ -247,12 +254,12 @@ def main(args: Optional[List[str]] = None) -> None:
 
     except:
         etype, evalue, _ = sys.exc_info()
+        logger.exception('%s', evalue)
         print(json.dumps({
             "status": "error",
             "messages": [*map(lambda line: line.strip(), traceback.format_exception_only(etype, evalue))],
             "result": None,
         }))
-        logger.debug('%s', evalue, stack_info=True)
         raise SystemExit(1)
 
     else:

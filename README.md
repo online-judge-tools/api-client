@@ -293,6 +293,10 @@ $ oj-api get-service https://atcoder.jp/ --list-contests | jq .result
 `USERNAME=USERNAME PASSWORD=PASSWORD oj-api login-service SERVICE_URL` logs in the given service.
 
 
+#### options
+
+-   `--check`: only check whether you are already logged in, without trying to log in
+
 #### format
 
 -   `loggedIn`: the result
@@ -325,5 +329,28 @@ You can obtrain the `LANGUAGE_ID` from the list `availableLanguages` of `oj-api 
 $ oj-api submit-code https://atcoder.jp/contests/abc160/tasks/abc160_a --file main.py --language 3023 | jq .result
 {
   "url": "https://atcoder.jp/contests/abc160/submissions/11991846"
+}
+```
+
+
+## JSON API responses
+
+### format
+
+-   `status`: the status. This contains `ok` if the subcommand succeeded.
+-   `messages`: error messages
+-   `result`: the result
+
+
+### example
+
+``` json
+$ USERNAME=chokudai PASSWORD=hoge oj-api login-service https://atcoder.jp/
+{
+  "status": "error",
+  "messages": [
+    "onlinejudge.type.LoginError: failed to login"
+  ],
+  "result": null
 }
 ```
