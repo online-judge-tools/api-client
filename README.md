@@ -8,10 +8,19 @@
 
 ## What is this?
 
-**CAUTION: under developping; all public APIs are unstable**
-
 This is an API client for various online judges, used as the backend library of [`oj` command](https://github.com/kmyk/online-judge-tools).
 You can use a Python library (`onlinejudge` module) and a command `oj-api` which talks JSON compatible to [jmerle/competitive-companion](https://github.com/jmerle/competitive-companion).
+
+
+## How to install
+
+**CAUTION: under developping; this may work stably, but all public APIs are unstable**
+
+``` console
+$ git clone https://github.com/kmyk/online-judge-api-client
+$ cd online-judge-api-client
+$ pip3 install -e .
+```
 
 
 ## Supported websites
