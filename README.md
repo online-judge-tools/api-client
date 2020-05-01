@@ -14,12 +14,8 @@ You can use the Python library (`onlinejudge` module) and the command-line inter
 
 ## How to install
 
-**CAUTION: under developping; this may work stably, but all public APIs are unstable**
-
 ``` console
-$ git clone https://github.com/kmyk/online-judge-api-client
-$ cd online-judge-api-client
-$ pip3 install -e .
+$ pip3 install online-judge-api-client
 ```
 
 
