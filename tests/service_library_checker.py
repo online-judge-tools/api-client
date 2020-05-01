@@ -39,7 +39,7 @@ class LibraryCheckerProblemTest(unittest.TestCase):
     def test_pull_repository(self):
         # reset
         LibraryCheckerService.is_repository_updated = False
-        with utils.chdir(str(onlinejudge.utils.user_cache_dir / 'library-checker-problems')):
+        with chdir(str(onlinejudge.utils.user_cache_dir / 'library-checker-problems')):
             # the first commit https://github.com/yosupo06/library-checker-problems/commit/fb33114329382695b1a17655843b490b04a08ab6
             subprocess.check_call(['git', 'reset', '--hard', 'fb33114329382695b1a17655843b490b04a08ab6'])
 
