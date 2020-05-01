@@ -169,7 +169,7 @@ def get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(args: Optional[List[str]] = None) -> None:
+def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, Any]:
     parser = get_parser()
     parsed = parser.parse_args(args=args)
 
@@ -255,25 +255,46 @@ def main(args: Optional[List[str]] = None) -> None:
     except:
         etype, evalue, _ = sys.exc_info()
         logger.exception('%s', evalue)
-        print(json.dumps({
+        wrapped = {
             "status": "error",
             "messages": [*map(lambda line: line.strip(), traceback.format_exception_only(etype, evalue))],
             "result": None,
-        }))
-        raise SystemExit(1)
+        }  # type: Dict[str, Any]
+        if debug:
+            return wrapped
+        else:
+            print(json.dumps(wrapped))
+            raise SystemExit(1)
 
     else:
-        if result is not None:
-            print(json.dumps({
-                "status": "ok",
-                "messages": [],
-                "result": result,
-            }))
+        if result is None:
+            # no subcommand given
+            if debug:
+                return {
+                    "status": "ok",
+                    "messages": [],
+                    "result": None,
+                }
+            else:
+                raise SystemExit(0)
 
-            try:
-                jsonschema.validate(result, schema)
-            except jsonschema.exceptions.ValidationError as e:
-                logger.debug('%s', e)
+        wrapped = {
+            "status": "ok",
+            "messages": [],
+            "result": result,
+        }
+        if not debug:
+            print(json.dumps(wrapped))
+
+        try:
+            jsonschema.validate(result, schema)
+        except jsonschema.exceptions.ValidationError as e:
+            logger.debug('%s', e)
+
+        if debug:
+            return wrapped
+        else:
+            raise SystemExit(0)
 
 
 if __name__ == '__main__':
