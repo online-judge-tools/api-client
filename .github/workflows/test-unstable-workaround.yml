@@ -1,15 +1,15 @@
-name: test
+# This file is a workaround for the problem about "Re-run jobs" https://github.community/t5/GitHub-Actions/Ability-to-rerun-just-a-single-job-in-a-workflow/m-p/41629
+
+name: test-unstable-workaround
 
 on: [push, pull_request]
 
 jobs:
-  test:
+  test-unstable-workaround:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        pattern: [stable]
-        # pattern: [stable, unstable]
-        # see test-unstabl-workarounde.yml
+        pattern: [unstable]
 
     runs-on: ${{ matrix.os }}
 
