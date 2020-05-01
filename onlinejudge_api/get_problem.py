@@ -324,7 +324,7 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
                 "html": data.html.decode(),
             }
 
-    elif isinstance(problem, CodeforcesProblem):
+    elif isinstance(problem, CodeforcesProblem) and problem.kind != 'problemset':
         data = problem.download_data(session=session)
         contest_data = problem.get_contest().download_data(session=session)
         result["name"] = data.name
