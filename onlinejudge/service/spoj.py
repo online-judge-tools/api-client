@@ -59,7 +59,7 @@ class SPOJProblem(onlinejudge.type.Problem):
             samples.add(s.encode(), name)
         return samples.get()
 
-    def _find_sample_tags(cls, soup: bs4.BeautifulSoup) -> Iterator[Tuple[bs4.Tag, bs4.Tag]]:
+    def _find_sample_tags(self, soup: bs4.BeautifulSoup) -> Iterator[Tuple[bs4.Tag, bs4.Tag]]:
         expected_strings = ('Sample Input:', 'Sample Output:')
 
         def get_header(tag, expected_tag_name):

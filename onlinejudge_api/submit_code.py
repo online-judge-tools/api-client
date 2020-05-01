@@ -30,7 +30,6 @@ def main(problem: Problem, *, file: pathlib.Path, language_id: LanguageId, sessi
         code = fh.read()
     submission = problem.submit_code(code, language_id=language_id, filename=str(file), session=session)
 
-    problem_detail = problem.download_data(session=session)
     result = {
         "url": submission.get_url(),
     }  # type: Dict[str, Any]

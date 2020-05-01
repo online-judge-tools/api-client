@@ -62,7 +62,7 @@ class Service(ABC):
 
     @classmethod
     @abstractmethod
-    def from_url(self, s: str) -> Optional['Service']:
+    def from_url(cls, url: str) -> Optional['Service']:
         pass
 
     def iterate_contests(self, *, session: Optional[requests.Session] = None) -> Iterator['Contest']:
@@ -153,6 +153,7 @@ class ContestData(DownloadedData):
     """
     .. versionadded:: 7.0.0
     """
+    @property
     def url(self) -> str:
         return self.contest.get_url()
 
@@ -199,7 +200,7 @@ class Contest(ABC):
 
     @classmethod
     @abstractmethod
-    def from_url(self, s: str) -> Optional['Contest']:
+    def from_url(cls, url: str) -> Optional['Contest']:
         pass
 
 
@@ -207,6 +208,7 @@ class ProblemData(DownloadedData):
     """
     .. versionadded:: 7.0.0
     """
+    @property
     def url(self) -> str:
         return self.problem.get_url()
 
@@ -297,7 +299,7 @@ class Problem(ABC):
 
     @classmethod
     @abstractmethod
-    def from_url(self, s: str) -> Optional['Problem']:
+    def from_url(cls, url: str) -> Optional['Problem']:
         pass
 
 
@@ -305,6 +307,7 @@ class SubmissionData(DownloadedData):
     """
     .. versionadded:: 7.0.0
     """
+    @property
     def url(self) -> str:
         return self.submission.get_url()
 
@@ -357,5 +360,5 @@ class Submission(ABC):
 
     @classmethod
     @abstractmethod
-    def from_url(cls, s: str) -> Optional['Submission']:
+    def from_url(cls, url: str) -> Optional['Submission']:
         raise NotImplementedError

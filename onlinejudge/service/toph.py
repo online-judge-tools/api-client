@@ -36,10 +36,10 @@ class TophService(onlinejudge.type.Service):
         return 'toph'
 
     @classmethod
-    def from_url(cls, s: str) -> Optional['TophService']:
+    def from_url(cls, url: str) -> Optional['TophService']:
         # example: https://toph.co/
         # example: http://toph.co/
-        result = urllib.parse.urlparse(s)
+        result = urllib.parse.urlparse(url)
         if result.scheme in ('', 'http', 'https') \
                 and result.netloc == 'toph.co':
             return cls()
@@ -135,8 +135,8 @@ class TophProblem(onlinejudge.type.Problem):
         return TophService()
 
     @classmethod
-    def from_url(cls, s: str) -> Optional['TophProblem']:
-        result = urllib.parse.urlparse(s)
+    def from_url(cls, url: str) -> Optional['TophProblem']:
+        result = urllib.parse.urlparse(url)
         dirname, basename = posixpath.split(utils.normpath(result.path))
         # example: https://toph.co/p/new-year-couple
         if result.scheme in ('', 'http', 'https') \

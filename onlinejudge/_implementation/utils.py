@@ -18,7 +18,6 @@ import tempfile
 import time
 import urllib.parse
 from typing import *
-from typing.io import *
 
 import bs4
 
@@ -68,7 +67,7 @@ def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> b
     return bs4.NavigableString(res)
 
 
-class FormSender(object):
+class FormSender:
     def __init__(self, form: bs4.Tag, url: str):
         assert isinstance(form, bs4.Tag)
         assert form.name == 'form'
@@ -117,7 +116,7 @@ def textfile(s: str) -> str:  # should have trailing newline
         return s + '\n'
 
 
-def exec_command(command_str: str, *, stdin: Optional[IO[Any]] = None, input: Optional[bytes] = None, timeout: Optional[float] = None, gnu_time: Optional[str] = None) -> Tuple[Dict[str, Any], subprocess.Popen]:
+def exec_command(command_str: str, *, stdin: 'Optional[IO[Any]]' = None, input: Optional[bytes] = None, timeout: Optional[float] = None, gnu_time: Optional[str] = None) -> Tuple[Dict[str, Any], subprocess.Popen]:
     if input is not None:
         assert stdin is None
         stdin = subprocess.PIPE  # type: ignore

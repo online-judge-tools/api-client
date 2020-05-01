@@ -355,7 +355,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
         self.assertEqual(data.alphabet, 'B')
         self.assertEqual(data.available_languages, None)
         self.assertEqual(data.html, html)
-        self.assertEqual(data.input_format, '<var>N</var> <var>K</var>\r\n<var>A_0</var> <var>A_1</var> <var>\cdots</var> <var>A_{N-1}</var>\r\n')
+        self.assertEqual(data.input_format, '<var>N</var> <var>K</var>\r\n<var>A_0</var> <var>A_1</var> <var>\\cdots</var> <var>A_{N-1}</var>\r\n')
         self.assertEqual(data.memory_limit_byte, 1024 * 1000 * 1000)
         self.assertEqual(data.name, 'Do Not Duplicate')
         self.assertEqual(data.problem, AtCoderProblem.from_url(url))

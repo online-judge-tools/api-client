@@ -1083,7 +1083,6 @@ class AtCoderSubmission(onlinejudge.type.Submission):
             try:
                 submission_id = int(basename)
             except ValueError:
-                pass
                 submission_id = None
             if submission_id is not None:
                 return cls(contest_id=contest_id, submission_id=submission_id)
@@ -1221,7 +1220,7 @@ class AtCoderSubmission(onlinejudge.type.Submission):
         )
 
 
-class AtCoderSubmissionTestSet(object):
+class AtCoderSubmissionTestSet:
     """
     :ivar set_name: :py:class:`str`
     :ivar score: :py:class:`float`
@@ -1244,7 +1243,7 @@ class AtCoderSubmissionTestSet(object):
         return AtCoderSubmissionTestSet(set_name=set_name, score=score, max_score=max_score, test_case_names=test_case_names)
 
 
-class AtCoderSubmissionTestCaseResult(object):
+class AtCoderSubmissionTestCaseResult:
     """
     :ivar case_name: :py:class:`str`
     :ivar status: :py:class:`str`

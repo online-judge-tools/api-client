@@ -11,7 +11,7 @@ import onlinejudge._implementation.logging as log
 from onlinejudge.type import *
 
 
-class SampleZipper(object):
+class SampleZipper:
     def __init__(self):
         self._testcases = []  # List[TestCase]
         self._dangling = None  # Optional[Tuple(str, bytes)]

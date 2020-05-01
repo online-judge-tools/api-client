@@ -66,7 +66,7 @@ class FacebookHackerCupProblem(onlinejudge.type.Problem):
                 and result.netloc == 'www.facebook.com' \
                 and utils.normpath(result.path).startswith('/hackercup/problem/'):
             dirs = utils.normpath(result.path).split('/')
-            if 3 < len(dirs) and dirs[3].isdigit():
+            if len(dirs) > 3 and dirs[3].isdigit():
                 problem_id = int(dirs[3])
                 return cls(problem_id=problem_id)
         return None
