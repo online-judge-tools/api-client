@@ -4,13 +4,13 @@ from onlinejudge.service.spoj import SPOJProblem, SPOJService
 from onlinejudge.type import TestCase
 
 
-class CodeChefSerivceTest(unittest.TestCase):
+class SPOJSerivceTest(unittest.TestCase):
     def test_from_url(self):
         self.assertIsInstance(SPOJService.from_url('https://www.spoj.com/'), SPOJService)
         self.assertIsNone(SPOJService.from_url('https://www.facebook.com/'))
 
 
-class CodeChefProblemTest(unittest.TestCase):
+class SPOJProblemTest(unittest.TestCase):
     def test_from_url(self):
         self.assertEqual(SPOJProblem.from_url('https://www.spoj.com/problems/ACARGO/').problem_id, 'ACARGO')
 

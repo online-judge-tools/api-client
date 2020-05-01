@@ -10,9 +10,9 @@ def main():
 
     tests = pathlib.Path('tests')
     unstable = [
+        tests / 'get_problem_poj.py',
         tests / 'service_codeforces.py',
         tests / 'service_codechef.py',
-        tests / 'service_poj.py',
     ]
 
     if args.keyword == 'unstable':
