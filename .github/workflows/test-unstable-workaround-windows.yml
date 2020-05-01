@@ -8,7 +8,7 @@ jobs:
   test-unstable-workaround:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest]
         pattern: [unstable]
 
     runs-on: ${{ matrix.os }}
