@@ -1,12 +1,21 @@
+import contextlib
 import os
 import subprocess
 import unittest
 
-import tests.utils as utils
-
 import onlinejudge.utils
 from onlinejudge.service.library_checker import LibraryCheckerProblem, LibraryCheckerService
 from onlinejudge.type import TestCase
+
+
+@contextlib.contextmanager
+def chdir(path: str):
+    cwd = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
 
 
 class LibraryCheckerSerivceTest(unittest.TestCase):
