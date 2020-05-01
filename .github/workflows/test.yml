@@ -7,9 +7,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        pattern: [stable]
+        python-version: [3.5, 3.6]
+        pattern: [stable]  # see test-unstabl-workarounde.yml
         # pattern: [stable, unstable]
-        # see test-unstabl-workarounde.yml
+        exclude:
+        - os: windows-latest
+          python-version: 3.6
+        - os: macos-latest
+          python-version: 3.6
+
+
 
     runs-on: ${{ matrix.os }}
 
@@ -19,7 +26,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.5
+        python-version: ${{ matrix.python-version }}
 
     - name: Get pip cache
       id: pip-cache
