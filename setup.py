@@ -33,6 +33,9 @@ setup(
         'jsonschema >= 3.2',
     ],
     packages=find_packages(exclude=('tests', 'docs')),
+    package_data={
+        "onlinejudge": ["py.typed"],
+    },
     entry_points={
         'console_scripts': [
             'oj-api = onlinejudge_api.main:main',
