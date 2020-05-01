@@ -15,13 +15,13 @@ def load_module(module_path):
 version = load_module('onlinejudge.__about__')
 
 setup(
-    name='online-judge-api-client',
-    version='9.2.0',
-    author='Kimiyuki Onaka',
-    author_email='kimiyuki95@gmail.com',
-    url='https://github.com/kmyk/online-judge-api-client',
-    license='MIT License',
-    description='API client to develop tools for competitive programming',
+    name=version.__package_name__,
+    version=version.__version__,
+    author=version.__author__,
+    author_email=version.__email__,
+    url=version.__url__,
+    license=version.__license__,
+    description=version.__description__,
     python_requires='>=3.5',
     install_requires=[
         'appdirs >= 1',
