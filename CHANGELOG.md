@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.0.2 / 2020-05-01
+
+-   [online-judge-tools/oj#738](https://github.com/online-judge-tools/oj/pull/738) fix the lack of the support for a URL format of AOJ ([@knshnb](https://github.com/knshnb))
+
 ## 10.0.1 / 2020-05-02
 
 -   [#12](https://github.com/online-judge-tools/api-client/pull/12) fix bugs of the module for Codeforces
