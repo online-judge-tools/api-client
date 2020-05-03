@@ -9,7 +9,7 @@ except ModuleNotFoundError:
     import json
     print(json.dumps({
         "status": "error",
-        "messages": ["Due to a known bug, the online-judge-tools is not yet properly installed. Please re-run $ pip3 install -U online-judge-api-client"],
+        "messages": ["Due to a known bug, the online-judge-tools is not yet properly installed. Please re-run $ pip3 install --force-reinstall online-judge-api-client"],
         "result": None,
     }))
     raise SystemExit(1)
