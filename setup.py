@@ -35,6 +35,7 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     package_data={
         "onlinejudge": ["py.typed"],
+        "onlinejudge_workaround_for_conflict": ["py.typed"],
     },
     entry_points={
         'console_scripts': [
