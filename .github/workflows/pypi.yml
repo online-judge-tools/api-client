@@ -19,6 +19,10 @@ jobs:
         pip3 install .
         pip3 install setuptools wheel
 
+    # see https://github.com/online-judge-tools/oj/issues/755<Paste>
+    - name: Workaround for the conflict of the module name
+      run: bash workaround_for_conflict.sh
+
     - name: Build package
       run: python3 setup.py bdist_wheel
 
