@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.0.4 / 2020-05-04
+
+-   [#28](https://github.com/online-judge-tools/api-client/pull/28) fix the workaround added at 10.0.3
+
 ## 10.0.3 / 2020-05-04
 
 -   [#26](https://github.com/online-judge-tools/api-client/pull/26) add a workaround for a problem about installation
