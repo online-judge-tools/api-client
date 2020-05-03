@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.0.6 / 2020-05-04
+
+-   [#33](https://github.com/online-judge-tools/api-client/pull/33) fix the workaround added at v10.0.5
+-   [#32](https://github.com/online-judge-tools/api-client/pull/32) fix the bug about the default cookie path
+
 ## 10.0.5 / 2020-05-04
 
 -   [#30](https://github.com/online-judge-tools/api-client/pull/30) add another workaround for the same problem to 10.0.3
