@@ -17,8 +17,8 @@ import onlinejudge_api.login_service as login_service
 import onlinejudge_api.submit_code as submit_code
 import requests
 
-import onlinejudge
 import onlinejudge._implementation.utils as utils
+import onlinejudge.dispatch as dispatch
 from onlinejudge.service.yukicoder import YukicoderProblem, YukicoderService
 from onlinejudge.type import *
 
@@ -183,9 +183,9 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
     time.sleep(parsed.wait)
 
     # parse the URL
-    problem = onlinejudge.dispatch.problem_from_url(getattr(parsed, 'url', ''))
-    contest = onlinejudge.dispatch.contest_from_url(getattr(parsed, 'url', ''))
-    service = onlinejudge.dispatch.service_from_url(getattr(parsed, 'url', ''))
+    problem = dispatch.problem_from_url(getattr(parsed, 'url', ''))
+    contest = dispatch.contest_from_url(getattr(parsed, 'url', ''))
+    service = dispatch.service_from_url(getattr(parsed, 'url', ''))
 
     # prepare a session
     session = requests.Session()
