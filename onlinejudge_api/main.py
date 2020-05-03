@@ -1,3 +1,18 @@
+"""
+isort: skip_file
+"""
+
+# yapf: disable
+# pylint: disable=unused-import,ungrouped-imports
+try:
+    import onlinejudge.service
+except ModuleNotFoundError:
+    import sys
+    print('Due to a known bug, the online-judge-tools is not yet properly installed. Please re-run $ pip3 install -U online-judge-api-client', file=sys.stderr)
+    sys.exit(1)
+# pylint: enable=unused-import,ungrouped-imports
+# yapf: enable
+
 import argparse
 import json
 import os
