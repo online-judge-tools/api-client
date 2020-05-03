@@ -45,10 +45,14 @@ jobs:
         pip3 install --upgrade setuptools
         pip3 install .[dev]
 
+    # see https://github.com/online-judge-tools/oj/issues/755<Paste>
+    - name: Workaround for the conflict of the module name
+      run: bash workaround_for_conflict.sh
+
     - name: Load balancing
       id: load-balancing
       run: |
-          python -m tests.load_balancer ${{ matrix.pattern }}
+          python -m tests_workaround_for_conflict.load_balancer ${{ matrix.pattern }}
 
     - name: Run tests
       run: |
