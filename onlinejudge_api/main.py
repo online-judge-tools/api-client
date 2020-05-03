@@ -1,3 +1,20 @@
+"""
+isort: skip_file
+"""
+
+# pylint: disable=unused-import,ungrouped-imports
+try:
+    import onlinejudge.service
+except ModuleNotFoundError:
+    import json
+    print(json.dumps({
+        "status": "error",
+        "messages": ["Due to a known bug, the online-judge-tools is not yet properly installed. Please re-run $ pip3 install -U online-judge-api-client"],
+        "result": None,
+    }))
+    raise SystemExit(1)
+# pylint: enable=unused-import,ungrouped-imports
+
 import argparse
 import json
 import os
@@ -17,8 +34,8 @@ import onlinejudge_api.login_service as login_service
 import onlinejudge_api.submit_code as submit_code
 import requests
 
-import onlinejudge
 import onlinejudge._implementation.utils as utils
+import onlinejudge.dispatch as dispatch
 from onlinejudge.service.yukicoder import YukicoderProblem, YukicoderService
 from onlinejudge.type import *
 
@@ -183,9 +200,9 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
     time.sleep(parsed.wait)
 
     # parse the URL
-    problem = onlinejudge.dispatch.problem_from_url(getattr(parsed, 'url', ''))
-    contest = onlinejudge.dispatch.contest_from_url(getattr(parsed, 'url', ''))
-    service = onlinejudge.dispatch.service_from_url(getattr(parsed, 'url', ''))
+    problem = dispatch.problem_from_url(getattr(parsed, 'url', ''))
+    contest = dispatch.contest_from_url(getattr(parsed, 'url', ''))
+    service = dispatch.service_from_url(getattr(parsed, 'url', ''))
 
     # prepare a session
     session = requests.Session()
