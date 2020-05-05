@@ -73,8 +73,12 @@ class GoogleCodeJamProblem(onlinejudge.type.Problem):
                 raise SampleParseError("the problem {} is not found in the challenge {}".format(repr(self.problem_id), repr(self.contest_id)))
 
         elif self.domain == 'code.google.com':
-            url = 'https://{}/{}/contest/{}/dashboard/ContestInfo'.format(self.domain, self.kind, self.contest_id)
-            resp = utils.request('GET', url, session=session)
+            try:
+                url = 'https://{}/{}/contest/{}/dashboard/ContestInfo'.format(self.domain, self.kind, self.contest_id)
+                resp = utils.request('GET', url, session=session)
+            except requests.HTTPError:
+                log.warning('hint: Google Code Jam moves old problems to the new platform')
+                raise
             data = json.loads(resp.content.decode())
 
             # parse JSON

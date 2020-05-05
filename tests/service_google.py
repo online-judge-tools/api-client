@@ -102,6 +102,7 @@ class GoogleCodeJamProblemTest(unittest.TestCase):
             ),
         ])
 
+    @unittest.expectedFailure  # GCJ is now porting old problems to the new platform
     def test_download_samples_old(self):
         problem = GoogleCodeJamProblem.from_url('https://code.google.com/codejam/contest/7234486/dashboard#s=p2')
         sample_input = textwrap.dedent("""\
