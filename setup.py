@@ -27,6 +27,7 @@ setup(
         'appdirs >= 1',
         'beautifulsoup4 >= 4',
         'colorama >= 0.3',
+        'colorlog >= 4.1.0',
         'lxml >= 4',
         'requests >= 2',
         'toml >= 0.10',
