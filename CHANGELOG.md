@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.0.7 / 2020-05-05
+
+-   [#35](https://github.com/online-judge-tools/api-client/pull/35) add `colorlog` to dependencies for Library Checker ([@yosupo06](https://github.com/yosupo06))
+
 ## 10.0.6 / 2020-05-04
 
 -   [#33](https://github.com/online-judge-tools/api-client/pull/33) fix the workaround added at v10.0.5
