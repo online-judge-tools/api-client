@@ -2,6 +2,7 @@
 isort: skip_file
 """
 
+# This is a workaround for the issue https://github.com/online-judge-tools/oj/issues/755
 # pylint: disable=unused-import,ungrouped-imports
 try:
     import onlinejudge.service
