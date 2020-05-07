@@ -5,7 +5,7 @@ isort: skip_file
 # pylint: disable=unused-import,ungrouped-imports
 try:
     import onlinejudge.service
-except ModuleNotFoundError:
+except ImportError:
     import json
     print(json.dumps({
         "status": "error",
