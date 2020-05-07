@@ -9,7 +9,7 @@ isort: skip_file
 #     $ pip3 install online-judge-api-client
 # pylint: disable=unused-import,ungrouped-imports
 try:
-    import onlinejudge._implementation.main
+    import onlinejudge._implementation.main  # type: ignore
 except ImportError:
     pass
 else:
