@@ -31,7 +31,7 @@ class TopcoderService(onlinejudge.type.Service):
         # example: https://community.topcoder.com/stat?c=problem_statement&pm=10760
         result = urllib.parse.urlparse(url)
         if result.scheme in ('', 'http', 'https'):
-            if result.netloc in ('arena.topcoder.com', 'community.topcoder.com'):
+            if result.netloc in ('topcoder.com', 'arena.topcoder.com', 'community.topcoder.com'):
                 return cls()
         return None
 
