@@ -193,7 +193,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
                 'input',
                 ('\n'.join(map(_convert_to_greed, input_items)) + '\n').encode(),
                 'output',
-                _convert_to_greed(output_item).encode(),
+                (_convert_to_greed(output_item) + '\n').encode(),
             ))
 
         return _TopcoderData(definition=definition, raw_sample_cases=raw_sample_cases, sample_cases=sample_cases)
