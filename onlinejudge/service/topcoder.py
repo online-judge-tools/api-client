@@ -18,7 +18,7 @@ import onlinejudge.type
 from onlinejudge.type import SampleParseError, TestCase
 
 
-class TopcoderArenaService(onlinejudge.type.Service):
+class TopcoderService(onlinejudge.type.Service):
     def get_url(self) -> str:
         return 'https://arena.topcoder.com/'
 
@@ -26,7 +26,7 @@ class TopcoderArenaService(onlinejudge.type.Service):
         return 'Topcoder'
 
     @classmethod
-    def from_url(cls, url: str) -> Optional['TopcoderArenaService']:
+    def from_url(cls, url: str) -> Optional['TopcoderService']:
         # example: https://arena.topcoder.com/
         # example: https://community.topcoder.com/stat?c=problem_statement&pm=10760
         result = urllib.parse.urlparse(url)
@@ -36,8 +36,8 @@ class TopcoderArenaService(onlinejudge.type.Service):
         return None
 
 
-# class _TopcoderArenaData(onlinejudge.type.ProblemData):
-class _TopcoderArenaData:
+# class _TopcoderData(onlinejudge.type.ProblemData):
+class _TopcoderData:
     def __init__(self, *, definition: Dict[str, str], raw_sample_cases: List[Tuple[List[str], str]], sample_cases: List[TestCase]):
         self.definition = definition
         self.raw_sample_cases = sample_cases
@@ -79,23 +79,24 @@ def _convert_to_greed(x: str) -> str:
     # example: `{1, 0, 1, 1, 0}` -> `5 1 0 1 1 0`
     # example: `"foo"` -> `foo`
     # example: `2` -> `2`
+    # example: `{"aa", "bb", "cc"}` -> 3 aa bb cc
     if x.startswith('{') and x.endswith('}'):
         ys = x[1:-1].split(',')
-        return ' '.join([str(len(ys)), *map(lambda y: y.strip(), ys)])
+        return ' '.join([str(len(ys)), *map(lambda y: _convert_to_greed(y.strip()), ys)])
     elif x.startswith('"') and x.endswith('"'):
         return x[1:-1]
     else:
         return x
 
 
-class TopcoderArenaProblem(onlinejudge.type.Problem):
+class TopcoderProblem(onlinejudge.type.Problem):
     """
     :ivar problem_id: :py:class:`int`
     """
     def __init__(self, *, problem_id: int):
         self.problem_id = problem_id
 
-    def _download_data(self, *, session: Optional[requests.Session] = None) -> _TopcoderArenaData:
+    def _download_data(self, *, session: Optional[requests.Session] = None) -> _TopcoderData:
         session = session or utils.get_default_session()
 
         # download HTML
@@ -195,7 +196,7 @@ class TopcoderArenaProblem(onlinejudge.type.Problem):
                 _convert_to_greed(output_item).encode(),
             ))
 
-        return _TopcoderArenaData(definition=definition, raw_sample_cases=raw_sample_cases, sample_cases=sample_cases)
+        return _TopcoderData(definition=definition, raw_sample_cases=raw_sample_cases, sample_cases=sample_cases)
 
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[TestCase]:
         return self._download_data(session=session).sample_cases
@@ -204,7 +205,7 @@ class TopcoderArenaProblem(onlinejudge.type.Problem):
         return 'https://community.topcoder.com/stat?c=problem_statement&pm={}'.format(self.problem_id)
 
     @classmethod
-    def from_url(cls, url: str) -> Optional['TopcoderArenaProblem']:
+    def from_url(cls, url: str) -> Optional['TopcoderProblem']:
         # example: https://arena.topcoder.com/index.html#/u/practiceCode/14230/10838/10760/1/303803
         # example: https://community.topcoder.com/stat?c=problem_statement&pm=10760
         result = urllib.parse.urlparse(url)
@@ -233,9 +234,9 @@ class TopcoderArenaProblem(onlinejudge.type.Problem):
                         return cls(problem_id=problem_id)
         return None
 
-    def get_service(self) -> TopcoderArenaService:
-        return TopcoderArenaService()
+    def get_service(self) -> TopcoderService:
+        return TopcoderService()
 
 
-onlinejudge.dispatch.services += [TopcoderArenaService]
-onlinejudge.dispatch.problems += [TopcoderArenaProblem]
+onlinejudge.dispatch.services += [TopcoderService]
+onlinejudge.dispatch.problems += [TopcoderProblem]
