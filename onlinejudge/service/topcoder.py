@@ -4,8 +4,6 @@ the module for Topcoder (https://topcoder.com/)
 .. versionadded:: 10.1.0
 """
 
-import re
-import textwrap
 import urllib.parse
 from typing import *
 
@@ -42,37 +40,6 @@ class _TopcoderData:
         self.definition = definition
         self.raw_sample_cases = sample_cases
         self.sample_cases = sample_cases
-
-        self.__print_hint()
-
-    def __print_hint(self):
-        log.debug('definition: %s', self.definition)
-        header = textwrap.dedent("""\
-            #include <iostream>
-            #include <string>
-            #include <vector>
-        """)
-        method_signature = self.definition['method_signature']
-        method_signature = re.sub(r'(\w+)\[\]', r'std::vector<\1>', method_signature)
-        method_signature = re.sub(r'\bString\b', r'std::string', method_signature)
-        body = textwrap.dedent("""\
-            class {class_} {{
-            public:
-                {method_signature} {{
-                    // edit here
-                }}
-            }};
-        """).format(class_=self.definition['class'], method_signature=method_signature)
-        footer = textwrap.dedent("""\
-            int main() {{
-                std::cin >> ...;  // edit here
-                auto ans = {class_}().{method}(...);  // edit here
-                cout::cout << ans << std::endl;
-                return 0;
-            }}
-        """).format(class_=self.definition['class'], method=self.definition['method'])
-        code = "\n".join([header, body, footer])
-        log.info('experimental hint (this hint will be removed when https://github.com/online-judge-tools/template-generator is updated):\n' + log.bold(code))
 
 
 def _convert_to_greed(x: str) -> str:
@@ -189,7 +156,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
         sample_cases = []
         for i, (input_items, output_item) in enumerate(raw_sample_cases):
             sample_cases.append(TestCase(
-                'Example #{}'.format(i),
+                'example-{}'.format(i),
                 'input',
                 ('\n'.join(map(_convert_to_greed, input_items)) + '\n').encode(),
                 'output',
