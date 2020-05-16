@@ -72,7 +72,7 @@ class _TopcoderData:
             }}
         """).format(class_=self.definition['class'], method=self.definition['method'])
         code = "\n".join([header, body, footer])
-        log.info('experimental hint:\n' + log.bold(code))
+        log.info('experimental hint (this hint will be removed when https://github.com/online-judge-tools/template-generator is updated):\n' + log.bold(code))
 
 
 def _convert_to_greed(x: str) -> str:
