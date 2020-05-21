@@ -3,6 +3,7 @@ from typing import *
 
 from onlinejudge.service.atcoder import AtCoderProblem
 from onlinejudge.service.codeforces import CodeforcesProblem
+from onlinejudge.service.topcoder import TopcoderProblem
 from onlinejudge.type import *
 
 logger = getLogger()
@@ -338,6 +339,14 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
         if is_full:
             result["raw"] = {
                 "json": data.json.decode(),
+            }
+
+    elif isinstance(problem, TopcoderProblem):
+        definition = problem._download_data(session=session).definition
+        result["name"] = definition["class"]
+        if is_full:
+            result["raw"] = {
+                "definition": definition,
             }
 
     else:
