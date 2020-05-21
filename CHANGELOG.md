@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.1.0 / 2020-05-22
+
+-   [#47](https://github.com/online-judge-tools/api-client/pull/47) add Topcoder support only for archived problems
+-   [#50](https://github.com/online-judge-tools/api-client/pull/50) remove CodeChef support
+
 ## 10.0.8 / 2020-05-07
 
 -   [#43](https://github.com/online-judge-tools/api-client/pull/43) add a workaround for the another issue about installation
