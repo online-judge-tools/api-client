@@ -2,7 +2,7 @@ name: test
 
 on:
   pull_request:
-  schdule:
+  schedule:
     - cron: '30 18 * * MON'  # At 03:30 on Tuesday in JST
 
 jobs:
