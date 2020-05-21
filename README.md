@@ -26,7 +26,7 @@ $ pip3 install online-judge-api-client
 | [Aizu Online Judge](https://onlinejudge.u-aizu.ac.jp/home)                     | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :white_check_mark: |                    |
 | [Anarchy Golf](http://golf.shinh.org/)                                         | :heavy_check_mark: | :white_check_mark: |                    |                    | :white_check_mark: |                    |
 | [AtCoder](https://atcoder.jp/)                                                 | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| [CodeChef](https://www.codechef.com/)                                          | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
+| [CodeChef](https://www.codechef.com/)                                          | :x: [issue](https://github.com/online-judge-tools/api-client/issues/49) |                    |                    |                    | :white_check_mark: |                    |
 | [Codeforces](https://codeforces.com/)                                          | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | [CS Academy](https://csacademy.com/)                                           | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
 | [Facebook Hacker Cup](https://www.facebook.com/hackercup/)                     | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
