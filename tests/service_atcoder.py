@@ -128,8 +128,24 @@ class AtCoderProblemTest(unittest.TestCase):
     def test_from_url(self):
         self.assertEqual(AtCoderProblem.from_url('https://kupc2014.contest.atcoder.jp/tasks/kupc2014_d').contest_id, 'kupc2014')
         self.assertEqual(AtCoderProblem.from_url('https://kupc2014.contest.atcoder.jp/tasks/kupc2014_d').problem_id, 'kupc2014_d')
+        self.assertEqual(AtCoderProblem.from_url('http://jag2013spring.contest.atcoder.jp/tasks/icpc2013spring_a').contest_id, 'jag2013spring')
+        self.assertEqual(AtCoderProblem.from_url('http://jag2013spring.contest.atcoder.jp/tasks/icpc2013spring_a').problem_id, 'icpc2013spring_a')
+        self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/abc073/tasks/abc073_a').contest_id, 'abc073')
+        self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/abc073/tasks/abc073_a').problem_id, 'abc073_a')
+        self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/ddcc2017-qual/tasks/ddcc2017_qual_a').contest_id, 'ddcc2017-qual')
+        self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/ddcc2017-qual/tasks/ddcc2017_qual_a').problem_id, 'ddcc2017_qual_a')
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/agc030/tasks/agc030_c').contest_id, 'agc030')
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/agc030/tasks/agc030_c').problem_id, 'agc030_c')
+
+    def test_from_url_with_superfluous_things(self):
+        """This tests unusual URLs.
+
+        AtCoder uses query parameters like `?lang=en`.
+        A service (AtCoder Virtual Contest https://not-522.appspot.com/) sometimes makes URLs which contain `//` in their paths.
+        """
+
+        self.assertEqual(AtCoderProblem.from_url('http://agc001.contest.atcoder.jp//////tasks//////agc001_a//////?hoge=fuga#piyo').contest_id, 'agc001')
+        self.assertEqual(AtCoderProblem.from_url('http://agc001.contest.atcoder.jp//////tasks//////agc001_a//////?hoge=fuga#piyo').problem_id, 'agc001_a')
 
     def test_repr(self):
         self.assertEqual(repr(AtCoderProblem(contest_id='kupc2014', problem_id='kupc2014_d')), "AtCoderProblem.from_url('https://atcoder.jp/contests/kupc2014/tasks/kupc2014_d')")
