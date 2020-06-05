@@ -25,7 +25,7 @@ def main(service: Service, *, username: Optional[str], password: Optional[str], 
 
     result = {}  # type: Dict[str, Any]
     if check_only:
-        assert username is None
+        # We cannot check `assert username is None` because some environments defines $USERNAME and it is set here. See https://github.com/online-judge-tools/api-client/issues/53
         assert password is None
         result["loggedIn"] = service.is_logged_in(session=session)
     else:
