@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.1.1 / 2020-06-06
+
+-   [#56](https://github.com/online-judge-tools/api-client/pull/56) remove trailing spaces from sample cases of Codeforces
+-   [#57](https://github.com/online-judge-tools/api-client/pull/57) fix a problem of `oj-api login-service` on Zsh
+
 ## 10.1.0 / 2020-05-22
 
 -   [#47](https://github.com/online-judge-tools/api-client/pull/47) add Topcoder support only for archived problems
