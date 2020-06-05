@@ -46,11 +46,14 @@ def next_sibling_tag(tag: bs4.Tag) -> bs4.Tag:
     return tag
 
 
-# remove all HTML tag without interpretation (except <br>)
-# remove all comment
-# using DFS(Depth First Search)
-# discussed in https://github.com/kmyk/online-judge-tools/issues/553
+# TODO: Why this returns bs4.NavigableString?
 def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> bs4.NavigableString:
+    """parse_content convert a tag to a string with interpretting `<br>` and ignoring other tags.
+
+    .. seealso::
+        https://github.com/kmyk/online-judge-tools/issues/553
+    """
+
     res = ''
     if isinstance(parent, bs4.Comment):
         pass
@@ -104,16 +107,40 @@ class FormSender:
 
 
 def dos2unix(s: str) -> str:
+    """
+    .. deprecated:: 10.1.0
+        Use :func:`format_sample_case` instead.
+    """
+
     return s.replace('\r\n', '\n')
 
 
-def textfile(s: str) -> str:  # should have trailing newline
+def textfile(s: str) -> str:
+    """textfile convert a string s to the "text file" defined in POSIX
+
+    .. deprecated:: 10.1.0
+        Use :func:`format_sample_case` instead.
+    """
+
     if s.endswith('\n'):
         return s
     elif '\r\n' in s:
         return s + '\r\n'
     else:
         return s + '\n'
+
+
+def format_sample_case(s: str) -> str:
+    """format_sample_case convert a string s to a good form as a sample case.
+
+    A good form means that, it use LR instead of CRLF, it has the trailing newline, and it has no superfluous whitespaces.
+    """
+
+    if not s.strip():
+        return ''
+    lines = s.strip().splitlines()
+    lines = [line.strip() + '\n' for line in lines]
+    return ''.join(lines)
 
 
 def exec_command(command_str: str, *, stdin: 'Optional[IO[Any]]' = None, input: Optional[bytes] = None, timeout: Optional[float] = None, gnu_time: Optional[str] = None) -> Tuple[Dict[str, Any], subprocess.Popen]:

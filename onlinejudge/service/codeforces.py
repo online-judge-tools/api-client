@@ -325,9 +325,8 @@ class CodeforcesProblem(onlinejudge.type.Problem):
             title, pre = list(non_empty_children)
             assert 'title' in title.attrs['class']
             assert pre.name == 'pre'
-            s = utils.parse_content(pre)
-            s = s.lstrip()
-            samples.add(s.encode(), title.string)
+            data = utils.format_sample_case(str(utils.parse_content(pre)))
+            samples.add(data.encode(), title.string)
         return samples.get()
 
     def get_available_languages(self, *, session: Optional[requests.Session] = None) -> List[Language]:
