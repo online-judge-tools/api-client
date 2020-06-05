@@ -116,3 +116,33 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         }
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
+
+    def test_contest_1344_d(self):
+        """The sample output of this problem has superfluous whitespaces. We should check that they are removed.
+
+        .. seealso::
+            see https://github.com/online-judge-tools/api-client/issues/24
+        """
+
+        url = 'https://codeforces.com/contest/1334/problem/D'
+        expected = {
+            "status": "ok",
+            "messages": [],
+            "result": {
+                "url": "https://codeforces.com/contest/1334/problem/D",
+                "tests": [{
+                    "input": "3\n2 1 3\n3 3 6\n99995 9998900031 9998900031\n",
+                    "output": "1 2 1\n1 3 2 3\n1\n"
+                }],
+                "name": "Minimum Euler Cycle",
+                "context": {
+                    "contest": {
+                        "name": "Educational Codeforces Round 85 (Rated for Div. 2)",
+                        "url": "https://codeforces.com/contest/1334"
+                    },
+                    "alphabet": "D"
+                }
+            },
+        }
+        actual = main(['get-problem', url], debug=True)
+        self.assertEqual(expected, actual)
