@@ -5,6 +5,9 @@ from onlinejudge_api.main import main
 
 class GetProblemCodeforcesTest(unittest.TestCase):
     def test_problemset_700_b(self):
+        """This tests a problem in the problemset.
+        """
+
         url = 'http://codeforces.com/problemset/problem/700/B'
         expected = {
             "status": "ok",
@@ -25,6 +28,9 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_contest_538_h(self):
+        """This tests a old problem.
+        """
+
         url = 'http://codeforces.com/contest/538/problem/H'
         expected = {
             "status": "ok",
@@ -52,6 +58,9 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_gym_101020_a(self):
+        """This tests a problem in the gym.
+        """
+
         url = 'http://codeforces.com/gym/101020/problem/A'
         expected = {
             "status": "ok",
@@ -76,6 +85,12 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_contest_1080_a(self):
+        """Recent (Nov 2018) problems has leading spaces for sample cases. We should check that they are removed.
+
+        .. seealso::
+            https://github.com/online-judge-tools/oj/issues/198
+        """
+
         url = 'https://codeforces.com/contest/1080/problem/A'
         expected = {
             "status": "ok",
