@@ -46,11 +46,14 @@ def next_sibling_tag(tag: bs4.Tag) -> bs4.Tag:
     return tag
 
 
-# remove all HTML tag without interpretation (except <br>)
-# remove all comment
-# using DFS(Depth First Search)
-# discussed in https://github.com/kmyk/online-judge-tools/issues/553
+# TODO: Why this returns bs4.NavigableString?
 def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> bs4.NavigableString:
+    """parse_content convert a tag to a string with interpretting `<br>` and ignoring other tags.
+
+    .. seealso::
+        https://github.com/kmyk/online-judge-tools/issues/553
+    """
+
     res = ''
     if isinstance(parent, bs4.Comment):
         pass
