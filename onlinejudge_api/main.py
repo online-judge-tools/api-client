@@ -89,7 +89,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
     jsonschema.validate(get_problem.schema_example, get_problem.schema)
 
-    subparser = subparsers.add_parser('get-problem', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
+    subparser = subparsers.add_parser('get-problem', help='get information about a problem', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     subparser.add_argument('url')
     subparser.add_argument('--system', action='store_true', help='download system testcases')
     group = subparser.add_mutually_exclusive_group()
@@ -113,7 +113,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
     jsonschema.validate(get_contest.schema_example, get_contest.schema)
 
-    subparser = subparsers.add_parser('get-contest', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
+    subparser = subparsers.add_parser('get-contest', help='get information about a contest', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     subparser.add_argument('url')
     subparser.add_argument('--full', action='store_true')
 
@@ -133,7 +133,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
     jsonschema.validate(get_service.schema_example, get_service.schema)
 
-    subparser = subparsers.add_parser('get-service', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
+    subparser = subparsers.add_parser('get-service', help='get information about a service', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     subparser.add_argument('url')
     subparser.add_argument('--list-contests', action='store_true')
 
@@ -181,7 +181,7 @@ def get_parser() -> argparse.ArgumentParser:
     jsonschema.validate(submit_code.schema_example, submit_code.schema)
 
     subparser = subparsers.add_parser('submit-code', help='submit your solution', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
-    subparser.add_argument('url', help='the URL of the problem to submit. if not given, guessed from history of download command.')
+    subparser.add_argument('url', help='the URL of the problem to submit')
     subparser.add_argument('--file', required=True, type=pathlib.Path)
     subparser.add_argument('--language', required=True, type=LanguageId, help='''a language ID; you can get the values from "availableLanguages" field of "get-problem" subcommand with "--full" option''')
 
