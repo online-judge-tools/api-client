@@ -1,9 +1,11 @@
 import pathlib
 import re
+from logging import getLogger
 from typing import *
 
-import onlinejudge._implementation.logging as log
 from onlinejudge.type import Language, LanguageId
+
+logger = getLogger()
 
 
 def select_ids_of_matched_languages(words: List[str], lang_ids: List[str], language_dict: Dict[str, str], split: bool = False, remove: bool = False) -> List[str]:
@@ -89,7 +91,7 @@ def guess_language_ids_of_cplusplus_file(filename: pathlib.Path, code: bytes, la
     lang_ids = list(filter(lambda lang_id: is_cplusplus_description(language_dict[lang_id]), lang_ids))
     if not lang_ids:
         return []
-    log.debug('all lang ids for C++: %s', lang_ids)
+    logger.debug('all lang ids for C++: %s', lang_ids)
 
     # compiler
     found_gcc = False
@@ -101,16 +103,16 @@ def guess_language_ids_of_cplusplus_file(filename: pathlib.Path, code: bytes, la
         elif compiler == 'clang':
             found_clang = True
     if found_gcc and found_clang:
-        log.status('both GCC and Clang are available for C++ compiler')
+        logger.status('both GCC and Clang are available for C++ compiler')
         if cxx_compiler == 'gcc':
-            log.status('use: GCC')
+            logger.status('use: GCC')
             lang_ids = list(filter(lambda lang_id: parse_cplusplus_compiler(language_dict[lang_id]) in ('gcc', None), lang_ids))
         elif cxx_compiler == 'clang':
-            log.status('use: Clang')
+            logger.status('use: Clang')
             lang_ids = list(filter(lambda lang_id: parse_cplusplus_compiler(language_dict[lang_id]) in ('clang', None), lang_ids))
         else:
             assert cxx_compiler == 'all'
-    log.debug('lang ids after compiler filter: %s', lang_ids)
+    logger.debug('lang ids after compiler filter: %s', lang_ids)
 
     # version
     if cxx_latest:
@@ -122,7 +124,7 @@ def guess_language_ids_of_cplusplus_file(filename: pathlib.Path, code: bytes, la
                 continue
             ids.sort(key=lambda lang_id: (parse_cplusplus_version(language_dict[lang_id]) or '', language_dict[lang_id]))
             lang_ids += [ids[-1]]  # since C++11 < C++1y < ... as strings
-    log.debug('lang ids after version filter: %s', lang_ids)
+    logger.debug('lang ids after version filter: %s', lang_ids)
 
     assert lang_ids
     lang_ids = sorted(set(lang_ids))
@@ -138,7 +140,7 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
     # interpreter
     lang_ids = list(filter(lambda lang_id: is_python_description(language_dict[lang_id]), lang_ids))
     if any([parse_python_interpreter(language_dict[lang_id]) == 'pypy' for lang_id in lang_ids]):
-        log.status('PyPy is available for Python interpreter')
+        logger.status('PyPy is available for Python interpreter')
     if python_interpreter != 'all':
         lang_ids = list(filter(lambda lang_id: parse_python_interpreter(language_dict[lang_id]) == python_interpreter, lang_ids))
 
@@ -147,13 +149,13 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
     two_found = False
     for lang_id in lang_ids:
         version = parse_python_version(language_dict[lang_id])
-        log.debug('%s (%s) is recognized as Python %s', lang_id, language_dict[lang_id], str(version or 'unknown'))
+        logger.debug('%s (%s) is recognized as Python %s', lang_id, language_dict[lang_id], str(version or 'unknown'))
         if version == 3:
             three_found = True
         if version == 2:
             two_found = True
     if two_found and three_found:
-        log.status('both Python2 and Python3 are available for version of Python')
+        logger.status('both Python2 and Python3 are available for version of Python')
         if python_version in ('2', '3'):
             versions = [int(python_version)]  # type: List[Optional[int]]
         elif python_version == 'all':
@@ -170,9 +172,9 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
                 if re.search(r'python *(version:? *)?%d'.encode() % version, s.lower()):
                     versions += [version]
             if not versions:
-                log.status('no version info in code')
+                logger.status('no version info in code')
                 versions = [3]
-        log.status('use: %s', ', '.join(map(str, versions)))
+        logger.status('use: %s', ', '.join(map(str, versions)))
         lang_ids = list(filter(lambda lang_id: parse_python_version(language_dict[lang_id]) in versions + [None], lang_ids))
 
     lang_ids = sorted(set(lang_ids))
@@ -228,20 +230,20 @@ other_languages_table = [
 def guess_language_ids_of_file(filename: pathlib.Path, code: bytes, language_dict: Dict[str, str], *, cxx_latest: bool, cxx_compiler: str, python_version: str, python_interpreter: str) -> List[str]:
     ext = filename.suffix
 
-    log.debug('file extension: %s', ext)
+    logger.debug('file extension: %s', ext)
     ext = ext.lstrip('.')
 
     if ext in ('cpp', 'cxx', 'cc', 'C'):
         # memo: https://stackoverflow.com/questions/1545080/c-code-file-extension-cc-vs-cpp
-        log.debug('language guessing: C++')
+        logger.debug('language guessing: C++')
         return guess_language_ids_of_cplusplus_file(filename, code, language_dict=language_dict, cxx_latest=cxx_latest, cxx_compiler=cxx_compiler)
 
     elif ext == 'py':
-        log.debug('language guessing: Python')
+        logger.debug('language guessing: Python')
         return guess_language_ids_of_python_file(filename, code, language_dict=language_dict, python_version=python_version, python_interpreter=python_interpreter)
 
     else:
-        log.debug('language guessing: others')
+        logger.debug('language guessing: others')
         lang_ids = []
         for data in other_languages_table:
             if ext in data['exts']:
