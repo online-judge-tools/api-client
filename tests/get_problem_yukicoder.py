@@ -3,8 +3,6 @@ import unittest
 import tests.utils
 from onlinejudge_api.main import main
 
-from onlinejudge.service.yukicoder import YukicoderService
-
 
 class GetProblemYukicoderTest(unittest.TestCase):
     def test_100(self):
@@ -33,7 +31,7 @@ class GetProblemYukicoderTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
-    @unittest.skipIf(not tests.utils.is_logged_in(YukicoderService()), 'login is required')
+    @unittest.skipIf(not tests.utils.is_logged_in('https://yukicoder.me/'), 'login is required')
     def test_2_system(self):
         """This tests about system cases.
         """

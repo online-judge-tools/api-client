@@ -312,7 +312,7 @@ $ USERNAME=kimiyuki PASSWORD='????????????????' oj-api login-service https://atc
 ### `submit-code`
 
 `oj-api submit-code PROBLEM_URL --file FILE --language LANGUAGE_ID` submits the file to the given problem.
-You can obtrain the `LANGUAGE_ID` from the list `availableLanguages` of `oj-api get-problem --full PROBLEM_URL`.
+You can obtrain the `LANGUAGE_ID` from the list `availableLanguages` of `oj-api get-problem --full PROBLEM_URL` or the `guess-language-id` subcommand.
 
 
 #### format
@@ -326,6 +326,28 @@ You can obtrain the `LANGUAGE_ID` from the list `availableLanguages` of `oj-api 
 $ oj-api submit-code https://atcoder.jp/contests/abc160/tasks/abc160_a --file main.py --language 3023 | jq .result
 {
   "url": "https://atcoder.jp/contests/abc160/submissions/11991846"
+}
+```
+
+
+### `guess-language-id`
+
+`oj-api guess-language-id PROBLEM_URL --file FILE` guesses the language id to submit the file to the given problem.
+
+
+#### format
+
+-   `id`: the language id
+-   `description`: the description of the language id
+
+
+#### example
+
+``` json
+$ oj-api guess-language-id http://codeforces.com/contest/1373/problem/A --file=main.py | jq .result
+{
+  "id": "31",
+  "description": "Python 3.7.2",
 }
 ```
 
