@@ -7,16 +7,18 @@ the module for Sphere Online Judge (https://www.spoj.com/)
 
 import re
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import TestCase
+
+logger = getLogger()
 
 
 class SPOJService(onlinejudge.type.Service):
@@ -68,7 +70,7 @@ class SPOJProblem(onlinejudge.type.Problem):
             return None
 
         for pre in soup.find(id='problem-body').find_all('pre'):
-            log.debug('pre tag: %s', str(pre))
+            logger.debug('pre tag: %s', str(pre))
             tag = pre.find_previous_sibling().find_previous_sibling()
             h3 = get_header(tag=tag, expected_tag_name='b')
 

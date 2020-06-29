@@ -5,15 +5,17 @@ the module for Kattis (https://open.kattis.com/)
 
 import re
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 import onlinejudge.type
+
+logger = getLogger()
 
 
 class KattisService(onlinejudge.type.Service):
@@ -51,8 +53,8 @@ class KattisProblem(onlinejudge.type.Problem):
         url = self.get_url(contests=False) + '/file/statement/samples.zip'
         resp = utils.request('GET', url, session=session, raise_for_status=False)
         if resp.status_code == 404:
-            log.warning('samples.zip not found')
-            log.info('this 404 happens in both cases: 1. no sample cases as intended; 2. just an error')
+            logger.warning('samples.zip not found')
+            logger.info('this 404 happens in both cases: 1. no sample cases as intended; 2. just an error')
             return []
         resp.raise_for_status()
         # parse

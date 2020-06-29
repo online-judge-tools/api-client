@@ -5,15 +5,17 @@ the module for Topcoder (https://topcoder.com/)
 """
 
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import SampleParseError, TestCase
+
+logger = getLogger()
 
 
 class TopcoderService(onlinejudge.type.Service):
@@ -88,7 +90,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
         #             <tr><td>Method:</td><td>...</td></tr>
         #             ...
         #         </table></td></tr>
-        log.debug('parse Definition section')
+        logger.debug('parse Definition section')
         h3 = problem_text.find('h3', text='Definition')
         if h3 is None:
             raise SampleParseError("""<h3>Definition</h3> is not found""")
@@ -101,7 +103,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
                 'Method signature:': 'method_signature',
         }.items():
             td = h3.parent.parent.next_sibling.find('td', class_='statText', text=text)
-            log.debug('%s', td.parent)
+            logger.debug('%s', td.parent)
             definition[key] = td.next_sibling.string
 
         # parse Examples section
@@ -119,7 +121,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
         #         </table></td></tr>
         #     <tr><td>1)</td><td></td></tr>
         #     ...
-        log.debug('parse Examples section')
+        logger.debug('parse Examples section')
         h3 = problem_text.find('h3', text='Examples')
         if h3 is None:
             raise SampleParseError("""<h3>Examples</h3> is not found""")
@@ -129,7 +131,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
         while True:
             # read the header like "0)"
             cursor = cursor.next_sibling
-            log.debug('%s', cursor)
+            logger.debug('%s', cursor)
             if not cursor or cursor.name != 'tr':
                 break
             if cursor.find('td').string != '{})'.format(len(raw_sample_cases)):
@@ -137,7 +139,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
 
             # collect <pre>s
             cursor = cursor.next_sibling
-            log.debug('%s', cursor)
+            logger.debug('%s', cursor)
             if not cursor or cursor.name != 'tr':
                 raise SampleParseError("""<tr>...</tr> is expected, but not found""")
             input_items = []

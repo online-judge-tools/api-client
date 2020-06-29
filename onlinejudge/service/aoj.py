@@ -10,16 +10,18 @@ import json
 import re
 import string
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import TestCase
+
+logger = getLogger()
 
 
 class AOJService(onlinejudge.type.Service):
@@ -67,8 +69,8 @@ class AOJProblem(onlinejudge.type.Problem):
         # parse HTML if no samples are registered
         # see: https://github.com/kmyk/online-judge-tools/issues/207
         if not samples:
-            log.warning("sample cases are not registered in the official API")
-            log.status("fallback: parsing HTML")
+            logger.warning("sample cases are not registered in the official API")
+            logger.info("fallback: parsing HTML")
 
             # reference: http://developers.u-aizu.ac.jp/api?key=judgeapi%2Fresources%2Fdescriptions%2F%7Blang%7D%2F%7Bproblem_id%7D_GET
             url = 'https://judgeapi.u-aizu.ac.jp/resources/descriptions/ja/{}'.format(self.problem_id)
@@ -183,7 +185,7 @@ class AOJArenaProblem(onlinejudge.type.Problem):
             for problem in problems:
                 if problem['id'] == self.alphabet:
                     self._problem_id = problem['problemId']
-                    log.debug('problem: %s', problem)
+                    logger.debug('problem: %s', problem)
                     break
         return self._problem_id
 

@@ -4,15 +4,17 @@ the module for PKU JudgeOnline (http://poj.org/)
 """
 
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import TestCase
+
+logger = getLogger()
 
 
 class POJService(onlinejudge.type.Service):
@@ -46,8 +48,8 @@ class POJProblem(onlinejudge.type.Problem):
         in_pre, out_pre = soup.find_all('pre', class_='sio')
         in_p = in_pre.find_previous_sibling('p', class_='pst')
         out_p = out_pre.find_previous_sibling('p', class_='pst')
-        log.debug('pre  (in): %s', in_pre.contents)
-        log.debug('pre (out): %s', out_pre.contents)
+        logger.debug('pre  (in): %s', in_pre.contents)
+        logger.debug('pre (out): %s', out_pre.contents)
         assert in_p.text.strip() == 'Sample Input'
         assert out_p.text.strip() == 'Sample Output'
         assert len(in_pre.contents) == len(out_pre.contents)

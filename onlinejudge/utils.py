@@ -6,12 +6,14 @@ the module for those who make programs using online-judge-tools as a library
 import contextlib
 import http
 import pathlib
+from logging import getLogger
 from typing import *
 
 import appdirs
 
-import onlinejudge._implementation.logging as log
 from onlinejudge.type import *
+
+logger = getLogger()
 
 user_data_dir = pathlib.Path(appdirs.user_data_dir('online-judge-tools'))
 user_cache_dir = pathlib.Path(appdirs.user_cache_dir('online-judge-tools'))
@@ -47,10 +49,10 @@ def with_cookiejar(session: requests.Session, *, path: pathlib.Path = default_co
 
     session.cookies = http.cookiejar.LWPCookieJar(str(path))  # type: ignore
     if path.exists():
-        log.status('load cookie from: %s', path)
+        logger.info('load cookie from: %s', path)
         session.cookies.load()  # type: ignore
     yield session
-    log.status('save cookie to: %s', path)
+    logger.info('save cookie to: %s', path)
     path.parent.mkdir(parents=True, exist_ok=True)
     session.cookies.save()  # type: ignore
     path.chmod(0o600)  # NOTE: to make secure a little bit

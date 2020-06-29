@@ -10,15 +10,17 @@ import re
 import subprocess
 import sys
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import TestCase
+
+logger = getLogger()
 
 
 class LibraryCheckerService(onlinejudge.type.Service):
@@ -51,18 +53,18 @@ class LibraryCheckerService(onlinejudge.type.Service):
         try:
             subprocess.check_call(['git', '--version'], stdout=sys.stderr, stderr=sys.stderr)
         except FileNotFoundError:
-            log.error('git command not found')
+            logger.error('git command not found')
             raise
 
         path = LibraryCheckerService._get_cloned_repository_path()
         if not path.exists():
             # init the problem repository
             url = 'https://github.com/yosupo06/library-checker-problems'
-            log.status('$ git clone %s %s', url, path)
+            logger.info('$ git clone %s %s', url, path)
             subprocess.check_call(['git', 'clone', url, str(path)], stdout=sys.stderr, stderr=sys.stderr)
         else:
             # sync the problem repository
-            log.status('$ git -C %s pull', str(path))
+            logger.info('$ git -C %s pull', str(path))
             subprocess.check_call(['git', '-C', str(path), 'pull'], stdout=sys.stderr, stderr=sys.stderr)
 
         cls.is_repository_updated = True
@@ -93,26 +95,26 @@ class LibraryCheckerProblem(onlinejudge.type.Problem):
         path = LibraryCheckerService._get_cloned_repository_path()
 
         if sys.version_info < (3, 6):
-            log.warning("generate.py may not work on Python 3.5 or older")
+            logger.warning("generate.py may not work on Python 3.5 or older")
         if os.name == 'nt':
-            log.warning("generate.py may not work on Windows")
+            logger.warning("generate.py may not work on Windows")
 
         problem_spec = str(self._get_problem_directory_path() / 'info.toml')
         command = [sys.executable, str(path / 'generate.py'), problem_spec]
         if compile_checker:
             command.append('--compile-checker')
-        log.status('$ %s', ' '.join(command))
+        logger.info('$ %s', ' '.join(command))
         try:
             subprocess.check_call(command, stdout=sys.stderr, stderr=sys.stderr)
         except subprocess.CalledProcessError:
-            log.error("the generate.py failed: check https://github.com/yosupo06/library-checker-problems/issues")
+            logger.error("the generate.py failed: check https://github.com/yosupo06/library-checker-problems/issues")
             raise
 
     def _get_problem_directory_path(self) -> pathlib.Path:
         path = LibraryCheckerService._get_cloned_repository_path()
         info_tomls = list(path.glob('**/{}/info.toml'.format(glob.escape(self.problem_id))))
         if len(info_tomls) != 1:
-            log.error("the problem %s not found or broken", self.problem_id)
+            logger.error("the problem %s not found or broken", self.problem_id)
             raise RuntimeError()
         return info_tomls[0].parent
 

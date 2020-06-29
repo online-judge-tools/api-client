@@ -4,6 +4,7 @@ import http.client
 import http.cookiejar
 import posixpath
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
@@ -11,6 +12,7 @@ import bs4
 from onlinejudge.type import *
 from onlinejudge.utils import *  # re-export
 
+logger = getLogger()
 html_parser = 'lxml'
 
 
@@ -65,7 +67,7 @@ class FormSender:
         self.payload = {}  # type: Dict[str, str]
         self.files = {}  # type: Dict[str, IO[Any]]
         for input in self.form.find_all('input'):
-            log.debug('input: %s', str(input))
+            logger.debug('input: %s', str(input))
             if input.attrs.get('type') in ['checkbox', 'radio']:
                 continue
             if 'name' in input.attrs and 'value' in input.attrs:
@@ -140,13 +142,13 @@ def normpath(path: str) -> str:
 def request(method: str, url: str, session: requests.Session, raise_for_status: bool = True, **kwargs) -> requests.Response:
     assert method in ['GET', 'POST']
     kwargs.setdefault('allow_redirects', True)
-    log.status('%s: %s', method, url)
+    logger.info('%s: %s', method, url)
     if 'data' in kwargs:
-        log.debug('data: %s', repr(kwargs['data']))
+        logger.debug('data: %s', repr(kwargs['data']))
     resp = session.request(method, url, **kwargs)
     if resp.url != url:
-        log.status('redirected: %s', resp.url)
-    log.status(describe_status_code(resp.status_code))
+        logger.info('redirected: %s', resp.url)
+    logger.info(describe_status_code(resp.status_code))
     if raise_for_status:
         resp.raise_for_status()
     return resp

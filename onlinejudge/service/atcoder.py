@@ -17,16 +17,18 @@ import itertools
 import posixpath
 import re
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import *
+
+logger = getLogger()
 
 
 def _list_alert(resp: requests.Response, soup: Optional[bs4.BeautifulSoup] = None, print_: bool = False) -> List[str]:
@@ -36,7 +38,7 @@ def _list_alert(resp: requests.Response, soup: Optional[bs4.BeautifulSoup] = Non
     for alert in soup.find_all('div', attrs={'role': 'alert'}):
         msg = ' '.join([s.strip() for s in alert.strings if s.strip()])
         if print_:
-            log.warning('AtCoder says: %s', msg)
+            logger.warning('AtCoder says: %s', msg)
         msgs += [msg]
     return msgs
 
@@ -47,7 +49,7 @@ def _request(*args, **kwargs):
     see https://github.com/kmyk/online-judge-tools/issues/28 and https://github.com/kmyk/online-judge-tools/issues/232
     """
     resp = utils.request(*args, **kwargs)
-    log.debug('AtCoder\'s server said "Content-Type: %s"', resp.headers.get('Content-Type', '(not sent)'))
+    logger.debug('AtCoder\'s server said "Content-Type: %s"', resp.headers.get('Content-Type', '(not sent)'))
     resp.encoding = 'UTF-8'
     _list_alert(resp, print_=True)
     return resp
@@ -83,9 +85,9 @@ class AtCoderService(onlinejudge.type.Service):
 
         # result
         if 'login' not in resp.url:
-            log.success('Welcome,')  # AtCoder redirects to the top page if success
+            logger.info('Welcome,')  # AtCoder redirects to the top page if success
         else:
-            log.failure('Username or Password is incorrect.')
+            logger.error('Username or Password is incorrect.')
             raise LoginError
 
     def get_url_of_login_page(self) -> str:
@@ -141,7 +143,7 @@ class AtCoderService(onlinejudge.type.Service):
             soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
             if last_page is None:
                 last_page = int(soup.find('ul', class_='pagination').find_all('li')[-1].text)
-                log.debug('last page: %s', last_page)
+                logger.debug('last page: %s', last_page)
             tbody = soup.find('tbody')
             for tr in tbody.find_all('tr'):
                 yield AtCoderContestData._from_table_row(tr, lang=lang, response=resp, session=session, timestamp=timestamp)
@@ -648,7 +650,7 @@ class AtCoderProblemDetailedData(AtCoderProblemData):
             return None
 
         for pre in soup.find(id='task-statement').find_all('pre'):
-            log.debug('pre tag: %s', str(pre))
+            logger.debug('pre tag: %s', str(pre))
 
             # the standard format: #task-statement h3+pre
             # used by AtCoder's JavaScript, sometimes used with .prettyprint
@@ -695,7 +697,7 @@ class AtCoderProblemDetailedData(AtCoderProblemData):
             if lang is None:
                 lang = l
             elif lang != l:
-                log.debug('skipped due to language: current one is %s, not %s: %s ', lang, l, name)
+                logger.debug('skipped due to language: current one is %s, not %s: %s ', lang, l, name)
                 continue
             samples.add(s.encode(), name)
         return samples.get()
@@ -710,7 +712,7 @@ class AtCoderProblemDetailedData(AtCoderProblemData):
             if section is None:
                 section = soup.find(class_='io-style')
             if section is None:
-                log.warning('<section> tag not found. something wrong')
+                logger.warning('<section> tag not found. something wrong')
                 return None
             pre = section.find('pre')
             if pre is not None:
@@ -800,7 +802,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         resp = _request('GET', self.get_url(type='beta'), raise_for_status=False, session=session)
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
         if _list_alert(resp):
-            log.warning('are you logged in?')
+            logger.warning('are you logged in?')
         resp.raise_for_status()
         html = resp.content.decode(resp.encoding).encode()  # ensure UTF-8
         return AtCoderProblemDetailedData.from_html(html, problem=self, session=session, response=resp, timestamp=timestamp)
@@ -870,7 +872,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         """
         data = self.download_data(session=session)
         if data.available_languages is None:
-            log.error('not logged in')
+            logger.error('not logged in')
             raise NotLoggedInError
         return data.available_languages
 
@@ -896,7 +898,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         form = soup.find('form', action='/contests/{}/submit'.format(self.contest_id))
         if not form:
             raise SubmissionError('something wrong')
-        log.debug('form: %s', str(form))
+        logger.debug('form: %s', str(form))
 
         # post
         form = utils.FormSender(form, url=resp.url)
@@ -910,7 +912,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         # result
         if '/submissions/me' in resp.url:
             submission = next(AtCoderContest(contest_id=self.contest_id)._iterate_submission_data_from_response(resp=resp, session=session, timestamp=timestamp)).submission
-            log.success('success: result: %s', submission.get_url())
+            logger.info('success: result: %s', submission.get_url())
             return submission
         else:
             raise SubmissionError('it may be a rate limit')

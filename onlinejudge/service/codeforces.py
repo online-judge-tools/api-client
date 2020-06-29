@@ -10,16 +10,18 @@ import json
 import re
 import string
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import *
+
+logger = getLogger()
 
 _CODEFORCES_DOMAINS = ('codeforces.com', 'm1.codeforces.com', 'm2.codeforces.com', 'm3.codeforces.com')
 
@@ -34,12 +36,12 @@ class CodeforcesService(onlinejudge.type.Service):
         # get
         resp = utils.request('GET', url, session=session)
         if resp.url != url:  # redirected
-            log.info('You have already signed in.')
+            logger.info('You have already signed in.')
             return
         # parse
         soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
         form = soup.find('form', id='enterForm')
-        log.debug('form: %s', str(form))
+        logger.debug('form: %s', str(form))
         username, password = get_credentials()
         form = utils.FormSender(form, url=resp.url)
         form.set('handleOrEmail', username)
@@ -49,9 +51,9 @@ class CodeforcesService(onlinejudge.type.Service):
         resp = form.request(session)
         resp.raise_for_status()
         if resp.url != url:  # redirected
-            log.success('Welcome, %s.', username)
+            logger.info('Welcome, %s.', username)
         else:
-            log.failure('Invalid handle or password.')
+            logger.error('Invalid handle or password.')
             raise LoginError('Invalid handle or password.')
 
     def get_url_of_login_page(self) -> str:
@@ -318,9 +320,9 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for tag in soup.find_all('div', class_=re.compile('^(in|out)put$')):  # Codeforces writes very nice HTML :)
-            log.debug('tag: %s', str(tag))
+            logger.debug('tag: %s', str(tag))
             non_empty_children = [child for child in tag.children if child.name or child.strip()]
-            log.debug("tags after removing empty strings: %s", non_empty_children)
+            logger.debug("tags after removing empty strings: %s", non_empty_children)
             assert len(non_empty_children) == 2  # if not 2, next line throws ValueError.
             title, pre = list(non_empty_children)
             assert 'title' in title.attrs['class']
@@ -360,9 +362,9 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
         form = soup.find('form', class_='submitForm')
         if form is None:
-            log.error('not logged in')
+            logger.error('not logged in')
             raise NotLoggedInError
-        log.debug('form: %s', str(form))
+        logger.debug('form: %s', str(form))
         # make data
         form = utils.FormSender(form, url=resp.url)
         form.set('programTypeId', language_id)
@@ -372,16 +374,16 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         # result
         if resp.url.endswith('/my'):
             # example: https://codeforces.com/contest/598/my
-            log.success('success: result: %s', resp.url)
+            logger.info('success: result: %s', resp.url)
             return utils.DummySubmission(resp.url, problem=self)
         else:
-            log.failure('failure')
+            logger.error('failure')
             # parse error messages
             soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
             msgs = []  # type: List[str]
             for span in soup.findAll('span', class_='error'):
                 msgs += [span.string]
-                log.warning('Codeforces says: "%s"', span.string)
+                logger.warning('Codeforces says: "%s"', span.string)
             raise SubmissionError('it may be the "You have submitted exactly the same code before" error: ' + str(msgs))
 
     def get_url(self) -> str:

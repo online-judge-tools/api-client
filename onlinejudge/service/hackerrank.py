@@ -6,17 +6,19 @@ the module for HackerRank (https://www.hackerrank.com/)
 import json
 import re
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import *
+
+logger = getLogger()
 
 
 class HackerRankService(onlinejudge.type.Service):
@@ -58,7 +60,7 @@ class HackerRankProblem(onlinejudge.type.Problem):
         """
         :raises NotImplementedError:
         """
-        log.warning('use --system option')
+        logger.warning('use --system option')
         raise NotImplementedError
 
     def download_system_cases(self, *, session: Optional[requests.Session] = None) -> List[TestCase]:
@@ -67,7 +69,7 @@ class HackerRankProblem(onlinejudge.type.Problem):
         url = 'https://www.hackerrank.com/rest/contests/{}/challenges/{}/download_testcases'.format(self.contest_slug, self.challenge_slug)
         resp = utils.request('GET', url, session=session, raise_for_status=False)
         if resp.status_code != 200:
-            log.error('response: %s', resp.content.decode())
+            logger.error('response: %s', resp.content.decode())
             return []
         return onlinejudge._implementation.testcase_zipper.extract_from_zip(resp.content, '%eput/%eput%s.txt')
 
@@ -106,9 +108,9 @@ class HackerRankProblem(onlinejudge.type.Problem):
         resp = utils.request('GET', url, session=session)
         # parse
         it = json.loads(resp.content.decode())
-        log.debug('json: %s', it)
+        logger.debug('json: %s', it)
         if not it['status']:
-            log.error('get model: failed')
+            logger.error('get model: failed')
             raise SubmissionError
         return it['model']
 
@@ -123,12 +125,12 @@ class HackerRankProblem(onlinejudge.type.Problem):
         l = s.index('{', l)
         r = s.index('}', l) + 1
         s = s[l:r]
-        log.debug('lang_display_mapping (raw): %s', s)  # this is not a json
+        logger.debug('lang_display_mapping (raw): %s', s)  # this is not a json
         lang_display_mapping = {}
         for lang in s[1:-2].split('",'):
             key, value = lang.split(':"')
             lang_display_mapping[key] = value
-        log.debug('lang_display_mapping (parsed): %s', lang_display_mapping)
+        logger.debug('lang_display_mapping (parsed): %s', lang_display_mapping)
         return lang_display_mapping
 
     def get_available_languages(self, *, session: Optional[requests.Session] = None) -> List[Language]:
@@ -139,7 +141,7 @@ class HackerRankProblem(onlinejudge.type.Problem):
         for lang in info['languages']:
             descr = lang_display_mapping.get(lang)
             if descr is None:
-                log.warning('display mapping for language `%s\' not found', lang)
+                logger.warning('display mapping for language `%s\' not found', lang)
                 descr = lang
             result += [Language(lang, descr)]
         return result
@@ -161,17 +163,17 @@ class HackerRankProblem(onlinejudge.type.Problem):
         # post
         url = 'https://www.hackerrank.com/rest/contests/{}/challenges/{}/submissions'.format(self.contest_slug, self.challenge_slug)
         payload = {'code': code, 'language': str(language_id), 'contest_slug': self.contest_slug}
-        log.debug('payload: %s', payload)
+        logger.debug('payload: %s', payload)
         resp = utils.request('POST', url, session=session, json=payload, headers={'X-CSRF-Token': csrftoken})
         # parse
         it = json.loads(resp.content.decode())
-        log.debug('json: %s', it)
+        logger.debug('json: %s', it)
         if not it['status']:
-            log.failure('Submit Code: failed')
+            logger.error('Submit Code: failed')
             raise SubmissionError
         model_id = it['model']['id']
         url = self.get_url().rstrip('/') + '/submissions/code/{}'.format(model_id)
-        log.success('success: result: %s', url)
+        logger.info('success: result: %s', url)
         return utils.DummySubmission(url, problem=self)
 
 

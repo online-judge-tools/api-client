@@ -6,17 +6,19 @@ the module for Toph (https://toph.co/)
 import posixpath
 import re
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import bs4
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
 import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import *
+
+logger = getLogger()
 
 
 class TophService(onlinejudge.type.Service):
@@ -63,7 +65,7 @@ class TophProblem(onlinejudge.type.Problem):
         soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for table in soup.find_all('table', class_="samples"):
-            log.debug('table: %s', str(table))
+            logger.debug('table: %s', str(table))
             case = table.find('tbody').find('tr')
             assert len(list(case.children)) == 2
             input_pre, output_pre = list(map(lambda td: td.find('pre'), list(case.children)))
@@ -104,11 +106,11 @@ class TophProblem(onlinejudge.type.Problem):
         soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
         form = soup.find('form')
         if form is None:
-            log.error('not logged in')
+            logger.error('not logged in')
             raise LoginError
-        log.debug('form: %s', str(form))
+        logger.debug('form: %s', str(form))
         if form.find('select') and form.find('select').attrs['name'] != 'languageId':
-            log.error("Wrong submission URL")
+            logger.error("Wrong submission URL")
             raise SubmissionError
 
         # make data
@@ -120,11 +122,11 @@ class TophProblem(onlinejudge.type.Problem):
         # result
         if '/s/' in resp.url:
             # example: https://toph.co/s/201410
-            log.success('success: result: %s', resp.url)
+            logger.info('success: result: %s', resp.url)
             return utils.DummySubmission(resp.url, problem=self)
         else:
-            log.failure('failure')
-            log.debug('redirected to %s', resp.url)
+            logger.error('failure')
+            logger.debug('redirected to %s', resp.url)
             raise SubmissionError
 
     def get_url(self) -> str:

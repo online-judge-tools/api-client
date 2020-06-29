@@ -4,11 +4,13 @@ import collections
 import io
 import re
 import zipfile
+from logging import getLogger
 from typing import *
 
 import onlinejudge._implementation.format_utils
-import onlinejudge._implementation.logging as log
 from onlinejudge.type import *
+
+logger = getLogger()
 
 
 class SampleZipper:
@@ -19,13 +21,13 @@ class SampleZipper:
     def add(self, content: bytes, name: str) -> None:
         if self._dangling is None:
             if re.search('output', name, re.IGNORECASE) or re.search('出力', name):
-                log.error('strange name for input string: %s', name)
+                logger.error('strange name for input string: %s', name)
                 raise SampleParseError()
             self._dangling = (name, content)
         else:
             if re.search('input', name, re.IGNORECASE) or re.search('入力', name):
                 if not (re.search('output', name, re.IGNORECASE) or re.search('出力', name)):  # to ignore titles like "Output for Sample Input 1"
-                    log.error('strange name for output string: %s', name)
+                    logger.error('strange name for output string: %s', name)
                     raise SampleParseError()
             index = len(self._testcases)
             input_name, input_content = self._dangling
@@ -34,7 +36,7 @@ class SampleZipper:
 
     def get(self) -> List[TestCase]:
         if self._dangling is not None:
-            log.error('cannot find sample output for this input: %s', self._dangling[1])
+            logger.error('cannot find sample output for this input: %s', self._dangling[1])
             raise SampleParseError
         return self._testcases
 
@@ -58,7 +60,7 @@ def extract_from_files(files: Iterator[Tuple[str, bytes]], format: str = '%s.%e'
     for name in sorted(names.keys()):
         data = names[name]
         if 'in' not in data or out not in data:
-            log.error('dangling sample found: %s', str(data))
+            logger.error('dangling sample found: %s', str(data))
             assert False
         else:
             testcases += [TestCase(name, *data['in'], *data[out])]

@@ -6,14 +6,16 @@ the module for CS Academy (https://csacademy.com/)
 import json
 import re
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import requests
 
-import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import TestCase
+
+logger = getLogger()
 
 
 class CSAcademyService(onlinejudge.type.Service):
@@ -49,7 +51,7 @@ class CSAcademyProblem(onlinejudge.type.Problem):
             if cookie.name == 'csrftoken' and cookie.domain == 'csacademy.com':  # type: ignore
                 csrftoken = cookie.value  # type: ignore
         if csrftoken is None:
-            log.error('csrftoken is not found')
+            logger.error('csrftoken is not found')
             return []
 
         # get config
@@ -67,7 +69,7 @@ class CSAcademyProblem(onlinejudge.type.Problem):
             if it['name'] == self.task_name:
                 task_config = it
         if task_config is None:
-            log.error('no such task: %s', self.task_name)
+            logger.error('no such task: %s', self.task_name)
             return []
 
         # get
@@ -83,7 +85,7 @@ class CSAcademyProblem(onlinejudge.type.Problem):
         assert resp.encoding is None
         contest_task = json.loads(resp.content.decode())  # NOTE: Should I memoize this?
         if contest_task.get('title') == 'Page not found':
-            log.error('something wrong')
+            logger.error('something wrong')
             return []
         samples = []
         for test_number, example_test in enumerate(contest_task['state']['EvalTask'][0]['exampleTests']):
