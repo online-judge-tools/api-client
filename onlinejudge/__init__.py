@@ -26,10 +26,11 @@ else:
                 $ command oj
                 oj: command not found
 
-                $ python3 -c 'from onlinejudge.__about__ import __version__ ; print(__version__)'
-                Traceback (most recent call last):
-                  File "<string>", line 1, in <module>
-                ModuleNotFoundError: No module named 'onlinejudge.__about__'
+                $ python3 -c 'import pathlib, sys ; print(*[path for path in sys.path if (pathlib.Path(path) / "onlinejudge").exists()] or ["not installed"])'
+                not installed
+
+                $ pip3 show online-judge-tools online-judge-api-client
+                (no output)
 
             3. Reinstall online-judge-tools.
                 $ pip3 install online-judge-tools"""), file=sys.stderr)
