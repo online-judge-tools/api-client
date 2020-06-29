@@ -12,7 +12,7 @@ import bs4
 from onlinejudge.type import *
 from onlinejudge.utils import *  # re-export
 
-logger = getLogger()
+logger = getLogger(__name__)
 html_parser = 'lxml'
 
 

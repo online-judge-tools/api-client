@@ -24,7 +24,7 @@ from typing import List, Optional, Type
 
 from onlinejudge.type import Contest, Problem, Service, Submission
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 submissions = []  # type: List[Type['Submission']]
 

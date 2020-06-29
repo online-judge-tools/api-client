@@ -15,7 +15,7 @@ import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 import onlinejudge.type
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 class KattisService(onlinejudge.type.Service):

@@ -14,7 +14,7 @@ import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import TestCase
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 class POJService(onlinejudge.type.Service):

@@ -18,7 +18,7 @@ import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 class TophService(onlinejudge.type.Service):

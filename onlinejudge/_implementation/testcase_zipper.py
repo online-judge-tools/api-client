@@ -10,7 +10,7 @@ from typing import *
 import onlinejudge._implementation.format_utils
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 class SampleZipper:

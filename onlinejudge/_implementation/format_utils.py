@@ -8,7 +8,7 @@ import sys
 from logging import getLogger
 from typing import Dict, Generator, List, Match, Optional, Set
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 def percentsplit(s: str) -> Generator[str, None, None]:

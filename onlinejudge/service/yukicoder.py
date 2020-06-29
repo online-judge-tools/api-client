@@ -18,7 +18,7 @@ import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 class YukicoderService(onlinejudge.type.Service):

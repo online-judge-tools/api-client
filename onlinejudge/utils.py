@@ -13,7 +13,7 @@ import appdirs
 
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 user_data_dir = pathlib.Path(appdirs.user_data_dir('online-judge-tools'))
 user_cache_dir = pathlib.Path(appdirs.user_cache_dir('online-judge-tools'))

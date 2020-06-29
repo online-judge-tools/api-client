@@ -21,7 +21,7 @@ import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 _CODEFORCES_DOMAINS = ('codeforces.com', 'm1.codeforces.com', 'm2.codeforces.com', 'm3.codeforces.com')
 

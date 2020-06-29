@@ -28,7 +28,7 @@ import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 def _list_alert(resp: requests.Response, soup: Optional[bs4.BeautifulSoup] = None, print_: bool = False) -> List[str]:

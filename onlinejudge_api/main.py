@@ -42,7 +42,7 @@ from onlinejudge.__about__ import __package_name__, __version__
 from onlinejudge.service.yukicoder import YukicoderProblem, YukicoderService
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 def get_parser() -> argparse.ArgumentParser:

@@ -15,7 +15,7 @@ import onlinejudge._implementation.utils as utils
 import onlinejudge.type
 from onlinejudge.type import SampleParseError, TestCase
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 class TopcoderService(onlinejudge.type.Service):
