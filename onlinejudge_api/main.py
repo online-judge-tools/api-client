@@ -38,6 +38,7 @@ import requests
 
 import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch as dispatch
+from onlinejudge.__about__ import __package_name__, __version__
 from onlinejudge.service.yukicoder import YukicoderProblem, YukicoderService
 from onlinejudge.type import *
 
@@ -213,6 +214,9 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
         basicConfig(level=DEBUG)
     else:
         basicConfig(level=INFO)
+
+    # print the version to help to support users
+    logger.info('%s %s', __package_name__, __version__)
 
     # do sleep to prevent impolite scraping
     logger.info('sleep %f sec', parsed.wait)
