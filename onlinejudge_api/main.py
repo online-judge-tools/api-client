@@ -27,6 +27,7 @@ import traceback
 from logging import DEBUG, INFO, basicConfig, getLogger
 from typing import *
 
+import colorlog
 import jsonschema
 import onlinejudge_api.get_contest as get_contest
 import onlinejudge_api.get_problem as get_problem
@@ -210,10 +211,15 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
     parser = get_parser()
     parsed = parser.parse_args(args=args)
 
+    # configure logging
+    handler = colorlog.StreamHandler()
+    log_format = '%(log_color)s%(levelname)s:%(reset)s%(message)s'
+    level = INFO
     if parsed.verbose:
-        basicConfig(level=DEBUG)
-    else:
-        basicConfig(level=INFO)
+        log_format = '%(log_color)s%(levelname)s:%(name)s:%(reset)s%(message)s'
+        level = DEBUG
+    handler.setFormatter(colorlog.ColoredFormatter(log_format))
+    basicConfig(level=level, handlers=[handler])
 
     # print the version to help to support users
     logger.info('%s %s', __package_name__, __version__)
