@@ -1,11 +1,13 @@
 from onlinejudge_api.main import main
 
-from onlinejudge.type import Service
+import onlinejudge.dispatch as dispatch
 
 
-def is_logged_in(service: Service, *, memo={}) -> bool:
+def is_logged_in(url: str, *, memo={}) -> bool:
     # functools.lru_cache is unusable since Service are unhashable, so we need to use `memo={}`.
-    url = service.get_url()
+    service = dispatch.service_from_url(url)
+    assert service is not None
+    url = service.get_url()  # normalize url
     if url not in memo:
         # We need to use main instead of `service.is_logged_in()` to use cookies.
         result = main(['login-service', '--check', url], debug=True)
