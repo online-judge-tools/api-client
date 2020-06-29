@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.2.0 / 2020-06-30
+
+-   [#63](https://github.com/online-judge-tools/api-client/pull/63) add `guess-language-id` subcommand as a utility
+-   [#66](https://github.com/online-judge-tools/api-client/pull/66) print the version info for user support
+
 ## 10.1.1 / 2020-06-06
 
 -   [#56](https://github.com/online-judge-tools/api-client/pull/56) remove trailing spaces from sample cases of Codeforces
