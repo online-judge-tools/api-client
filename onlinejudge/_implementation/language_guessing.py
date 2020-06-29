@@ -8,13 +8,14 @@ from onlinejudge.type import Language, LanguageId
 logger = getLogger()
 
 
-def select_ids_of_matched_languages(words: List[str], lang_ids: List[str], language_dict: Dict[str, str], split: bool = False, remove: bool = False) -> List[str]:
+def select_ids_of_matched_languages(word: str, lang_ids: List[str], language_dict: Dict[str, str], split: bool = False, remove: bool = False) -> List[str]:
     result = []
     for lang_id in lang_ids:
-        desc = [language_dict[lang_id].lower()]
+        desc = language_dict[lang_id].lower()
         if split:
-            desc = desc[0].split()
-        pred = all([word.lower() in desc for word in words])
+            pred = word.lower() in desc.split()
+        else:
+            pred = word.lower() in desc
         if remove:
             pred = not pred
         if pred:
@@ -103,12 +104,12 @@ def guess_language_ids_of_cplusplus_file(filename: pathlib.Path, code: bytes, la
         elif compiler == 'clang':
             found_clang = True
     if found_gcc and found_clang:
-        logger.status('both GCC and Clang are available for C++ compiler')
+        logger.info('both GCC and Clang are available for C++ compiler')
         if cxx_compiler == 'gcc':
-            logger.status('use: GCC')
+            logger.info('use: GCC')
             lang_ids = list(filter(lambda lang_id: parse_cplusplus_compiler(language_dict[lang_id]) in ('gcc', None), lang_ids))
         elif cxx_compiler == 'clang':
-            logger.status('use: Clang')
+            logger.info('use: Clang')
             lang_ids = list(filter(lambda lang_id: parse_cplusplus_compiler(language_dict[lang_id]) in ('clang', None), lang_ids))
         else:
             assert cxx_compiler == 'all'
@@ -140,7 +141,7 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
     # interpreter
     lang_ids = list(filter(lambda lang_id: is_python_description(language_dict[lang_id]), lang_ids))
     if any([parse_python_interpreter(language_dict[lang_id]) == 'pypy' for lang_id in lang_ids]):
-        logger.status('PyPy is available for Python interpreter')
+        logger.info('PyPy is available for Python interpreter')
     if python_interpreter != 'all':
         lang_ids = list(filter(lambda lang_id: parse_python_interpreter(language_dict[lang_id]) == python_interpreter, lang_ids))
 
@@ -155,7 +156,7 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
         if version == 2:
             two_found = True
     if two_found and three_found:
-        logger.status('both Python2 and Python3 are available for version of Python')
+        logger.info('both Python2 and Python3 are available for version of Python')
         if python_version in ('2', '3'):
             versions = [int(python_version)]  # type: List[Optional[int]]
         elif python_version == 'all':
@@ -172,9 +173,9 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
                 if re.search(r'python *(version:? *)?%d'.encode() % version, s.lower()):
                     versions += [version]
             if not versions:
-                logger.status('no version info in code')
+                logger.info('no version info in code')
                 versions = [3]
-        logger.status('use: %s', ', '.join(map(str, versions)))
+        logger.info('use: %s', ', '.join(map(str, versions)))
         lang_ids = list(filter(lambda lang_id: parse_python_version(language_dict[lang_id]) in versions + [None], lang_ids))
 
     lang_ids = sorted(set(lang_ids))
@@ -248,7 +249,7 @@ def guess_language_ids_of_file(filename: pathlib.Path, code: bytes, language_dic
         for data in other_languages_table:
             if ext in data['exts']:
                 for name in data['names']:
-                    lang_ids += select_ids_of_matched_languages([name], list(language_dict.keys()), language_dict=language_dict, split=data.get('split', False))
+                    lang_ids += select_ids_of_matched_languages(name, list(language_dict.keys()), language_dict=language_dict, split=data.get('split', False))
         return sorted(set(lang_ids))
 
 
