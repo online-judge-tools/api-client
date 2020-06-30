@@ -27,7 +27,7 @@ class YukicoderService(onlinejudge.type.Service):
     def is_logged_in(self, *, session: Optional[requests.Session] = None) -> bool:
         session = session or utils.get_default_session()
         url = 'https://yukicoder.me'
-        resp = utils.request('GET', url, session=session, allow_redirects=False)
+        resp = utils.request('GET', url, session=session)
         assert resp.status_code == 200
         return 'login-btn' not in str(resp.content)
 
