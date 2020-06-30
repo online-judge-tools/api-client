@@ -29,7 +29,7 @@ class YukicoderService(onlinejudge.type.Service):
         url = 'https://yukicoder.me'
         resp = utils.request('GET', url, session=session, allow_redirects=False)
         assert resp.status_code == 200
-        return 'login-btn' in str(resp.content)
+        return 'login-btn' not in str(resp.content)
 
     def get_url(self) -> str:
         return 'https://yukicoder.me/'
