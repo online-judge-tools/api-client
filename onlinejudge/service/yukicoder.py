@@ -26,10 +26,10 @@ class YukicoderService(onlinejudge.type.Service):
 
     def is_logged_in(self, *, session: Optional[requests.Session] = None) -> bool:
         session = session or utils.get_default_session()
-        url = 'https://yukicoder.me/auth/github'
+        url = 'https://yukicoder.me'
         resp = utils.request('GET', url, session=session, allow_redirects=False)
-        assert resp.status_code == 302
-        return 'oauth' not in resp.headers['Location']
+        assert resp.status_code == 200
+        return 'login-btn' in str(resp.content)
 
     def get_url(self) -> str:
         return 'https://yukicoder.me/'
