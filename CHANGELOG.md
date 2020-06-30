@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.2.1 / 2020-06-30
+
+-   [#71](https://github.com/online-judge-tools/api-client/pull/71) fix the login feature for yukicoder ([@beet-aizu](https://github.com/beet-aizu))
+
 ## 10.2.0 / 2020-06-30
 
 -   [#63](https://github.com/online-judge-tools/api-client/pull/63) add `guess-language-id` subcommand as a utility
