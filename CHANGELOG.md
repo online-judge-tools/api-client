@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.2.2 / 2020-07-14
+
+-   [#74](https://github.com/online-judge-tools/api-client/pull/74) disable the login feature for Codeforces
+-   [#58](https://github.com/online-judge-tools/api-client/pull/58) [breaking changes] remove deprecated APIs for yukicoder
+
 ## 10.2.1 / 2020-06-30
 
 -   [#71](https://github.com/online-judge-tools/api-client/pull/71) fix the login feature for yukicoder ([@beet-aizu](https://github.com/beet-aizu))
