@@ -27,32 +27,10 @@ _CODEFORCES_DOMAINS = ('codeforces.com', 'm1.codeforces.com', 'm2.codeforces.com
 class CodeforcesService(onlinejudge.type.Service):
     def login(self, *, get_credentials: onlinejudge.type.CredentialsProvider, session: Optional[requests.Session] = None) -> None:
         """
-        :raises LoginError:
+        :raises NotImplementedError:
         """
-        session = session or utils.get_default_session()
-        url = 'https://codeforces.com/enter'
-        # get
-        resp = utils.request('GET', url, session=session)
-        if resp.url != url:  # redirected
-            log.info('You have already signed in.')
-            return
-        # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
-        form = soup.find('form', id='enterForm')
-        log.debug('form: %s', str(form))
-        username, password = get_credentials()
-        form = utils.FormSender(form, url=resp.url)
-        form.set('handleOrEmail', username)
-        form.set('password', password)
-        form.set('remember', 'on')
-        # post
-        resp = form.request(session)
-        resp.raise_for_status()
-        if resp.url != url:  # redirected
-            log.success('Welcome, %s.', username)
-        else:
-            log.failure('Invalid handle or password.')
-            raise LoginError('Invalid handle or password.')
+
+        raise NotImplementedError("The feature to login Codeforces via terminal doesn't work now by an issue https://github.com/online-judge-tools/api-client/issues/73. Please use `oj` command (https://github.com/online-judge-tools/oj) with Selenium as `$ oj login --use-browser=always https://codeforces.com/` instead.")
 
     def get_url_of_login_page(self) -> str:
         return 'https://codeforces.com/enter'

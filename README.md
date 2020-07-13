@@ -23,23 +23,25 @@ $ pip3 install online-judge-api-client
 
 | website                                                                        | get sample cases   | get system cases   | get metadata       | get contest data   | login service      | submit code        |
 |--------------------------------------------------------------------------------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|
-| [Aizu Online Judge](https://onlinejudge.u-aizu.ac.jp/home)                     | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :white_check_mark: |                    |
-| [Anarchy Golf](http://golf.shinh.org/)                                         | :heavy_check_mark: | :white_check_mark: |                    |                    | :white_check_mark: |                    |
+| [Aizu Online Judge](https://onlinejudge.u-aizu.ac.jp/home)                     | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: |                    |
+| [Anarchy Golf](http://golf.shinh.org/)                                         | :heavy_check_mark: | :grey_question: (same to samples) |                    |                    | :grey_question: |                    |
 | [AtCoder](https://atcoder.jp/)                                                 | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| [CodeChef](https://www.codechef.com/)                                          | :x: [issue](https://github.com/online-judge-tools/api-client/issues/49) |                    |                    |                    | :white_check_mark: |                    |
-| [Codeforces](https://codeforces.com/)                                          | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| [CS Academy](https://csacademy.com/)                                           | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| [Facebook Hacker Cup](https://www.facebook.com/hackercup/)                     | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| [Google Code Jam](https://codingcompetitions.withgoogle.com/codejam)           | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| [Google Kick Start](https://codingcompetitions.withgoogle.com/kickstart)       | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| [HackerRank](https://www.hackerrank.com/)                                      | :white_check_mark: | :heavy_check_mark: |                    |                    | :white_check_mark: | :heavy_check_mark: |
-| [Kattis](https://open.kattis.com/)                                             | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| [Library Checker](https://judge.yosupo.jp/)                                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :white_check_mark: |                    |
-| [PKU JudgeOnline](http://poj.org/)                                             | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| [Sphere Online Judge](https://www.spoj.com/)                                   | :heavy_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| [Topcoder](https://arena.topcoder.com/)                                        | :white_check_mark: |                    | :white_check_mark: |                    | :white_check_mark: |                    |
-| [Toph](https://toph.co/)                                                       | :heavy_check_mark: |                    |                    |                    | :white_check_mark: | :heavy_check_mark: |
-| [yukicoder](https://yukicoder.me/)                                             | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :white_check_mark: | :heavy_check_mark: |
+| [CodeChef](https://www.codechef.com/)                                          | :x: [issue](https://github.com/online-judge-tools/api-client/issues/49) |                    |                    |                    | :grey_question: |                    |
+| [Codeforces](https://codeforces.com/)                                          | :grey_question: (login required) [issue](https://github.com/online-judge-tools/api-client/issues/73)  |                    | :heavy_check_mark: | :heavy_check_mark: | :grey_question: [issue](https://github.com/online-judge-tools/api-client/issues/73) | :heavy_check_mark: |
+| [CS Academy](https://csacademy.com/)                                           | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [Facebook Hacker Cup](https://www.facebook.com/hackercup/)                     | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [Google Code Jam](https://codingcompetitions.withgoogle.com/codejam)           | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [Google Kick Start](https://codingcompetitions.withgoogle.com/kickstart)       | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [HackerRank](https://www.hackerrank.com/)                                      | :grey_question: (use system cases instead) | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
+| [Kattis](https://open.kattis.com/)                                             | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [Library Checker](https://judge.yosupo.jp/)                                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: |                    |
+| [PKU JudgeOnline](http://poj.org/)                                             | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [Sphere Online Judge](https://www.spoj.com/)                                   | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [Topcoder](https://arena.topcoder.com/)                                        | :heavy_check_mark: (archived problems only) |                    | :grey_question: |                    | :grey_question: |                    |
+| [Toph](https://toph.co/)                                                       | :heavy_check_mark: |                    |                    |                    | :grey_question: | :heavy_check_mark: |
+| [yukicoder](https://yukicoder.me/)                                             | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
+
+Instead of `login-service`, you can use [`oj` command](https://github.com/online-judge-tools/oj) with Selenium as `oj login https://...`. This can login almost all services.
 
 
 ## Supported subcommands of `oj-api` command
