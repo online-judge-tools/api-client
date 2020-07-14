@@ -115,7 +115,7 @@ class CodeforcesService(onlinejudge.type.Service):
 
         return plaintext
 
-    _rcpc_token: Optional[str] = None
+    _rcpc_token = None  # type: Optional[str]
 
     @classmethod
     def _update_rcpc_token(cls, *, session: requests.Session) -> None:
