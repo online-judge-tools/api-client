@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.2.3 / 2020-07-13
+
+-   [#78](https://github.com/online-judge-tools/api-client/pull/78) fix the issue of Codeforces partially
+
 ## 10.2.2 / 2020-07-14
 
 -   [#74](https://github.com/online-judge-tools/api-client/pull/74) disable the login feature for Codeforces
