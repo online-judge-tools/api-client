@@ -326,20 +326,29 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
             }
 
     elif isinstance(problem, CodeforcesProblem) and problem.kind != 'problemset':
-        data = problem.download_data(session=session)
-        contest_data = problem.get_contest().download_data(session=session)
-        result["name"] = data.name
+        try:
+            data = problem.download_data(session=session)
+        except Exception as e:
+            logger.exception(e)
+        try:
+            contest_data = problem.get_contest().download_data(session=session)
+        except Exception as e:
+            logger.exception(e)
         result["context"] = {
             "contest": {
-                "name": contest_data.name,
                 "url": problem.get_contest().get_url(),
             },
             "alphabet": problem.index,
         }
+        if data is not None:
+            result["name"] = data.name
+        if contest_data is not None:
+            result["context"]["contest"]["name"] = contest_data.name
         if is_full:
-            result["raw"] = {
-                "json": data.json.decode(),
-            }
+            if data is not None and data.json is not None:
+                result["raw"] = {
+                    "json": data.json.decode(),
+                }
 
     elif isinstance(problem, TopcoderProblem):
         definition = problem._download_data(session=session).definition

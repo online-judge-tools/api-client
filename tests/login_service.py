@@ -72,7 +72,7 @@ class LoginServiceCodeforcesTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_login_failure(self) -> None:
-        url = 'https://codeforces.jp/'
+        url = 'https://codeforces.com/'
         expected = {"status": "error", "messages": ["AssertionError"], "result": None}
 
         with update_environ(USERNAME='online-judge-tools', PASSWORD='password'):

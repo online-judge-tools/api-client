@@ -3,7 +3,6 @@ import unittest
 from onlinejudge_api.main import main
 
 
-@unittest.skip('login is required now by https://github.com/online-judge-tools/api-client/issues/73')
 class GetProblemCodeforcesTest(unittest.TestCase):
     def test_problemset_700_b(self):
         """This tests a problem in the problemset.
