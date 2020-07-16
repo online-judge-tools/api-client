@@ -72,7 +72,7 @@ class LoginServiceCodeforcesTest(unittest.TestCase):
 
     def test_login_failure(self) -> None:
         url = 'https://codeforces.com/'
-        expected = {"status": "error", "messages": ["AssertionError"], "result": None}
+        expected = {'status': 'error', 'messages': ['onlinejudge.type.LoginError: Invalid handle or password.'], 'result': None}
 
         with update_environ(USERNAME='online-judge-tools', PASSWORD='password'):
             with temporary_cookie() as cookie_path:
