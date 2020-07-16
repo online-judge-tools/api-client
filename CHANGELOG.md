@@ -1,6 +1,6 @@
 # Change Log
 
-## 10.2.3 / 2020-07-13
+## 10.2.3 / 2020-07-15
 
 -   [#78](https://github.com/online-judge-tools/api-client/pull/78) fix the issue of Codeforces partially
 
