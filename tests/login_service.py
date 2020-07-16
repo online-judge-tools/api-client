@@ -55,7 +55,6 @@ class LoginServiceAtCoderTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
 
-@unittest.skip('https://github.com/online-judge-tools/api-client/issues/73')
 class LoginServiceCodeforcesTest(unittest.TestCase):
     """This tests the feature to logging in to Codeforces
 
