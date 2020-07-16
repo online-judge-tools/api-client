@@ -13,8 +13,6 @@ import urllib.parse
 from typing import *
 
 import bs4
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 import onlinejudge._implementation.logging as log
 import onlinejudge._implementation.testcase_zipper
@@ -29,17 +27,38 @@ _CODEFORCES_DOMAINS = ('codeforces.com', 'm1.codeforces.com', 'm2.codeforces.com
 class CodeforcesService(onlinejudge.type.Service):
     def login(self, *, get_credentials: onlinejudge.type.CredentialsProvider, session: Optional[requests.Session] = None) -> None:
         """
-        :raises NotImplementedError:
+        :raises LoginError:
         """
-
-        raise NotImplementedError("The feature to login Codeforces via terminal doesn't work now by an issue https://github.com/online-judge-tools/api-client/issues/73. Please use `oj` command (https://github.com/online-judge-tools/oj) with Selenium as `$ oj login --use-browser=always https://codeforces.com/` instead.")
+        session = session or utils.get_default_session()
+        url = 'https://codeforces.com/enter'
+        # get
+        resp = utils.request('GET', url, session=session)
+        if resp.url != url:  # redirected
+            log.info('You have already signed in.')
+            return
+        # parse
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        form = soup.find('form', id='enterForm')
+        log.debug('form: %s', str(form))
+        username, password = get_credentials()
+        form = utils.FormSender(form, url=resp.url)
+        form.set('handleOrEmail', username)
+        form.set('password', password)
+        form.set('remember', 'on')
+        # post
+        resp = form.request(session)
+        resp.raise_for_status()
+        if resp.url != url:  # redirected
+            log.success('Welcome, %s.', username)
+        else:
+            log.failure('Invalid handle or password.')
+            raise LoginError('Invalid handle or password.')
 
     def get_url_of_login_page(self) -> str:
         return 'https://codeforces.com/enter'
 
     def is_logged_in(self, *, session: Optional[requests.Session] = None) -> bool:
         session = session or utils.get_default_session()
-        CodeforcesService._update_rcpc_token(session=session)
         url = 'https://codeforces.com/enter'
         resp = utils.request('GET', url, session=session, allow_redirects=False)
         return resp.status_code == 302
@@ -62,7 +81,6 @@ class CodeforcesService(onlinejudge.type.Service):
 
     def iterate_contest_data(self, *, is_gym: bool = False, session: Optional[requests.Session] = None) -> Iterator['CodeforcesContestData']:
         session = session or utils.get_default_session()
-        CodeforcesService._update_rcpc_token(session=session)
         url = 'https://codeforces.com/api/contest.list?gym={}'.format('true' if is_gym else 'false')
         resp = utils.request('GET', url, session=session)
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
@@ -74,65 +92,6 @@ class CodeforcesService(onlinejudge.type.Service):
     def iterate_contests(self, *, is_gym: bool = False, session: Optional[requests.Session] = None) -> Iterator['CodeforcesContest']:
         for data in self.iterate_contest_data(is_gym=is_gym, session=session):
             yield data.contest
-
-    @classmethod
-    def _get_rcpc_token(cls, *, session: Optional[requests.Session] = None) -> Optional[str]:
-        """_get_rcpc_token computes the value of RCPC token.
-
-        see https://github.com/online-judge-tools/api-client/issues/73
-        """
-
-        session = session or utils.get_default_session()
-
-        # get
-        url = 'https://codeforces.com/enter'
-        resp = utils.request('GET', url, session=session)
-        content = resp.content.decode(resp.encoding)
-
-        # parse
-        if 'Redirecting... Please, wait.' not in content:
-            return None
-        m = re.search(r'a=toNumbers\("([0-9a-f]{32})"\)', content)
-        if m is None:
-            return None
-        a = m.group(1)
-        m = re.search(r'b=toNumbers\("([0-9a-f]{32})"\)', content)
-        if m is None:
-            return None
-        b = m.group(1)
-        m = re.search(r'c=toNumbers\("([0-9a-f]{32})"\)', content)
-        if m is None:
-            return None
-        c = m.group(1)
-
-        # compute the token
-        key = bytes.fromhex(a)
-        iv = bytes.fromhex(b)
-        ciphertext = bytes.fromhex(c)
-        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
-        decryptor = cipher.decryptor()
-        plaintext = (decryptor.update(ciphertext) + decryptor.finalize()).hex()
-
-        return plaintext
-
-    _rcpc_token = None  # type: Optional[str]
-
-    @classmethod
-    def _update_rcpc_token(cls, *, session: requests.Session) -> None:
-        """_update_rcpc_token sets the RCPC token to a given session.
-
-        This function caches the value of RCPC token to reduce the network access to the Codeforces server.
-        """
-
-        if cls._rcpc_token is None:
-            token = cls._get_rcpc_token(session=session)
-            if token is None:
-                log.debug('failed to get RCPC token')
-                return
-            log.debug('RCPC=%s', token)
-            cls._rcpc_token = token
-        cookie = requests.cookies.create_cookie(domain='codeforces.com', name='RCPC', value=cls._rcpc_token)
-        session.cookies.set_cookie(cookie)
 
 
 class CodeforcesContestData(ContestData):
@@ -243,7 +202,6 @@ class CodeforcesContest(onlinejudge.type.Contest):
 
     def list_problem_data(self, *, session: Optional[requests.Session] = None) -> List['CodeforcesProblemData']:
         session = session or utils.get_default_session()
-        CodeforcesService._update_rcpc_token(session=session)
         url = 'https://codeforces.com/api/contest.standings?contestId={}&from=1&count=1'.format(self.contest_id)
         resp = utils.request('GET', url, session=session)
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
@@ -256,7 +214,6 @@ class CodeforcesContest(onlinejudge.type.Contest):
 
     def download_data(self, *, session: Optional[requests.Session] = None) -> CodeforcesContestData:
         session = session or utils.get_default_session()
-        CodeforcesService._update_rcpc_token(session=session)
         url = 'https://codeforces.com/api/contest.standings?contestId={}&from=1&count=1'.format(self.contest_id)
         resp = utils.request('GET', url, session=session)
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
@@ -355,7 +312,6 @@ class CodeforcesProblem(onlinejudge.type.Problem):
 
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[onlinejudge.type.TestCase]:
         session = session or utils.get_default_session()
-        CodeforcesService._update_rcpc_token(session=session)
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
@@ -379,7 +335,6 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         """
 
         session = session or utils.get_default_session()
-        CodeforcesService._update_rcpc_token(session=session)
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
@@ -399,7 +354,6 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         """
 
         session = session or utils.get_default_session()
-        CodeforcesService._update_rcpc_token(session=session)
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
