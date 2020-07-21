@@ -68,10 +68,10 @@ class GoogleCodeJamProblemTest(unittest.TestCase):
             """).encode()
         self.assertEqual(problem.download_sample_cases(), [
             TestCase(
-                'sample',
-                'Input',
+                'sample-1',
+                'Input 1',
                 sample_input,
-                'Output',
+                'Output 1',
                 sample_output,
             ),
         ])
@@ -94,11 +94,62 @@ class GoogleCodeJamProblemTest(unittest.TestCase):
             """).encode()
         self.assertEqual(problem.download_sample_cases(), [
             TestCase(
-                'sample',
-                'Input',
+                'sample-1',
+                'Input 1',
                 sample_input,
-                'Output',
+                'Output 1',
                 sample_output,
+            ),
+        ])
+
+    def test_download_multiple_samples(self):
+        problem = GoogleCodeJamProblem.from_url('https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ffc7/00000000001d3ff3')
+        sample_input1 = textwrap.dedent("""\
+            2
+            2 2
+            KICK
+            START
+            8 2
+            G
+            G
+            GO
+            GO
+            GOO
+            GOO
+            GOOO
+            GOOO
+            """).encode()
+        sample_output1 = textwrap.dedent("""\
+            Case #1: 0
+            Case #2: 10
+            """).encode()
+        sample_input2 = textwrap.dedent("""\
+            1
+            6 3
+            RAINBOW
+            FIREBALL
+            RANK
+            RANDOM
+            FIREWALL
+            FIREFIGHTER
+            """).encode()
+        sample_output2 = textwrap.dedent("""\
+            Case #1: 6
+            """).encode()
+        self.assertEqual(problem.download_sample_cases(), [
+            TestCase(
+                'sample-1',
+                'Input 1',
+                sample_input1,
+                'Output 1',
+                sample_output1,
+            ),
+            TestCase(
+                'sample-2',
+                'Input 2',
+                sample_input2,
+                'Output 2',
+                sample_output2,
             ),
         ])
 
@@ -120,10 +171,10 @@ class GoogleCodeJamProblemTest(unittest.TestCase):
             """).encode()
         self.assertEqual(problem.download_sample_cases(), [
             TestCase(
-                'sample',
-                'Input',
+                'sample-1',
+                'Input 1',
                 sample_input,
-                'Output',
+                'Output 1',
                 sample_output,
             ),
         ])
