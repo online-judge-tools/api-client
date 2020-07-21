@@ -9,6 +9,7 @@ import json
 import re
 import string
 import urllib.parse
+from itertools import islice
 from typing import *
 
 import bs4
@@ -92,20 +93,28 @@ class GoogleCodeJamProblem(onlinejudge.type.Problem):
         # parse HTML
         soup = bs4.BeautifulSoup(statement, utils.html_parser)
         io_contents = soup.find_all('pre', class_='io-content')
-        if len(io_contents) != 2:
-            raise SampleParseError("""the number of <pre class="io-content"> is not two""")
-        if io_contents[0].text.startswith('Case #'):
-            log.warning('''the sample input starts with "Case #"''')
-        if not io_contents[1].text.startswith('Case #'):
-            log.warning('''the sample output doesn't start with "Case #"''')
-        sample = TestCase(
-            'sample',
-            'Input',
-            utils.textfile(io_contents[0].text.rstrip()).encode(),
-            'Output',
-            utils.textfile(io_contents[1].text.rstrip()).encode(),
-        )
-        return [sample]
+        if len(io_contents) % 2 != 0:
+            raise SampleParseError("""the number of <pre class="io-content"> is not multiple of two""")
+
+        input_contents = islice(io_contents, 0, None, 2)
+        output_contents = islice(io_contents, 1, None, 2)
+
+        samples = []
+
+        for index, (input_content, output_content) in enumerate(zip(input_contents, output_contents)):
+            if input_content.text.startswith('Case #'):
+                log.warning('''the sample input starts with "Case #"''')
+            if not output_content.text.startswith('Case #'):
+                log.warning('''the sample output doesn't start with "Case #"''')
+            samples.append(TestCase(
+                'sample-{}'.format(index + 1),
+                'Input {}'.format(index + 1),
+                utils.textfile(input_content.text.rstrip()).encode(),
+                'Output {}'.format(index + 1),
+                utils.textfile(output_content.text.rstrip()).encode(),
+            ))
+
+        return samples
 
     def get_url(self) -> str:
         if self.domain == 'codingcompetitions.withgoogle.com':
