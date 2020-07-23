@@ -2,11 +2,11 @@
 
 ## 10.2.4 / 2020-07-16
 
--   [#80](https://github.com/online-judge-tools/api-client/pull/80) revert the patch for RCPC token of Codeforces
+-   [#80](https://github.com/online-judge-tools/api-client/pull/80) revert the patch for RCPC tokens of Codeforces
 
 ## 10.2.3 / 2020-07-15
 
--   [#78](https://github.com/online-judge-tools/api-client/pull/78) fix the issue of Codeforces partially
+-   [#78](https://github.com/online-judge-tools/api-client/pull/78) fix the issue of Codeforces partially using RCPC tokens (helped by [@9kin](https://github.com/9kin))
 
 ## 10.2.2 / 2020-07-14
 
