@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.2.5 / 2020-07-24
+
+-   [#82](https://github.com/online-judge-tools/api-client/pull/82) fix the bug that happens when GCJ has multiple samples ([@queragion2726](https://github.com/queragion2726))
+
 ## 10.2.4 / 2020-07-16
 
 -   [#80](https://github.com/online-judge-tools/api-client/pull/80) revert the patch for RCPC tokens of Codeforces
