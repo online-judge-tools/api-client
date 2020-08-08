@@ -16,6 +16,7 @@ class FacebookHackerCupProblemTest(unittest.TestCase):
     def test_from_url(self):
         self.assertEqual(FacebookHackerCupProblem.from_url('https://www.facebook.com/hackercup/problem/448364075989193/').problem_id, 448364075989193)
 
+    @unittest.skip('The old platform of Facebook Hacker Cup has been replaced.')
     def test_download_samples(self):
         problem = FacebookHackerCupProblem.from_url('https://www.facebook.com/hackercup/problem/2390352741015547/')
         sample_input = (inspect.cleandoc("""
