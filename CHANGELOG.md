@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.2.6 / 2020-08-08
+
+-   [#86](https://github.com/online-judge-tools/api-client/issues/86) fix the breakage of the parser of AtCoder
+-   [#84](https://github.com/online-judge-tools/api-client/issues/84) remove the feature for Facebook Hacker Cup
+
 ## 10.2.5 / 2020-07-24
 
 -   [#82](https://github.com/online-judge-tools/api-client/pull/82) fix the bug that happens when GCJ has multiple samples ([@queragion2726](https://github.com/queragion2726))
