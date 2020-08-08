@@ -42,18 +42,7 @@ class FacebookHackerCupProblem(onlinejudge.type.Problem):
         self.problem_id = problem_id
 
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[TestCase]:
-        session = session or utils.get_default_session()
-        url_format = 'https://www.facebook.com/hackercup/example/?problem_id={}&type={}'
-        resp_in = utils.request('GET', url_format.format(self.problem_id, 'input'), session=session)
-        resp_out = utils.request('GET', url_format.format(self.problem_id, 'output'), session=session)
-        sample = TestCase(
-            'sample',
-            utils.remove_prefix(resp_in.headers['Content-Disposition'], 'attachment;filename='),
-            resp_in.content,
-            utils.remove_prefix(resp_out.headers['Content-Disposition'], 'attachment;filename='),
-            resp_out.content,
-        )
-        return [sample]
+        raise NotImplementedError('The old platform of Facebook Hacker Cup has been replaced. See https://github.com/online-judge-tools/api-client/issues/84')
 
     def get_url(self) -> str:
         return 'https://www.facebook.com/hackercup/problem/{}/'.format(self.problem_id)
