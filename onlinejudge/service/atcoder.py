@@ -558,7 +558,7 @@ class AtCoderProblemData(ProblemData):
         soup = bs4.BeautifulSoup(html, utils.html_parser)
         h2 = soup.find('span', class_='h2')
 
-        alphabet, _, name = h2.text.partition(' - ')
+        alphabet, _, name = utils.get_direct_children_text(h2).strip().partition(' - ')
 
         time_limit, memory_limit = h2.find_next_sibling('p').text.strip().split(' / ')
         for time_limit_prefix in ('実行時間制限: ', 'Time Limit: '):

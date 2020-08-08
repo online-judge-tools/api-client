@@ -32,6 +32,24 @@ def next_sibling_tag(tag: bs4.Tag) -> bs4.Tag:
     return tag
 
 
+def get_direct_children_text(tag: bs4.Tag) -> str:
+    """get_direct_children_text collects the text which are direct children of the given tag.
+
+    For example, this returns "A - Hello world " for a tag `<h2>A - Hello world <a href="...">Editorial</a></h2>`.
+    """
+
+    assert isinstance(tag, bs4.Tag)
+    text = ''
+    for child in tag.children:
+        if isinstance(child, bs4.NavigableString):
+            text += child.string
+        elif isinstance(child, bs4.Tag) and child.name == 'br':
+            text += '\n'
+        else:
+            pass
+    return text
+
+
 # TODO: Why this returns bs4.NavigableString?
 def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> bs4.NavigableString:
     """parse_content convert a tag to a string with interpretting `<br>` and ignoring other tags.
