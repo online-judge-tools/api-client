@@ -1,7 +1,7 @@
 # Online Judge API Client
 
 [![test](https://github.com/kmyk/online-judge-api-client/workflows/test/badge.svg)](https://github.com/kmyk/online-judge-api-client/actions)
-[![Documentation Status](https://readthedocs.org/projects/online-judge-api-client/badge/?version=master)](https://online-judge-api-client.readthedocs.io/en/master/)
+[![Documentation Status](https://readthedocs.org/projects/online-judge-tools/badge/?version=master)](https://online-judge-tools.readthedocs.io/en/master/)
 [![PyPI](https://img.shields.io/pypi/v/online-judge-api-client.svg)](https://pypi.python.org/pypi/online-judge-api-client)
 [![PyPI](https://img.shields.io/pypi/l/online-judge-api-client.svg)](https://github.com/kmyk/online-judge-api-client/blob/master/LICENSE)
 
@@ -23,21 +23,21 @@ $ pip3 install online-judge-api-client
 
 | website                                                                        | get sample cases   | get system cases   | get metadata       | get contest data   | login service      | submit code        |
 |--------------------------------------------------------------------------------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|
-| [Aizu Online Judge](https://onlinejudge.u-aizu.ac.jp/home)                     | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: |                    |
-| [Anarchy Golf](http://golf.shinh.org/)                                         | :heavy_check_mark: | :grey_question: (same to samples) |                    |                    | :grey_question: |                    |
+| [Aizu Online Judge](https://onlinejudge.u-aizu.ac.jp/home)                     | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |                    |
+| [Anarchy Golf](http://golf.shinh.org/)                                         | :heavy_check_mark: | :grey_question: (same to samples) |                    |                    |                    |                    |
 | [AtCoder](https://atcoder.jp/)                                                 | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| [CodeChef](https://www.codechef.com/)                                          | :x: [issue](https://github.com/online-judge-tools/api-client/issues/49) |                    |                    |                    | :grey_question: |                    |
+| [CodeChef](https://www.codechef.com/)                                          | :x: [issue](https://github.com/online-judge-tools/api-client/issues/49) |                    |                    |                    |                    |                    |
 | [Codeforces](https://codeforces.com/)                                          | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| [CS Academy](https://csacademy.com/)                                           | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
-| [Facebook Hacker Cup](https://www.facebook.com/hackercup/)                     | :x: [issue](https://github.com/online-judge-tools/api-client/issues/84) |                    |                    |                    | :grey_question: |                    |
-| [Google Code Jam](https://codingcompetitions.withgoogle.com/codejam)           | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
-| [Google Kick Start](https://codingcompetitions.withgoogle.com/kickstart)       | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
+| [CS Academy](https://csacademy.com/)                                           | :heavy_check_mark: |                    |                    |                    |                    |                    |
+| [Facebook Hacker Cup](https://www.facebook.com/hackercup/)                     | :x: [issue](https://github.com/online-judge-tools/api-client/issues/84) |                    |                    |                    |                    |                    |
+| [Google Code Jam](https://codingcompetitions.withgoogle.com/codejam)           | :heavy_check_mark: |                    |                    |                    |                    |                    |
+| [Google Kick Start](https://codingcompetitions.withgoogle.com/kickstart)       | :heavy_check_mark: |                    |                    |                    |                    |                    |
 | [HackerRank](https://www.hackerrank.com/)                                      | :grey_question: (use system cases instead) | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
-| [Kattis](https://open.kattis.com/)                                             | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
-| [Library Checker](https://judge.yosupo.jp/)                                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: |                    |
-| [PKU JudgeOnline](http://poj.org/)                                             | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
-| [Sphere Online Judge](https://www.spoj.com/)                                   | :heavy_check_mark: |                    |                    |                    | :grey_question: |                    |
-| [Topcoder](https://arena.topcoder.com/)                                        | :heavy_check_mark: (archived problems only) |                    | :grey_question: |                    | :grey_question: |                    |
+| [Kattis](https://open.kattis.com/)                                             | :heavy_check_mark: |                    |                    |                    |                    |                    |
+| [Library Checker](https://judge.yosupo.jp/)                                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |                    |
+| [PKU JudgeOnline](http://poj.org/)                                             | :heavy_check_mark: |                    |                    |                    |                    |                    |
+| [Sphere Online Judge](https://www.spoj.com/)                                   | :heavy_check_mark: |                    |                    |                    |                    |                    |
+| [Topcoder](https://arena.topcoder.com/)                                        | :heavy_check_mark: (archived problems only) |                    | :grey_question: |                    |                    |                    |
 | [Toph](https://toph.co/)                                                       | :heavy_check_mark: |                    |                    |                    | :grey_question: | :heavy_check_mark: |
 | [yukicoder](https://yukicoder.me/)                                             | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
 
@@ -375,3 +375,21 @@ $ USERNAME=chokudai PASSWORD=hoge oj-api login-service https://atcoder.jp/ | jq 
   "result": null
 }
 ```
+
+
+## Tips
+
+For end-users:
+
+-   Please use the [`oj` command](https://github.com/online-judge-tools/oj) instead of this `oj-api` command.
+    -   The `oj-api` command is intended to be used as a backend of other tools. It's not a frontend.
+
+For developpers:
+
+-   Please be polite to online judge servers.
+    -   We are accessing the web pages using the unintended way, i.e. without GUI browsers. We should not forget that this is basically not welcomed.
+-   Please be aware that this package uses [Semantic Versioning](https://semver.org/).
+    -   The "public API" of this package is the documented features of `oj-api` command and the [documented modules](https://online-judge-tools.readthedocs.io/en/master/) of `onlinejudge` module.
+-   You can also use the `oj login` command to login servers with GUI browsers.
+    -   The implementation around authentication is very complicated and fragile. For example, Codeforces has four methods to login: password, Gmail, Facebook, and ICPC. So we need to use GUI browsers for the development cost and stability.
+    -   This feature of `oj login` might be imported to `oj-api` command in the future.
