@@ -42,7 +42,7 @@ from onlinejudge.__about__ import __package_name__, __version__
 from onlinejudge.service.yukicoder import YukicoderProblem, YukicoderService
 from onlinejudge.type import *
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 def get_parser() -> argparse.ArgumentParser:
@@ -210,10 +210,11 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
     parser = get_parser()
     parsed = parser.parse_args(args=args)
 
+    # configure logging
+    level = INFO
     if parsed.verbose:
-        basicConfig(level=DEBUG)
-    else:
-        basicConfig(level=INFO)
+        level = DEBUG
+    basicConfig(level=level)
 
     # print the version to help to support users
     logger.info('%s %s', __package_name__, __version__)

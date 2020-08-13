@@ -5,7 +5,7 @@ from typing import *
 
 from onlinejudge.type import Language, LanguageId
 
-logger = getLogger()
+logger = getLogger(__name__)
 
 
 def select_ids_of_matched_languages(word: str, lang_ids: List[str], language_dict: Dict[str, str], split: bool = False, remove: bool = False) -> List[str]:
