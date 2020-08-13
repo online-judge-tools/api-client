@@ -16,10 +16,6 @@ logger = getLogger(__name__)
 html_parser = 'lxml'
 
 
-def describe_status_code(status_code: int) -> str:
-    return '{} {}'.format(status_code, http.client.responses[status_code])
-
-
 def previous_sibling_tag(tag: bs4.Tag) -> bs4.Tag:
     tag = tag.previous_sibling
     while tag and not isinstance(tag, bs4.Tag):
@@ -140,15 +136,20 @@ def normpath(path: str) -> str:
 
 
 def request(method: str, url: str, session: requests.Session, raise_for_status: bool = True, **kwargs) -> requests.Response:
+    """`request()` is a wrapper of the `requests` package with logging.
+
+    There is a way to bring logs from `requests` via `urllib3`, but we don't use it, because it's not very intended feature ant not very customizable. See https://2.python-requests.org/en/master/api/#api-changes
+    """
+
     assert method in ['GET', 'POST']
     kwargs.setdefault('allow_redirects', True)
-    logger.info('%s: %s', method, url)
+    logger.info('network: %s: %s', method, url)
     if 'data' in kwargs:
-        logger.debug('data: %s', repr(kwargs['data']))
+        logger.debug('network: data: %s', repr(kwargs['data']))  # TODO: prepare a nice filter. This may contain credentials.
     resp = session.request(method, url, **kwargs)
     if resp.url != url:
-        logger.info('redirected: %s', resp.url)
-    logger.info(describe_status_code(resp.status_code))
+        logger.info('network: redirected to: %s', resp.url)
+    logger.info('network: %s %s', resp.status_code, http.client.responses[resp.status_code])  # e.g. "200 OK" or "503 Service Unavailable"
     if raise_for_status:
         resp.raise_for_status()
     return resp
