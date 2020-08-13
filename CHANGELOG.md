@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.3.0 / 2020-08-13
+
+-   [#61](https://github.com/online-judge-tools/api-client/issues/61) [#68](https://github.com/online-judge-tools/api-client/pull/68) improve the logging for clients of this library
+
 ## 10.2.6 / 2020-08-08
 
 -   [#86](https://github.com/online-judge-tools/api-client/issues/86) fix the breakage of the parser of AtCoder
