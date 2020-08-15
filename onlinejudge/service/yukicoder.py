@@ -151,7 +151,7 @@ class YukicoderService(onlinejudge.type.Service):
         if cls._problems is None:
             url = 'https://yukicoder.me/api/v1/problems'
             resp = utils.request('GET', url, session=session)
-            cls._problems = json.loads(resp.content)
+            cls._problems = json.loads(resp.content.decode())
         return cls._problems
 
     _contests = None  # type: Optional[List[Dict[str, Any]]]
@@ -166,7 +166,7 @@ class YukicoderService(onlinejudge.type.Service):
             cls._contests = []
             for url in ('https://yukicoder.me/api/v1/contest/past', 'https://yukicoder.me/api/v1/contest/future'):
                 resp = utils.request('GET', url, session=session)
-                cls._contests.extend(json.loads(resp.content))
+                cls._contests.extend(json.loads(resp.content.decode()))
         return cls._contests
 
 
