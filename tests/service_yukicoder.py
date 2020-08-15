@@ -3,7 +3,7 @@ import unittest
 
 from tests.implementation_utils import get_handmade_sample_cases
 
-from onlinejudge.service.yukicoder import YukicoderProblem, YukicoderService
+from onlinejudge.service.yukicoder import YukicoderContest, YukicoderProblem, YukicoderService
 from onlinejudge.type import *
 
 
@@ -119,6 +119,22 @@ class YukicoderProblemTest(unittest.TestCase):
             TestCase(name='sample-2', input_name='サンプル2 入力', input_data=b'1 1 1\n1 0 1\n1 1 1\n', output_name='サンプル2 出力', output_data=b'0\n'),
             TestCase(name='sample-3', input_name='サンプル3 入力', input_data=b'\n', output_name='サンプル3 出力', output_data=b'We\nLove\nCompetitive\nProgramming!\n'),
             TestCase(name='sample-4', input_name='サンプル4 入力', input_data=b'\n', output_name='サンプル4 出力', output_data=b'ABC\n'),
+        ])
+
+
+class YukicoderContestTest(unittest.TestCase):
+    def test_from_url(self):
+        self.assertEqual(YukicoderContest.from_url('https://yukicoder.me/contests/276').contest_id, 276)
+        self.assertEqual(YukicoderContest.from_url('http://yukicoder.me/contests/276/all').contest_id, 276)
+
+    def test_list_problems(self):
+        self.assertEqual(YukicoderContest.from_url('https://yukicoder.me/contests/276').list_problems(), [
+            YukicoderProblem(problem_no=1168),
+            YukicoderProblem(problem_no=1169),
+            YukicoderProblem(problem_no=1170),
+            YukicoderProblem(problem_no=1171),
+            YukicoderProblem(problem_no=1172),
+            YukicoderProblem(problem_no=1173),
         ])
 
 

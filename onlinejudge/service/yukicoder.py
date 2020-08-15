@@ -6,6 +6,7 @@ the module for yukicoder (https://yukicoder.me/)
 :note: There is the official API https://petstore.swagger.io/?url=https://yukicoder.me/api/swagger.yaml
 """
 
+import json
 import posixpath
 import urllib.parse
 from logging import getLogger
@@ -138,6 +139,79 @@ class YukicoderService(onlinejudge.type.Service):
         if tag.find_all(class_='fa-star-half-full'):
             star += '.5'
         return star
+
+    _problems = None
+
+    @classmethod
+    def _get_problems(cls, *, session: Optional[requests.Session] = None) -> List[Dict[str, Any]]:
+        """`_get_problems` wraps the official API and caches the result.
+        """
+
+        session = session or utils.get_default_session()
+        if cls._problems is None:
+            url = 'https://yukicoder.me/api/v1/problems'
+            resp = utils.request('GET', url, session=session)
+            cls._problems = json.loads(resp.content)
+        return cls._problems
+
+    _contests = None  # type: Optional[List[Dict[str, Any]]]
+
+    @classmethod
+    def _get_contests(cls, *, session: Optional[requests.Session] = None) -> List[Dict[str, Any]]:
+        """`_get_contests` wraps the official API and caches the result.
+        """
+
+        session = session or utils.get_default_session()
+        if cls._contests is None:
+            cls._contests = []
+            for url in ('https://yukicoder.me/api/v1/contest/past', 'https://yukicoder.me/api/v1/contest/future'):
+                resp = utils.request('GET', url, session=session)
+                cls._contests.extend(json.loads(resp.content))
+        return cls._contests
+
+
+class YukicoderContest(onlinejudge.type.Contest):
+    """
+    :ivar contest_id: :py:class:`int`
+
+    .. versionadded:: 10.4.0
+    """
+    def __init__(self, *, contest_id: int):
+        self.contest_id = contest_id
+
+    def list_problems(self, *, session: Optional[requests.Session] = None) -> Sequence['YukicoderProblem']:
+        """
+        :raises RuntimeError:
+        """
+
+        session = session or utils.get_default_session()
+        for contest in YukicoderService._get_contests(session=session):
+            if contest['Id'] == self.contest_id:
+                table = {problem['ProblemId']: problem['No'] for problem in YukicoderService._get_problems(session=session)}
+                return [YukicoderProblem(problem_no=table[problem_id]) for problem_id in contest['ProblemIdList']]
+        raise RuntimeError('Failed to get the contest information from API: {}'.format(self.get_url()))
+
+    def get_url(self) -> str:
+        return 'https://yukicoder.me/contests/{}'.format(self.contest_id)
+
+    def get_service(self) -> Service:
+        return YukicoderService()
+
+    @classmethod
+    def from_url(cls, url: str) -> Optional['Contest']:
+        # example: https://yukicoder.me/contests/276
+        # example: http://yukicoder.me/contests/276/all
+        result = urllib.parse.urlparse(url)
+        dirs = utils.normpath(result.path).split('/')
+        if result.scheme in ('', 'http', 'https') and result.netloc == 'yukicoder.me':
+            if len(dirs) >= 3 and dirs[1] == 'contests':
+                try:
+                    contest_id = int(dirs[2])
+                except ValueError:
+                    pass
+                else:
+                    return cls(contest_id=contest_id)
+        return None
 
 
 class YukicoderProblem(onlinejudge.type.Problem):
@@ -281,4 +355,5 @@ class YukicoderProblem(onlinejudge.type.Problem):
 
 
 onlinejudge.dispatch.services += [YukicoderService]
+onlinejudge.dispatch.contests += [YukicoderContest]
 onlinejudge.dispatch.problems += [YukicoderProblem]
