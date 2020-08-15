@@ -102,6 +102,7 @@ def get_parser() -> argparse.ArgumentParser:
         supported services:
           AtCoder
           Codeforces
+          yukicoder
 
         JSON schema:
         {}

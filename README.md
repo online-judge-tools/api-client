@@ -39,7 +39,7 @@ $ pip3 install online-judge-api-client
 | [Sphere Online Judge](https://www.spoj.com/)                                   | :heavy_check_mark: |                    |                    |                    |                    |                    |
 | [Topcoder](https://arena.topcoder.com/)                                        | :heavy_check_mark: (archived problems only) |                    | :grey_question: |                    |                    |                    |
 | [Toph](https://toph.co/)                                                       | :heavy_check_mark: |                    |                    |                    | :grey_question: | :heavy_check_mark: |
-| [yukicoder](https://yukicoder.me/)                                             | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
+| [yukicoder](https://yukicoder.me/)                                             | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: | :grey_question: | :heavy_check_mark: |
 
 Instead of `login-service`, you can use [`oj` command](https://github.com/online-judge-tools/oj) with Selenium as `oj login https://...`. This can login almost all services.
 
