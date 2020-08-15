@@ -575,15 +575,15 @@ class AtCoderProblemData(ProblemData):
         else:
             assert False
 
-        for memory_limit_prefix in ('メモリ制限: ', 'Memory Limit: '):
-            if memory_limit.startswith(memory_limit_prefix):
-                break
-        else:
-            assert False
-        if memory_limit.endswith(' KB'):
-            memory_limit_byte = int(float(utils.remove_suffix(utils.remove_prefix(memory_limit, memory_limit_prefix), ' KB')) * 1000)
-        elif memory_limit.endswith(' MB'):
-            memory_limit_byte = int(float(utils.remove_suffix(utils.remove_prefix(memory_limit, memory_limit_prefix), ' MB')) * 1000 * 1000)
+        parsed_memory_limit = re.search(r'^(メモリ制限|Memory Limit): ([0-9.]+) (KB|MB)', memory_limit)
+        assert parsed_memory_limit
+
+        memory_limit_value = parsed_memory_limit.group(2)
+        memory_limit_unit = parsed_memory_limit.group(3)
+        if memory_limit_unit == 'KB':
+            memory_limit_byte = int(float(memory_limit_value) * 1000)
+        elif memory_limit_unit == 'MB':
+            memory_limit_byte = int(float(memory_limit_value) * 1000)
         else:
             assert False
 
