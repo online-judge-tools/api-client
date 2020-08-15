@@ -1001,12 +1001,12 @@ class AtCoderSubmissionData(SubmissionData):
     @classmethod
     def _from_table_row(cls, tr: bs4.Tag, *, session: requests.Session, response: requests.Response, timestamp: datetime.datetime) -> 'AtCoderSubmissionData':
         tds = tr.find_all('td')
-        assert len(tds) in (8, 11)
+        if len(tds) % 2:
+            tds = tds[1:]
+        assert len(tds) in (8, 10)
 
         submission = AtCoderSubmission.from_url('https://atcoder.jp' + tds[-1].find('a')['href'])
         problem = AtCoderProblem.from_url('https://atcoder.jp' + tds[1].find('a')['href'])
-        if not problem:
-            problem = AtCoderProblem.from_url('https://atcoder.jp' + tds[2].find('a')['href'])
         assert submission is not None
         assert problem is not None
 
