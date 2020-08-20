@@ -146,3 +146,33 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         }
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
+
+    def test_edu_2_2_1_a(self):
+        """This tests an educational problem.
+        """
+
+        url = 'https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A'
+        expected = {
+            "status": "ok",
+            "messages": [],
+            "result": {
+                "url": "https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A",
+                "tests": [{
+                    "input": "ababba\n",
+                    "output": "6 5 0 2 4 1 3\n"
+                }, {
+                    "input": "aaaa\n",
+                    "output": "4 3 2 1 0\n"
+                }, {
+                    "input": "ppppplppp\n",
+                    "output": "9 5 8 4 7 3 6 2 1 0\n"
+                }, {
+                    "input": "nn\n",
+                    "output": "2 1 0\n"
+                }],
+                "context": {}
+            },
+        }
+        actual = main(['get-problem', url], debug=True)
+        self.assertEqual(expected, actual)
+

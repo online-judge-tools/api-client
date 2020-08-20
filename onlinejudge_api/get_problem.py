@@ -325,7 +325,7 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
                 "html": data.html.decode(),
             }
 
-    elif isinstance(problem, CodeforcesProblem) and problem.kind != 'problemset':
+    elif isinstance(problem, CodeforcesProblem) and problem.kind not in {'problemset', 'edu'}:
         try:
             data = problem.download_data(session=session)
         except Exception as e:

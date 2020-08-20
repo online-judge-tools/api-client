@@ -294,15 +294,22 @@ class CodeforcesProblem(onlinejudge.type.Problem):
     """
     :ivar contest_id: :py:class:`int`
     :ivar index: :py:class:`str`
-    :ivar kind: :py:class:`str` must be `contest` or `gym`
+    :ivar kind: :py:class:`str` must be `contest`, `gym`, 'problemset' or 'edu'
+    :ivar course: py:class:'int' only used for edu but needed to reconstruct URL
+    :ivar lesson: py:class:'int' only used for edu but needed to reconstruct URL
+    :ivar step: py:class:'int' only used for edu but needed to reconstruct URL
     """
-    def __init__(self, *, contest_id: int, index: str, kind: Optional[str] = None):
+    def __init__(self, *, contest_id: int,
+                 index: str, kind: Optional[str] = None,
+                 course: Optional[int] = None,
+                 lesson: Optional[int] = None,
+                 step: Optional[int] = None):
         assert isinstance(contest_id, int)
         assert 1 <= len(index) <= 2
         assert index[0] in string.ascii_uppercase
         if len(index) == 2:
             assert index[1] in string.digits
-        assert kind in (None, 'contest', 'gym', 'problemset')
+        assert kind in (None, 'contest', 'gym', 'problemset', 'edu')
         self.contest_id = contest_id
         self.index = index
         if kind is None:
@@ -311,6 +318,9 @@ class CodeforcesProblem(onlinejudge.type.Problem):
             else:
                 kind = 'gym'
         self.kind = kind  # It seems 'gym' is specialized, 'contest' and 'problemset' are the same thing
+        self.course = course
+        self.lesson = lesson
+        self.step = step
 
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[onlinejudge.type.TestCase]:
         session = session or utils.get_default_session()
@@ -391,7 +401,8 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         table['contest'] = 'https://codeforces.com/contest/{}/problem/{}'
         table['problemset'] = 'https://codeforces.com/problemset/problem/{}/{}'
         table['gym'] = 'https://codeforces.com/gym/{}/problem/{}'
-        return table[self.kind].format(self.contest_id, self.index)
+        table['edu'] = 'https://codeforces.com/edu/course/{2}/lesson/{3}/{4}/practice/contest/{0}/problem/{1}'
+        return table[self.kind].format(self.contest_id, self.index, self.course, self.lesson, self.step)
 
     def get_service(self) -> CodeforcesService:
         return CodeforcesService()
@@ -407,19 +418,28 @@ class CodeforcesProblem(onlinejudge.type.Problem):
                 and result.netloc in _CODEFORCES_DOMAINS:
             # "0" is needed. example: https://codeforces.com/contest/1000/problem/0
             # "[1-9]?" is sometime used. example: https://codeforces.com/contest/1133/problem/F2
-            re_for_index = r'(0|[A-Za-z][1-9]?)'
+            re_for_index = r'(?P<index>0|[A-Za-z][1-9]?)'
             table = {}
-            table['contest'] = r'^/contest/([0-9]+)/problem/{}$'.format(re_for_index)  # example: https://codeforces.com/contest/538/problem/H
-            table['problemset'] = r'^/problemset/problem/([0-9]+)/{}$'.format(re_for_index)  # example: https://codeforces.com/problemset/problem/700/B
-            table['gym'] = r'^/gym/([0-9]+)/problem/{}$'.format(re_for_index)  # example: https://codeforces.com/gym/101021/problem/A
+            table['contest'] = r'^/contest/(?P<contest>[0-9]+)/problem/{}$'.format(re_for_index)  # example: https://codeforces.com/contest/538/problem/H
+            table['problemset'] = r'^/problemset/problem/(?P<contest>[0-9]+)/{}$'.format(re_for_index)  # example: https://codeforces.com/problemset/problem/700/B
+            table['gym'] = r'^/gym/(?P<contest>[0-9]+)/problem/{}$'.format(re_for_index)  # example: https://codeforces.com/gym/101021/problem/A
+            table['edu'] = r'^/edu/course/(?P<course>[0-9]*)/lesson/(?P<lesson>[0-9]*)/(?P<step>[0-9]*)/practice/contest/(?P<contest>[0-9]*)/problem/{}$'.format(re_for_index) # example https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A
             for kind, expr in table.items():
                 m = re.match(expr, utils.normpath(result.path))
                 if m:
-                    if m.group(2) == '0':
+                    if m.group('index') == '0':
                         index = 'A'  # NOTE: This is broken if there was "A1".
                     else:
-                        index = m.group(2).upper()
-                    return cls(contest_id=int(m.group(1)), index=index, kind=kind)
+                        index = m.group('index').upper()
+                    if kind == 'edu':
+                        return cls(contest_id=int(m.group('contest')),
+                                   index=index,
+                                   kind=kind,
+                                   course = int(m.group('course')),
+                                   lesson = int(m.group('lesson')),
+                                   step = int(m.group('step')))
+                    else:
+                        return cls(contest_id=int(m.group('contest')), index=index, kind=kind)
         return None
 
     def download_data(self, *, session: Optional[requests.Session] = None) -> CodeforcesProblemData:
