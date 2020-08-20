@@ -299,11 +299,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
     :ivar lesson: py:class:'int' only used for edu but needed to reconstruct URL
     :ivar step: py:class:'int' only used for edu but needed to reconstruct URL
     """
-    def __init__(self, *, contest_id: int,
-                 index: str, kind: Optional[str] = None,
-                 course: Optional[int] = None,
-                 lesson: Optional[int] = None,
-                 step: Optional[int] = None):
+    def __init__(self, *, contest_id: int, index: str, kind: Optional[str] = None, course: Optional[int] = None, lesson: Optional[int] = None, step: Optional[int] = None):
         assert isinstance(contest_id, int)
         assert 1 <= len(index) <= 2
         assert index[0] in string.ascii_uppercase
@@ -408,7 +404,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         return CodeforcesService()
 
     def get_contest(self) -> CodeforcesContest:
-        assert self.kind != 'problemset'
+        assert self.kind not in {'problemset', 'edu'}
         return CodeforcesContest(contest_id=self.contest_id, kind=self.kind)
 
     @classmethod
@@ -423,7 +419,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
             table['contest'] = r'^/contest/(?P<contest>[0-9]+)/problem/{}$'.format(re_for_index)  # example: https://codeforces.com/contest/538/problem/H
             table['problemset'] = r'^/problemset/problem/(?P<contest>[0-9]+)/{}$'.format(re_for_index)  # example: https://codeforces.com/problemset/problem/700/B
             table['gym'] = r'^/gym/(?P<contest>[0-9]+)/problem/{}$'.format(re_for_index)  # example: https://codeforces.com/gym/101021/problem/A
-            table['edu'] = r'^/edu/course/(?P<course>[0-9]*)/lesson/(?P<lesson>[0-9]*)/(?P<step>[0-9]*)/practice/contest/(?P<contest>[0-9]*)/problem/{}$'.format(re_for_index) # example https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A
+            table['edu'] = r'^/edu/course/(?P<course>[0-9]*)/lesson/(?P<lesson>[0-9]*)/(?P<step>[0-9]*)/practice/contest/(?P<contest>[0-9]*)/problem/{}$'.format(re_for_index)  # example https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A
             for kind, expr in table.items():
                 m = re.match(expr, utils.normpath(result.path))
                 if m:
@@ -432,12 +428,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
                     else:
                         index = m.group('index').upper()
                     if kind == 'edu':
-                        return cls(contest_id=int(m.group('contest')),
-                                   index=index,
-                                   kind=kind,
-                                   course = int(m.group('course')),
-                                   lesson = int(m.group('lesson')),
-                                   step = int(m.group('step')))
+                        return cls(contest_id=int(m.group('contest')), index=index, kind=kind, course=int(m.group('course')), lesson=int(m.group('lesson')), step=int(m.group('step')))
                     else:
                         return cls(contest_id=int(m.group('contest')), index=index, kind=kind)
         return None

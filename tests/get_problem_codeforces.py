@@ -175,4 +175,3 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         }
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
-
