@@ -1,6 +1,11 @@
+import os
 import unittest
 
 from onlinejudge_api.main import main
+from tests.login_service import update_environ, temporary_cookie
+
+CODEFORCES_USERNAME = 'CODEFORCES_USERNAME'
+CODEFORCES_PASSWORD = 'CODEFORCES_PASSWORD'
 
 
 class GetProblemCodeforcesTest(unittest.TestCase):
@@ -147,31 +152,40 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
+    @unittest.skipIf(not (CODEFORCES_USERNAME in os.environ and CODEFORCES_PASSWORD in os.environ), 'credentails for Codeforces is required')
     def test_edu_2_2_1_a(self):
         """This tests an educational problem.
+
+        Unlike other problems educational problems are only accessible if the user is logged in.
+        The user for test is: https://codeforces.com/profile/online-judge-tools
         """
 
-        url = 'https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A'
-        expected = {
-            "status": "ok",
-            "messages": [],
-            "result": {
-                "url": "https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A",
-                "tests": [{
-                    "input": "ababba\n",
-                    "output": "6 5 0 2 4 1 3\n"
-                }, {
-                    "input": "aaaa\n",
-                    "output": "4 3 2 1 0\n"
-                }, {
-                    "input": "ppppplppp\n",
-                    "output": "9 5 8 4 7 3 6 2 1 0\n"
-                }, {
-                    "input": "nn\n",
-                    "output": "2 1 0\n"
-                }],
-                "context": {}
-            },
-        }
-        actual = main(['get-problem', url], debug=True)
-        self.assertEqual(expected, actual)
+        login_url = 'https://codeforces.com/'
+        with update_environ(USERNAME=os.environ[CODEFORCES_USERNAME], PASSWORD=os.environ[CODEFORCES_PASSWORD]):
+            with temporary_cookie() as cookie_path:
+                main(['--cookie', str(cookie_path), 'login-service', login_url], debug=True)
+
+                url = 'https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A'
+                expected = {
+                    "status": "ok",
+                    "messages": [],
+                    "result": {
+                        "url": "https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A",
+                        "tests": [{
+                            "input": "ababba\n",
+                            "output": "6 5 0 2 4 1 3\n"
+                        }, {
+                            "input": "aaaa\n",
+                            "output": "4 3 2 1 0\n"
+                        }, {
+                            "input": "ppppplppp\n",
+                            "output": "9 5 8 4 7 3 6 2 1 0\n"
+                        }, {
+                            "input": "nn\n",
+                            "output": "2 1 0\n"
+                        }],
+                        "context": {}
+                    },
+                }
+                actual = main(['--cookie', str(cookie_path), 'get-problem', url], debug=True)
+                self.assertEqual(expected, actual)
