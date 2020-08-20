@@ -2,7 +2,7 @@ import os
 import unittest
 
 from onlinejudge_api.main import main
-from tests.login_service import update_environ, temporary_cookie
+from tests.login_service import temporary_cookie, update_environ
 
 CODEFORCES_USERNAME = 'CODEFORCES_USERNAME'
 CODEFORCES_PASSWORD = 'CODEFORCES_PASSWORD'
