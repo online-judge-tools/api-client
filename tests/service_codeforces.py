@@ -9,6 +9,7 @@ class CodeforcesSerivceTest(unittest.TestCase):
         self.assertIsInstance(CodeforcesService.from_url('http://codeforces.com/'), CodeforcesService)
         self.assertIsInstance(CodeforcesService.from_url('https://codeforces.com/'), CodeforcesService)
         self.assertIsInstance(CodeforcesService.from_url('https://codeforces.com/problemset/problem/700/B'), CodeforcesService)
+        self.assertIsInstance(CodeforcesService.from_url('https://codeforces.com/edu/course/2/lesson/2/1/practice/contest/269100/problem/A'), CodeforcesService)
         self.assertIsNone(CodeforcesService.from_url('https://atcoder.jp/'))
 
 
@@ -64,6 +65,8 @@ class CodeforcesProblemTest(unittest.TestCase):
         self.assertEqual(CodeforcesProblem.from_url('http://codeforces.com/contest/538/problem/H').index, 'H')
         self.assertEqual(CodeforcesProblem.from_url('http://codeforces.com/gym/101021/problem/A').contest_id, 101021)
         self.assertEqual(CodeforcesProblem.from_url('http://codeforces.com/gym/101021/problem/A').index, 'A')
+        self.assertEqual(CodeforcesProblem.from_url('https://codeforces.com/contest/1080/problem/A').contest_id, 1080)
+        self.assertEqual(CodeforcesProblem.from_url('https://codeforces.com/contest/1080/problem/A').index, 'A')
         self.assertEqual(CodeforcesProblem.from_url('https://codeforces.com/contest/1080/problem/A').contest_id, 1080)
         self.assertEqual(CodeforcesProblem.from_url('https://codeforces.com/contest/1080/problem/A').index, 'A')
         self.assertIsNone(CodeforcesProblem.from_url('https://atcoder.jp/contests/abc120/tasks/abc120_c'))
