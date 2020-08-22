@@ -7,6 +7,13 @@ from onlinejudge.service.yukicoder import YukicoderContest, YukicoderProblem, Yu
 from onlinejudge.type import *
 
 
+class YukicoderServiceTest(unittest.TestCase):
+    def test_from_url(self):
+        self.assertEqual(YukicoderService.from_url('https://yukicoder.me/'), YukicoderService())
+        self.assertEqual(YukicoderService.from_url('https://yukicoder.me/problems/no/9003'), YukicoderService())
+        self.assertIsNone(YukicoderService.from_url('https://atcoder.jp/'))
+
+
 class YukicoderProblemTest(unittest.TestCase):
     def test_from_url(self):
         self.assertEqual(YukicoderProblem.from_url('https://yukicoder.me/problems/no/9003').problem_no, 9003)
@@ -136,22 +143,6 @@ class YukicoderContestTest(unittest.TestCase):
             YukicoderProblem(problem_no=1172),
             YukicoderProblem(problem_no=1173),
         ])
-
-
-class YukicoderOfficialAPITest(unittest.TestCase):
-    def test_get_submissions(self):
-        data = YukicoderService().get_submissions(page=3, status='TLE')
-        self.assertEqual(len(data), 50)
-        # yukicoder returns sentence such as 'TLE\n(最新)--\nAC' when the submission was rejudged and judge status was changed.
-        self.assertTrue(data[4]['結果'] == 'TLE' or 'TLE\n(最新)' in data[4]['結果'])
-
-    def test_get_problems(self):
-        data = YukicoderService().get_problems(page=2, sort='no_asc')
-        self.assertEqual(len(data), 50)
-        self.assertEqual(data[3]['ナンバー'], 54)
-        self.assertEqual(data[3]['問題名'], "Happy Hallowe'en")
-        self.assertEqual(data[3]['レベル'], '4')
-        self.assertEqual(data[3]['作問者/url'], '/users/4')
 
 
 class YukicoderProblemGetInputFormatTest(unittest.TestCase):
