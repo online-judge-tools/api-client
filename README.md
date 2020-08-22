@@ -32,7 +32,7 @@ $ pip3 install online-judge-api-client
 | [Facebook Hacker Cup](https://www.facebook.com/hackercup/)                     | :heavy_check_mark: |                    |                    |                    |                    |                    |
 | [Google Code Jam](https://codingcompetitions.withgoogle.com/codejam)           | :heavy_check_mark: |                    |                    |                    |                    |                    |
 | [Google Kick Start](https://codingcompetitions.withgoogle.com/kickstart)       | :heavy_check_mark: |                    |                    |                    |                    |                    |
-| [HackerRank](https://www.hackerrank.com/)                                      | :grey_question: (use system cases instead) | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
+| [HackerRank](https://www.hackerrank.com/)                                      | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
 | [Kattis](https://open.kattis.com/)                                             | :heavy_check_mark: |                    |                    |                    |                    |                    |
 | [Library Checker](https://judge.yosupo.jp/)                                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |                    |
 | [PKU JudgeOnline](http://poj.org/)                                             | :heavy_check_mark: |                    |                    |                    |                    |                    |
