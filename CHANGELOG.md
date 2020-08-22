@@ -1,5 +1,13 @@
 # Change Log
 
+## 10.3.1 / 2020-08-21
+
+-   [#98](https://github.com/online-judge-tools/api-client/pull/98) tweak the testcases downloader for HackerRank
+-   [#97](https://github.com/online-judge-tools/api-client/pull/97) remove deprecated methods for yukicoder which are newly broken
+-   [#95](https://github.com/online-judge-tools/api-client/pull/95) support Codeforces EDU problems  ([@aberent](https://github.com/aberent))
+-   [#93](https://github.com/online-judge-tools/api-client/pull/93) fix the sample downloader for Facebook Hacker Cup
+-   [#91](https://github.com/online-judge-tools/api-client/pull/91) add the contest parser for yukicoder
+
 ## 10.3.0 / 2020-08-13
 
 -   [#61](https://github.com/online-judge-tools/api-client/issues/61) [#68](https://github.com/online-judge-tools/api-client/pull/68) improve the logging for clients of this library
