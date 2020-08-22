@@ -57,20 +57,17 @@ class HackerRankProblem(onlinejudge.type.Problem):
         self.challenge_slug = challenge_slug
 
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[TestCase]:
-        """
-        :raises NotImplementedError:
-        """
-        logger.warning('use --system option')
-        raise NotImplementedError
+        return self.download_system_cases(session=session)
 
     def download_system_cases(self, *, session: Optional[requests.Session] = None) -> List[TestCase]:
         session = session or utils.get_default_session()
         # example: https://www.hackerrank.com/rest/contests/hourrank-1/challenges/beautiful-array/download_testcases
         url = 'https://www.hackerrank.com/rest/contests/{}/challenges/{}/download_testcases'.format(self.contest_slug, self.challenge_slug)
         resp = utils.request('GET', url, session=session, raise_for_status=False)
-        if resp.status_code != 200:
-            logger.error('response: %s', resp.content.decode())
-            return []
+        if resp.status_code == 403:
+            logger.debug('HTML: %s', resp.content.decode())
+            raise onlinejudge.type.SampleParseError("Access Denied. Did you set your User-Agent?")
+        resp.raise_for_status()
         return onlinejudge._implementation.testcase_zipper.extract_from_zip(resp.content, '%eput/%eput%s.txt')
 
     def get_url(self) -> str:

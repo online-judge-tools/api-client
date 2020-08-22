@@ -65,10 +65,6 @@ class FacebookHackerCupProblem(onlinejudge.type.Problem):
         session = session or utils.get_default_session()
         url = 'https://www.facebook.com/api/graphql/'
 
-        # check the User-Agent because "python-requests/..." is rejected
-        if not session.headers.get('User-Agent') or session.headers['User-Agent'].startswith('python-requests/'):
-            logger.warning('User-Agent is not set')
-
         # get problem_id
         data = {
             'fb_api_req_friendly_name': 'CodingCompetitionsContestRootQuery',
