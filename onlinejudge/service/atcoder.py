@@ -575,6 +575,7 @@ class AtCoderProblemData(ProblemData):
         else:
             assert False
 
+        # When login as the admin, a link is added after memory limit. See https://github.com/online-judge-tools/api-client/issues/90
         parsed_memory_limit = re.search(r'^(メモリ制限|Memory Limit): ([0-9.]+) (KB|MB)', memory_limit)
         assert parsed_memory_limit
 
