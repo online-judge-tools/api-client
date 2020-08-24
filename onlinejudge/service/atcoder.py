@@ -583,7 +583,7 @@ class AtCoderProblemData(ProblemData):
         if memory_limit_unit == 'KB':
             memory_limit_byte = int(float(memory_limit_value) * 1000)
         elif memory_limit_unit == 'MB':
-            memory_limit_byte = int(float(memory_limit_value) * 1000)
+            memory_limit_byte = int(float(memory_limit_value) * 1000 * 1000)
         else:
             assert False
 
