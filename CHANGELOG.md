@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.3.2 / 2020-08-24
+
+-   [#99](https://github.com/online-judge-tools/api-client/pull/99) fix the parser of AtCoder to work even when a user is logged in as an admin  ([@yosupo06](https://github.com/yosupo06))
+
 ## 10.3.1 / 2020-08-21
 
 -   [#98](https://github.com/online-judge-tools/api-client/pull/98) tweak the testcases downloader for HackerRank
