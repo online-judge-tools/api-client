@@ -1002,6 +1002,7 @@ class AtCoderSubmissionData(SubmissionData):
     def _from_table_row(cls, tr: bs4.Tag, *, session: requests.Session, response: requests.Response, timestamp: datetime.datetime) -> 'AtCoderSubmissionData':
         tds = tr.find_all('td')
         if len(tds) % 2:
+            # when login as the admin, we have one more extra column.
             tds = tds[1:]
         assert len(tds) in (8, 10)
 
