@@ -101,7 +101,7 @@ class CSAcademyProblem(onlinejudge.type.Problem):
         return samples
 
     def get_url(self) -> str:
-        return 'https://csacademy.com/content/{}/task/{}/'.format(self.contest_name, self.task_name)
+        return 'https://csacademy.com/contest/{}/task/{}/'.format(self.contest_name, self.task_name)
 
     def get_service(self) -> CSAcademyService:
         return CSAcademyService()
