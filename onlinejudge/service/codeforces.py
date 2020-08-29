@@ -375,8 +375,24 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         form = utils.FormSender(form, url=resp.url)
         form.set('programTypeId', language_id)
         form.set_file('sourceFile', filename or 'code', code)
-        resp = form.request(session=session)
-        resp.raise_for_status()
+        # post
+        preserved_user_agent = session.headers.get('User-Agent')
+        logger.debug('User-Agent is temporarily disabled. The old User-Agent is %s', repr(preserved_user_agent))
+        try:
+            if preserved_user_agent is not None:
+                del session.headers['User-Agent']
+            resp = form.request(session=session, raise_for_status=False)
+        finally:
+            if preserved_user_agent is not None:
+                session.headers['User-Agent'] = preserved_user_agent
+        try:
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.exception(e)
+            if resp.status_code == 403:
+                logger.warning('You may use wrong User-Agent: %s', repr(session.headers.get('User-Agent')))
+                raise SubmissionError('You may use wrong User-Agent: {}: {}'.format(repr(session.headers.get('User-Agent')), e))
+            raise e
         # result
         if resp.url.endswith('/my'):
             # example: https://codeforces.com/contest/598/my
