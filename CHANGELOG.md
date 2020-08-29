@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.3.3 / 2020-08-30
+
+-   [#103](https://github.com/online-judge-tools/api-client/pull/103) fix an issue about submitting code to Codeforces
+
 ## 10.3.2 / 2020-08-24
 
 -   [#99](https://github.com/online-judge-tools/api-client/pull/99) fix the parser of AtCoder to work even when a user is logged in as an admin  ([@yosupo06](https://github.com/yosupo06))
