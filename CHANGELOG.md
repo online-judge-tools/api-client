@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.4.0 / 2020-09-22
+
+-   [#106](https://github.com/online-judge-tools/api-client/pull/106) add support for Kagamiz Contest System
+
 ## 10.3.3 / 2020-08-30
 
 -   [#103](https://github.com/online-judge-tools/api-client/pull/103) fix an issue about submitting code to Codeforces
