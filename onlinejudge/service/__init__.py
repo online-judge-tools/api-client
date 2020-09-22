@@ -8,6 +8,7 @@ import onlinejudge.service.csacademy
 import onlinejudge.service.facebook
 import onlinejudge.service.google
 import onlinejudge.service.hackerrank
+import onlinejudge.service.kagamiz
 import onlinejudge.service.kattis
 import onlinejudge.service.library_checker
 import onlinejudge.service.poj

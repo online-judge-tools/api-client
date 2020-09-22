@@ -102,8 +102,9 @@ class FormSender:
     def request(self, session: requests.Session, method: str = None, action: Optional[str] = None, raise_for_status: bool = True, **kwargs) -> requests.Response:
         if method is None:
             method = self.form['method'].upper()
-        url = urllib.parse.urljoin(self.url, action)
-        action = action or self.form['action']
+        url = self.url
+        if action is not None:
+            url = urllib.parse.urljoin(self.url, action)
         return request(method, url, session=session, raise_for_status=raise_for_status, data=self.payload, files=self.files, **kwargs)
 
 

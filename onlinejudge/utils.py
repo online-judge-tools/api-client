@@ -39,6 +39,7 @@ def get_default_session() -> requests.Session:
 default_cookie_path = user_data_dir / 'cookie.jar'
 
 
+# NOTE: This function ignores `discard` and `expires` attributes because some cookies disappear if considering them. This is for mainly Kagamiz Contest System.
 @contextlib.contextmanager
 def with_cookiejar(session: requests.Session, *, path: pathlib.Path = default_cookie_path) -> Iterator[requests.Session]:
     """
@@ -50,9 +51,9 @@ def with_cookiejar(session: requests.Session, *, path: pathlib.Path = default_co
     session.cookies = http.cookiejar.LWPCookieJar(str(path))  # type: ignore
     if path.exists():
         logger.info('load cookie from: %s', path)
-        session.cookies.load()  # type: ignore
+        session.cookies.load(ignore_discard=True)  # type: ignore
     yield session
     logger.info('save cookie to: %s', path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    session.cookies.save()  # type: ignore
+    session.cookies.save(ignore_discard=True)  # type: ignore
     path.chmod(0o600)  # NOTE: to make secure a little bit
