@@ -2,6 +2,7 @@
 the module for Kagamiz Contest System (https://kcs.miz-miz.biz/)
 """
 
+import json
 import urllib.parse
 from logging import getLogger
 from typing import *
@@ -108,8 +109,20 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
 
         # result
         if '/submissions' in resp.url:
-            logger.info('success: result: %s', resp.url)
-            return utils.DummySubmission(resp.url, problem=self)
+            # parse the individual submission page
+            submission_url = resp.url
+            try:
+                url = 'https://kcs.miz-miz.biz/contest/{}/submissions?json=True'.format(self.contest_id)
+                resp = utils.request('GET', url, session=session)
+                submissions = json.loads(resp.content.decode(resp.encoding))
+                submission_id = max([submission['submission_id'] for submission in submissions])
+                submission_url = 'https://kcs.miz-miz.biz/contest/{}/code/{}'.format(self.contest_id, submission_id)
+            except:
+                logger.exception('failed to find the individual submission page. use the list page of all submissions instead.')
+
+            # return the url of the submission page
+            logger.info('success: result: %s', submission_url)
+            return utils.DummySubmission(submission_url, problem=self)
         else:
             logger.error('failure')
             raise SubmissionError
