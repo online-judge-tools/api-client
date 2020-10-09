@@ -72,7 +72,8 @@ class YukicoderService(onlinejudge.type.Service):
         session = session or utils.get_default_session()
         if cls._contests is None:
             cls._contests = []
-            for url in ('https://yukicoder.me/api/v1/contest/past', 'https://yukicoder.me/api/v1/contest/future'):
+            for tense in ('past', 'current', 'future'):
+                url = 'https://yukicoder.me/api/v1/contest/{}'.format(tense)
                 resp = utils.request('GET', url, session=session)
                 cls._contests.extend(json.loads(resp.content.decode()))
         return cls._contests
@@ -93,11 +94,10 @@ class YukicoderContest(onlinejudge.type.Contest):
         """
 
         session = session or utils.get_default_session()
-        for contest in YukicoderService._get_contests(session=session):
-            if contest['Id'] == self.contest_id:
-                table = {problem['ProblemId']: problem['No'] for problem in YukicoderService._get_problems(session=session)}
-                return [YukicoderProblem(problem_no=table[problem_id]) for problem_id in contest['ProblemIdList']]
-        raise RuntimeError('Failed to get the contest information from API: {}'.format(self.get_url()))
+        url = 'https://yukicoder.me/api/v1/contest/id/{}'.format(self.contest_id)
+        resp = utils.request('GET', url, session=session)
+        data = json.loads(resp.content.decode())
+        return [YukicoderProblem(problem_id=problem_id) for problem_id in data['ProblemIdList']]
 
     def get_url(self) -> str:
         return 'https://yukicoder.me/contests/{}'.format(self.contest_id)
