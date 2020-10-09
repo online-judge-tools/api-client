@@ -78,6 +78,12 @@ class YukicoderService(onlinejudge.type.Service):
                 cls._contests.extend(json.loads(resp.content.decode()))
         return cls._contests
 
+    @classmethod
+    def _get_csrf_token(cls, *, session: requests.Session) -> str:
+        url = 'https://yukicoder.me/csrf_token'
+        resp = utils.request('GET', url, session=session)
+        return resp.content.decode()
+
 
 class YukicoderContest(onlinejudge.type.Contest):
     """
@@ -178,46 +184,45 @@ class YukicoderProblem(onlinejudge.type.Problem):
         """
 
         session = session or utils.get_default_session()
-        # get
-        url = self.get_url() + '/submit'
-        resp = utils.request('GET', url, session=session)
-        # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
-        form = soup.find('form', id='submit_form')
-        if not form:
-            logger.error('form not found')
-            raise NotLoggedInError
-        # post
-        form = utils.FormSender(form, url=resp.url)
-        form.set('lang', language_id)
-        form.set_file('file', filename or 'code', code)
-        form.unset('custom_test')
-        resp = form.request(session=session)
-        resp.raise_for_status()
-        # result
-        if 'submissions' in resp.url:
-            # example: https://yukicoder.me/submissions/314087
-            logger.info('success: result: %s', resp.url)
-            return utils.DummySubmission(resp.url, problem=self)
+
+        # prepare
+        if self.problem_id is not None:
+            url = 'https://yukicoder.me/api/v1/problems/{}/submit'.format(self.problem_id)
+        elif self.problem_no is not None:
+            url = 'https://yukicoder.me/api/v1/problems/no/{}/submit'.format(self.problem_no)
         else:
-            logger.error('failure')
-            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
-            for div in soup.findAll('div', attrs={'role': 'alert'}):
-                logger.warning('yukicoder says: "%s"', div.string)
-            raise SubmissionError
+            assert False
+        data = {
+            'lang': str(language_id),
+            'source': code.decode(),
+        }
+
+        # get CSRF token
+        if 'Authorization' not in session.headers:
+            logger.warning('Please use --yukicoder-token. The combination of cookies and API may not work. This may be a bug of yukicoder.')
+            csrf_token = YukicoderService._get_csrf_token(session=session)
+            logger.debug('yukicoder CSRF token: %s', csrf_token)
+            session.headers['X-CSRFToken'] = csrf_token
+
+        # post code
+        resp = utils.request('POST', url, data=data, session=session, raise_for_status=False)
+        if resp.status_code != 200:
+            logger.debug('%s', resp)
+            logger.warning('yukicoder says: %s', resp.content.decode())
+            raise SubmissionError(resp.content.decode())
+
+        # result
+        data = json.loads(resp.content.decode())
+        url = 'https://yukicoder.me/submissions/{}'.format(data['SubmissionId'])
+        logger.info('success: result: %s', resp.url)
+        return utils.DummySubmission(resp.url, problem=self)
 
     def get_available_languages(self, *, session: Optional[requests.Session] = None) -> List[Language]:
         session = session or utils.get_default_session()
-        # get
-        # We use the problem page since it is available without logging in
-        resp = utils.request('GET', self.get_url(), session=session)
-        # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
-        select = soup.find('select', id='lang')
-        languages = []  # type: List[Language]
-        for option in select.find_all('option'):
-            languages += [Language(option.attrs['value'], ' '.join(option.string.split()))]
-        return languages
+        url = 'https://yukicoder.me/api/v1/languages'
+        resp = utils.request('GET', url, session=session)
+        data = json.loads(resp.content.decode())
+        return [Language(language['Id'], language['Name'] + ' (' + language['Ver'] + ')') for language in data]
 
     def get_url(self) -> str:
         if self.problem_no:
