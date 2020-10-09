@@ -41,7 +41,7 @@ class SampleZipper:
         return self._testcases
 
 
-def extract_from_files(files: Iterator[Tuple[str, bytes]], format: str = '%s.%e', out: str = 'out') -> List[TestCase]:
+def extract_from_files(files: Iterator[Tuple[str, bytes]], format: str = '%s.%e', out: str = 'out', *, ignore_unmatched_samples: bool = False) -> List[TestCase]:
     """
     :param out: is the extension for output files. This is used when the zip-file contains files like `sample-1.ans` instead of `sample-1.out`.
     """
@@ -60,14 +60,15 @@ def extract_from_files(files: Iterator[Tuple[str, bytes]], format: str = '%s.%e'
     for name in sorted(names.keys()):
         data = names[name]
         if 'in' not in data or out not in data:
-            logger.error('dangling sample found: %s', str(data))
-            assert False
+            logger.error('unmatched sample found: %s', str(data))
+            if not ignore_unmatched_samples:
+                raise RuntimeError('unmatched sample found: {}'.format(data))
         else:
             testcases += [TestCase(name, *data['in'], *data[out])]
     return testcases
 
 
-def extract_from_zip(zip_data: bytes, format: str, out: str = 'out') -> List[TestCase]:
+def extract_from_zip(zip_data: bytes, format: str, out: str = 'out', *, ignore_unmatched_samples: bool = False) -> List[TestCase]:
     def iterate():
         with zipfile.ZipFile(io.BytesIO(zip_data)) as fh:
             for filename in fh.namelist():
@@ -75,4 +76,4 @@ def extract_from_zip(zip_data: bytes, format: str, out: str = 'out') -> List[Tes
                     continue
                 yield filename, fh.read(filename)
 
-    return extract_from_files(iterate(), format=format, out=out)
+    return extract_from_files(iterate(), format=format, out=out, ignore_unmatched_samples=ignore_unmatched_samples)

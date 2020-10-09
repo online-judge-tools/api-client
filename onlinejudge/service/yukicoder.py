@@ -162,7 +162,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         url = '{}/testcase.zip'.format(self.get_url())
         resp = utils.request('GET', url, session=session)
         fmt = 'test_%e/%s'
-        return onlinejudge._implementation.testcase_zipper.extract_from_zip(resp.content, fmt)
+        return onlinejudge._implementation.testcase_zipper.extract_from_zip(resp.content, fmt, ignore_unmatched_samples=True)  # NOTE: yukicoder's test sets sometimes contain garbages. The owner insists that this is an intended behavior, so we need to ignore them.
 
     def _parse_sample_tag(self, tag: bs4.Tag) -> Optional[Tuple[str, str]]:
         assert isinstance(tag, bs4.Tag)
