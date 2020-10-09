@@ -1,7 +1,9 @@
+import os
 import unittest
 
-import tests.utils
 from onlinejudge_api.main import main
+
+YUKICODER_TOKEN = os.environ.get('YUKICODER_TOKEN')
 
 
 class GetProblemYukicoderTest(unittest.TestCase):
@@ -31,7 +33,7 @@ class GetProblemYukicoderTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
-    @unittest.skipIf(not tests.utils.is_logged_in('https://yukicoder.me/'), 'login is required')
+    @unittest.skipIf(YUKICODER_TOKEN is None, '$YUKICODER_TOKEN is required')
     def test_2_system(self):
         """This tests about system cases.
         """
