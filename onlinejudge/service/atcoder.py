@@ -1044,6 +1044,11 @@ class AtCoderSubmissionData(SubmissionData):
 
 
 class AtCoderSubmissionDetailedData(AtCoderSubmissionData):
+    """
+    .. deprecated:: 10.5
+       The feature has been broken at https://github.com/online-judge-tools/api-client/issues/110
+    """
+
     # yapf: disable
     def __init__(
             self,
@@ -1130,102 +1135,12 @@ class AtCoderSubmission(onlinejudge.type.Submission):
 
     def download_data(self, *, session: Optional[requests.Session] = None) -> AtCoderSubmissionDetailedData:
         """
-        :note: `Exec Time` is undefined when the status is `RE` or `TLE`
-        :note: `Memory` is undefined when the status is `RE` or `TLE`
+        :raises NotImplementedError:
+
+        .. deprecated:: 10.5
+           The feature has been broken at https://github.com/online-judge-tools/api-client/issues/110
         """
-        session = session or utils.get_default_session()
-        resp = _request('GET', self.get_url(type='beta', lang='en'), session=session)
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
-        timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
-
-        # Submission #N
-        id_, = soup.find_all('span', class_='h2')
-        assert id_.text == 'Submission #{}'.format(self.submission_id)
-
-        # Source Code
-        source_code = soup.find(id='submission-code')
-        source_code = source_code.text.encode()
-
-        # get tables
-        tables = soup.find_all('table')
-        if len(tables) == 3:
-            submission_info, test_cases_summary, test_cases_data = tables
-        elif len(tables) == 1:
-            submission_info, = tables
-            test_cases_summary = None
-            test_cases_data = None
-        else:
-            assert False
-
-        # Submission Info
-        data = {}  # type: Dict[str, str]
-        problem_id = None  # type: Optional[str]
-        for tr in submission_info.find_all('tr'):
-            key = tr.find('th').text.strip()
-            value = tr.find('td').text.strip()
-            data[key] = value
-
-            if key == 'Task':
-                problem = AtCoderProblem.from_url('https://atcoder.jp' + tr.find('a')['href'])
-                assert problem is not None
-                problem_id = problem.problem_id
-
-        assert problem_id is not None
-        submission_time = datetime.datetime.strptime(data['Submission Time'], '%Y-%m-%d %H:%M:%S+0900').replace(tzinfo=utils.tzinfo_jst)
-        user_id = data['User']
-        language_name = data['Language']
-        score = float(data['Score'])
-        code_size = int(utils.remove_suffix(data['Code Size'], ' Byte'))
-        status = data['Status']
-        if 'Exec Time' in data:
-            exec_time_msec = int(utils.remove_suffix(data['Exec Time'], ' ms'))  # type: Optional[int]
-        else:
-            exec_time_msec = None
-        if 'Memory' in data:
-            # TODO: confirm this is KB truly, not KiB
-            memory_byte = int(utils.remove_suffix(data['Memory'], ' KB')) * 1000  # type: Optional[int]
-        else:
-            memory_byte = None
-
-        # Compile Error
-        compile_error_tag = soup.find('h4', text='Compile Error')
-        if compile_error_tag is not None:
-            compile_error = compile_error_tag.find_next_sibling('pre').text
-        else:
-            compile_error = None
-
-        # Test Cases
-        if test_cases_summary is not None:
-            trs = test_cases_summary.find('tbody').find_all('tr')
-            test_sets = [AtCoderSubmissionTestSet._from_table_row(tr) for tr in trs]  # type: Optional[List[AtCoderSubmissionTestSet]]
-        else:
-            test_sets = None
-        if test_cases_data is not None:
-            trs = test_cases_data.find('tbody').find_all('tr')
-            test_cases = [AtCoderSubmissionTestCaseResult._from_table_row(tr) for tr in trs]  # type: Optional[List[AtCoderSubmissionTestCaseResult]]
-        else:
-            test_cases = None
-
-        return AtCoderSubmissionDetailedData(
-            code_size=code_size,
-            compile_error=compile_error,
-            exec_time_msec=exec_time_msec,
-            language_name=language_name,
-            memory_byte=memory_byte,
-            problem=AtCoderProblem(contest_id=self.contest_id, problem_id=problem_id),
-            problem_id=problem_id,
-            response=resp,
-            score=score,
-            session=session,
-            source_code=source_code,
-            status=status,
-            submission=self,
-            submission_time=submission_time,
-            test_cases=test_cases,
-            test_sets=test_sets,
-            timestamp=timestamp,
-            user_id=user_id,
-        )
+        raise NotImplementedError
 
 
 class AtCoderSubmissionTestSet:
@@ -1234,6 +1149,9 @@ class AtCoderSubmissionTestSet:
     :ivar score: :py:class:`float`
     :ivar max_score: :py:class:`float`
     :ivar test_case_names: :py:class:`List` [ :py:class:`str` ]
+
+    .. deprecated:: 10.5
+       The feature has been broken at https://github.com/online-judge-tools/api-client/issues/110
     """
     def __init__(self, *, set_name: str, score: float, max_score: float, test_case_names: List[str]):
         self.set_name = set_name
@@ -1243,12 +1161,10 @@ class AtCoderSubmissionTestSet:
 
     @classmethod
     def _from_table_row(cls, tr: bs4.Tag) -> 'AtCoderSubmissionTestSet':
-        tds = tr.find_all('td')
-        assert len(tds) == 3
-        set_name = tds[0].text
-        score, max_score = [float(s) for s in tds[1].text.split('/')]
-        test_case_names = tds[2].text.split(', ')
-        return AtCoderSubmissionTestSet(set_name=set_name, score=score, max_score=max_score, test_case_names=test_case_names)
+        """
+        :raises NotImplementedError:
+        """
+        raise NotImplementedError
 
 
 class AtCoderSubmissionTestCaseResult:
@@ -1257,6 +1173,9 @@ class AtCoderSubmissionTestCaseResult:
     :ivar status: :py:class:`str`
     :ivar exec_time_msec: :py:class:`int` in millisecond
     :ivar memory_byte: :py:class:`int` in byte
+
+    .. deprecated:: 10.5
+       The feature has been broken at https://github.com/online-judge-tools/api-client/issues/110
     """
     def __init__(self, *, case_name: str, status: str, exec_time_msec: Optional[int], memory_byte: Optional[int]):
         self.case_name = case_name
@@ -1266,17 +1185,10 @@ class AtCoderSubmissionTestCaseResult:
 
     @classmethod
     def _from_table_row(cls, tr: bs4.Tag) -> 'AtCoderSubmissionTestCaseResult':
-        tds = tr.find_all('td')
-        case_name = tds[0].text
-        status = tds[1].text
-        exec_time_msec = None  # type: Optional[int]
-        memory_byte = None  # type: Optional[int]
-        if len(tds) == 4:
-            exec_time_msec = int(utils.remove_suffix(tds[2].text, ' ms'))
-            memory_byte = int(utils.remove_suffix(tds[3].text, ' KB')) * 1000  # TODO: confirm this is KB truly, not KiB
-        else:
-            assert len(tds) == 2
-        return AtCoderSubmissionTestCaseResult(case_name=case_name, status=status, exec_time_msec=exec_time_msec, memory_byte=memory_byte)
+        """
+        :raises NotImplementedError:
+        """
+        raise NotImplementedError
 
 
 onlinejudge.dispatch.services += [AtCoderService]

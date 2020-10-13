@@ -111,10 +111,8 @@ class AtCoderContestTest(unittest.TestCase):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/code-festival-2014-exhibition-open')
         submissions = list(contest.iterate_submissions())
         self.assertGreater(len(submissions), 300)
-        self.assertEqual(submissions[0].download_data().code_size, 276)
-        self.assertEqual(submissions[0].download_data().status, 'WA')
-        self.assertEqual(submissions[1].download_data().user_id, 'snuke')
-        self.assertEqual(submissions[1].download_data().status, 'WA')
+        self.assertEqual(submissions[0].get_url(), 'https://atcoder.jp/contests/code-festival-2014-exhibition-open/submissions/272697')
+        self.assertEqual(submissions[1].get_url(), 'https://atcoder.jp/contests/code-festival-2014-exhibition-open/submissions/272700')
 
     def test_get_contest_without_penalty(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/otemae2019')
@@ -191,10 +189,10 @@ class AtCoderProblemTest(unittest.TestCase):
     def test_iterate_submissions(self):
         problem = AtCoderProblem.from_url('https://atcoder.jp/contests/abc119/tasks/abc119_c')
         submissions = problem.iterate_submissions()
-        self.assertEqual(next(submissions).download_data().score, 300)
-        self.assertEqual(next(submissions).download_data().code_size, 1208)
-        self.assertEqual(next(submissions).download_data().exec_time_msec, 2)
-        self.assertEqual(next(submissions).download_data().memory_byte, 256 * 1000)
+        self.assertEqual(next(submissions).get_url(), 'https://atcoder.jp/contests/abc119/submissions/4368719')
+        self.assertEqual(next(submissions).get_url(), 'https://atcoder.jp/contests/abc119/submissions/4368922')
+        self.assertEqual(next(submissions).get_url(), 'https://atcoder.jp/contests/abc119/submissions/4369188')
+        self.assertEqual(next(submissions).get_url(), 'https://atcoder.jp/contests/abc119/submissions/4369193')
 
 
 class AtCoderSubmissionTest(unittest.TestCase):
@@ -203,98 +201,6 @@ class AtCoderSubmissionTest(unittest.TestCase):
         self.assertEqual(AtCoderSubmission.from_url('https://atcoder.jp/contests/kupc2012/submissions/2097011').submission_id, 2097011)
         self.assertEqual(AtCoderSubmission.from_url('https://qupc2014.contest.atcoder.jp/submissions/1444440').contest_id, 'qupc2014')
         self.assertEqual(AtCoderSubmission.from_url('https://qupc2014.contest.atcoder.jp/submissions/1444440').submission_id, 1444440)
-
-    def test_submission_info(self):
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/agc030/submissions/3904911')
-        data = submission.download_data()
-        self.assertEqual(data.submission_time.year, 2018)
-        self.assertEqual(data.submission_time.month, 12)
-        self.assertEqual(data.submission_time.day, 31)
-        self.assertEqual(data.user_id, 'kimiyuki')
-        self.assertEqual(data.problem.problem_id, 'agc030_b')
-        self.assertEqual(data.language_name, 'C++14 (GCC 5.4.1)')
-        self.assertEqual(data.score, 800)
-        self.assertEqual(data.code_size, 1457)
-        self.assertEqual(data.status, 'AC')
-        self.assertEqual(data.exec_time_msec, 85)
-        self.assertEqual(data.memory_byte, 3328 * 1000)
-
-    def test_submission_info_compile_error(self):
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/abc124/submissions/4943518')
-        data = submission.download_data()
-        self.assertEqual(data.submission_time.year, 2019)
-        self.assertEqual(data.submission_time.month, 4)
-        self.assertEqual(data.submission_time.day, 13)
-        self.assertEqual(data.user_id, 'pekempey')
-        self.assertEqual(data.problem.problem_id, 'abc124_d')
-        self.assertEqual(data.language_name, 'Rust (1.15.1)')
-        self.assertEqual(data.score, 0)
-        self.assertEqual(data.code_size, 787)
-        self.assertEqual(data.status, 'CE')
-        self.assertEqual(data.exec_time_msec, None)
-        self.assertEqual(data.memory_byte, None)
-
-    def test_submission_info_compile_warnings(self):
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/agc032/submissions/4675493')
-        data = submission.download_data()
-        self.assertEqual(data.submission_time.year, 2019)
-        self.assertEqual(data.submission_time.month, 3)
-        self.assertEqual(data.submission_time.day, 23)
-        self.assertEqual(data.user_id, 'yutaka1999')
-        self.assertEqual(data.problem.problem_id, 'agc032_e')
-        self.assertEqual(data.language_name, 'C++14 (GCC 5.4.1)')
-        self.assertEqual(data.score, 0)
-        self.assertEqual(data.code_size, 1682)
-        self.assertEqual(data.status, 'WA')
-        self.assertEqual(data.exec_time_msec, 392)
-        self.assertEqual(data.memory_byte, 7168 * 1000)
-
-    def test_get_test_sets(self):
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/arc028/submissions/223928')
-        test_cases = submission.download_data().test_sets
-        self.assertEqual(len(test_cases), 3)
-        self.assertEqual(test_cases[0].set_name, 'Sample')
-        self.assertEqual(test_cases[0].score, 0)
-        self.assertEqual(test_cases[0].max_score, 0)
-        self.assertEqual(test_cases[0].test_case_names, ['sample_01.txt', 'sample_02.txt'])
-        self.assertEqual(test_cases[1].set_name, 'Subtask1')
-        self.assertEqual(test_cases[1].score, 40)
-        self.assertEqual(test_cases[1].max_score, 40)
-        self.assertEqual(len(test_cases[1].test_case_names), 13)
-        self.assertEqual(test_cases[2].set_name, 'Subtask2')
-        self.assertEqual(test_cases[2].score, 0)
-        self.assertEqual(test_cases[2].max_score, 60)
-        self.assertEqual(len(test_cases[2].test_case_names), 20)
-
-    def test_get_test_cases(self):
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/tricky/submissions/119944')
-        test_cases = submission.download_data().test_cases
-        self.assertEqual(len(test_cases), 2)
-        self.assertEqual(test_cases[0].case_name, 'input_01.txt')
-        self.assertEqual(test_cases[0].status, 'TLE')
-        self.assertEqual(test_cases[0].exec_time_msec, 2031)
-        self.assertEqual(test_cases[0].memory_byte, 9220000)
-        self.assertEqual(test_cases[1].case_name, 'input_02.txt')
-        self.assertEqual(test_cases[1].status, 'AC')
-        self.assertEqual(test_cases[1].exec_time_msec, 131)
-        self.assertEqual(test_cases[1].memory_byte, 7400 * 1000)
-
-    def test_get_source_code(self):
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/abc100/submissions/3082514')
-        self.assertEqual(submission.download_data().source_code, b'/9\\|\\B/c:(\ncYay!')
-        self.assertEqual(submission.download_data().code_size, 16)
-
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/abc100/submissions/4069980')
-        self.assertEqual(submission.download_data().source_code, b'/9\\|\\B/c:(\r\ncYay!')
-        self.assertEqual(submission.download_data().code_size, 17)
-
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/abc100/submissions/4317534')
-        self.assertEqual(submission.download_data().source_code, b'/9\\|\\B/c:(\r\ncYay!\r\n')
-        self.assertEqual(submission.download_data().code_size, 19)
-
-    def test_get_score_float(self):
-        submission = AtCoderSubmission.from_url('https://atcoder.jp/contests/pakencamp-2018-day3/submissions/4583531')
-        self.assertAlmostEqual(submission.download_data().score, 32.53)
 
 
 class AtCoderProblemDataTest(unittest.TestCase):
