@@ -184,38 +184,33 @@ class YukicoderProblem(onlinejudge.type.Problem):
         """
 
         session = session or utils.get_default_session()
-
-        # prepare
-        if self.problem_id is not None:
-            url = 'https://yukicoder.me/api/v1/problems/{}/submit'.format(self.problem_id)
-        elif self.problem_no is not None:
-            url = 'https://yukicoder.me/api/v1/problems/no/{}/submit'.format(self.problem_no)
-        else:
-            assert False
-        data = {
-            'lang': str(language_id),
-            'source': code.decode(),
-        }
-
-        # get CSRF token
-        if 'Authorization' not in session.headers:
-            logger.warning('Please use --yukicoder-token. The combination of cookies and API may not work. This may be a bug of yukicoder.')
-            csrf_token = YukicoderService._get_csrf_token(session=session)
-            logger.debug('yukicoder CSRF token: %s', csrf_token)
-            session.headers['X-CSRFToken'] = csrf_token
-
-        # post code
-        resp = utils.request('POST', url, data=data, session=session, raise_for_status=False)
-        if resp.status_code != 200:
-            logger.debug('%s', resp)
-            logger.warning('yukicoder says: %s', resp.content.decode())
-            raise SubmissionError(resp.content.decode())
-
+        # get
+        url = self.get_url() + '/submit'
+        resp = utils.request('GET', url, session=session)
+        # parse
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        form = soup.find('form', id='submit_form')
+        if not form:
+            logger.error('form not found')
+            raise NotLoggedInError
+        # post
+        form = utils.FormSender(form, url=resp.url)
+        form.set('lang', language_id)
+        form.set_file('file', filename or 'code', code)
+        form.unset('custom_test')
+        resp = form.request(session=session)
+        resp.raise_for_status()
         # result
-        data = json.loads(resp.content.decode())
-        url = 'https://yukicoder.me/submissions/{}'.format(data['SubmissionId'])
-        logger.info('success: result: %s', resp.url)
-        return utils.DummySubmission(resp.url, problem=self)
+        if 'submissions' in resp.url:
+            # example: https://yukicoder.me/submissions/314087
+            logger.info('success: result: %s', resp.url)
+            return utils.DummySubmission(resp.url, problem=self)
+        else:
+            logger.error('failure')
+            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+            for div in soup.findAll('div', attrs={'role': 'alert'}):
+                logger.warning('yukicoder says: "%s"', div.string)
+            raise SubmissionError
 
     def get_available_languages(self, *, session: Optional[requests.Session] = None) -> List[Language]:
         session = session or utils.get_default_session()
