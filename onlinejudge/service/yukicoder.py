@@ -183,6 +183,8 @@ class YukicoderProblem(onlinejudge.type.Problem):
         :raises NotLoggedInError:
         """
 
+        # NOTE: An implementation with the official API exists at 492d8d7. This is reverted at 2b7e6f5 because the API ignores cookies and says "提出するにはログインが必要です" at least at that time.
+
         session = session or utils.get_default_session()
         # get
         url = self.get_url() + '/submit'
@@ -198,7 +200,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         form.set('lang', language_id)
         form.set_file('file', filename or 'code', code)
         form.unset('custom_test')
-        resp = form.request(session=session)
+        resp = form.request(headers={'referer': url}, session=session)
         resp.raise_for_status()
         # result
         if 'submissions' in resp.url:
