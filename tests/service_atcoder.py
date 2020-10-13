@@ -88,9 +88,9 @@ class AtCoderContestTest(unittest.TestCase):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/dwacon2018-final-open')
         problems = contest.list_problems()
         self.assertEqual(problems[0].download_data().time_limit_msec, 2525)
-        self.assertEqual(problems[0].download_data().memory_limit_byte, int(252.525 * 1000 * 1000))
+        self.assertEqual(problems[0].download_data().memory_limit_byte, 246 * 1000 * 1000)
         self.assertEqual(problems[1].download_data().time_limit_msec, 5252)
-        self.assertEqual(problems[1].download_data().memory_limit_byte, int(525.252 * 1000 * 1000))
+        self.assertEqual(problems[1].download_data().memory_limit_byte, 512 * 1000 * 1000)
 
     def test_list_problems_time_limit_is_less_than_msec(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/joi2019ho')
@@ -214,7 +214,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
         self.assertEqual(data.available_languages, None)
         self.assertEqual(data.html, html)
         self.assertEqual(data.input_format, None)
-        self.assertEqual(data.memory_limit_byte, 300 * 1000 * 1000)
+        self.assertEqual(data.memory_limit_byte, 292 * 1000 * 1000)
         self.assertEqual(data.name, 'プログラミングコンテスト')
         self.assertEqual(data.problem, AtCoderProblem.from_url(url))
         self.assertEqual(data.sample_cases, [
