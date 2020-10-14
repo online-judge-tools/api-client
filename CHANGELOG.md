@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.5.0 / 2020-10-14
+
+-   [#112](https://github.com/online-judge-tools/api-client/pull/112) deprecate the feature to get detailed info from submissions on AtCoder. The code is broken by update of AtCoder and replaced with placeholders.
+-   [#111](https://github.com/online-judge-tools/api-client/pull/111) fix some features about yukicoder
+
 ## 10.4.0 / 2020-09-22
 
 -   [#106](https://github.com/online-judge-tools/api-client/pull/106) add support for Kagamiz Contest System
