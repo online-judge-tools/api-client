@@ -72,6 +72,7 @@ def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> b
     return bs4.NavigableString(res)
 
 
+# TODO: send referer by default
 class FormSender:
     def __init__(self, form: bs4.Tag, url: str):
         assert isinstance(form, bs4.Tag)

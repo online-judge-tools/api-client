@@ -136,12 +136,12 @@ class YukicoderContestTest(unittest.TestCase):
 
     def test_list_problems(self):
         self.assertEqual(YukicoderContest.from_url('https://yukicoder.me/contests/276').list_problems(), [
-            YukicoderProblem(problem_no=1168),
-            YukicoderProblem(problem_no=1169),
-            YukicoderProblem(problem_no=1170),
-            YukicoderProblem(problem_no=1171),
-            YukicoderProblem(problem_no=1172),
-            YukicoderProblem(problem_no=1173),
+            YukicoderProblem(problem_id=4401),
+            YukicoderProblem(problem_id=4809),
+            YukicoderProblem(problem_id=4387),
+            YukicoderProblem(problem_id=4729),
+            YukicoderProblem(problem_id=4271),
+            YukicoderProblem(problem_id=4255),
         ])
 
 

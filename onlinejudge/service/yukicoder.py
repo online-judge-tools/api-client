@@ -72,10 +72,17 @@ class YukicoderService(onlinejudge.type.Service):
         session = session or utils.get_default_session()
         if cls._contests is None:
             cls._contests = []
-            for url in ('https://yukicoder.me/api/v1/contest/past', 'https://yukicoder.me/api/v1/contest/future'):
+            for tense in ('past', 'current', 'future'):
+                url = 'https://yukicoder.me/api/v1/contest/{}'.format(tense)
                 resp = utils.request('GET', url, session=session)
                 cls._contests.extend(json.loads(resp.content.decode()))
         return cls._contests
+
+    @classmethod
+    def _get_csrf_token(cls, *, session: requests.Session) -> str:
+        url = 'https://yukicoder.me/csrf_token'
+        resp = utils.request('GET', url, session=session)
+        return resp.content.decode()
 
 
 class YukicoderContest(onlinejudge.type.Contest):
@@ -93,11 +100,10 @@ class YukicoderContest(onlinejudge.type.Contest):
         """
 
         session = session or utils.get_default_session()
-        for contest in YukicoderService._get_contests(session=session):
-            if contest['Id'] == self.contest_id:
-                table = {problem['ProblemId']: problem['No'] for problem in YukicoderService._get_problems(session=session)}
-                return [YukicoderProblem(problem_no=table[problem_id]) for problem_id in contest['ProblemIdList']]
-        raise RuntimeError('Failed to get the contest information from API: {}'.format(self.get_url()))
+        url = 'https://yukicoder.me/api/v1/contest/id/{}'.format(self.contest_id)
+        resp = utils.request('GET', url, session=session)
+        data = json.loads(resp.content.decode())
+        return [YukicoderProblem(problem_id=problem_id) for problem_id in data['ProblemIdList']]
 
     def get_url(self) -> str:
         return 'https://yukicoder.me/contests/{}'.format(self.contest_id)
@@ -156,7 +162,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         url = '{}/testcase.zip'.format(self.get_url())
         resp = utils.request('GET', url, session=session)
         fmt = 'test_%e/%s'
-        return onlinejudge._implementation.testcase_zipper.extract_from_zip(resp.content, fmt)
+        return onlinejudge._implementation.testcase_zipper.extract_from_zip(resp.content, fmt, ignore_unmatched_samples=True)  # NOTE: yukicoder's test sets sometimes contain garbages. The owner insists that this is an intended behavior, so we need to ignore them.
 
     def _parse_sample_tag(self, tag: bs4.Tag) -> Optional[Tuple[str, str]]:
         assert isinstance(tag, bs4.Tag)
@@ -177,6 +183,8 @@ class YukicoderProblem(onlinejudge.type.Problem):
         :raises NotLoggedInError:
         """
 
+        # NOTE: An implementation with the official API exists at 492d8d7. This is reverted at 2b7e6f5 because the API ignores cookies and says "提出するにはログインが必要です" at least at that time.
+
         session = session or utils.get_default_session()
         # get
         url = self.get_url() + '/submit'
@@ -192,7 +200,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         form.set('lang', language_id)
         form.set_file('file', filename or 'code', code)
         form.unset('custom_test')
-        resp = form.request(session=session)
+        resp = form.request(headers={'referer': url}, session=session)
         resp.raise_for_status()
         # result
         if 'submissions' in resp.url:
@@ -208,16 +216,10 @@ class YukicoderProblem(onlinejudge.type.Problem):
 
     def get_available_languages(self, *, session: Optional[requests.Session] = None) -> List[Language]:
         session = session or utils.get_default_session()
-        # get
-        # We use the problem page since it is available without logging in
-        resp = utils.request('GET', self.get_url(), session=session)
-        # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
-        select = soup.find('select', id='lang')
-        languages = []  # type: List[Language]
-        for option in select.find_all('option'):
-            languages += [Language(option.attrs['value'], ' '.join(option.string.split()))]
-        return languages
+        url = 'https://yukicoder.me/api/v1/languages'
+        resp = utils.request('GET', url, session=session)
+        data = json.loads(resp.content.decode())
+        return [Language(language['Id'], language['Name'] + ' (' + language['Ver'] + ')') for language in data]
 
     def get_url(self) -> str:
         if self.problem_no:
