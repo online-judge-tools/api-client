@@ -169,6 +169,7 @@ def get_parser() -> argparse.ArgumentParser:
           Codeforces
           HackerRank
           Kagamiz Contest System
+          LeetCode
           Toph
           yukicoder
 
