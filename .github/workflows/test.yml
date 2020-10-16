@@ -10,14 +10,14 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: [3.5, 3.6]
+        python-version: [3.6, 3.8]
         pattern: [stable]  # see test-unstabl-workaround-*.yml
         # pattern: [stable, unstable]
         exclude:
         - os: windows-latest
-          python-version: 3.6
+          python-version: 3.8
         - os: macos-latest
-          python-version: 3.6
+          python-version: 3.8
 
 
 

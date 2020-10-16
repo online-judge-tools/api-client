@@ -22,7 +22,7 @@ setup(
     url=version.__url__,
     license=version.__license__,
     description=version.__description__,
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     install_requires=[
         'appdirs >= 1',
         'beautifulsoup4 >= 4',
