@@ -55,6 +55,9 @@ class LeetCodeService(onlinejudge.type.Service):
             return None
         return cls()
 
+    def get_url_of_login_page(self) -> str:
+        return f'{self.get_url()}accounts/login/'
+
     def is_logged_in(self, *, session: Optional[requests.Session] = None) -> bool:
         session = self._set_request_header(session)
         json_body = {
