@@ -194,7 +194,7 @@ class DownloadAtCoderTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
-    def test_tenka1_2014_qualA_e(self):
+    def test_tenka1_2014_quala_e(self):
         """This problem uses an unusual HTML markup.
 
         .. seealso::

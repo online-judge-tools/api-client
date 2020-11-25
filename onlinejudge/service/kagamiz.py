@@ -70,7 +70,7 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
         resp = utils.request('GET', url, session=session)
 
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         select = soup.find('select', attrs={'name': 'language'})
         if select is None:
             raise NotLoggedInError
@@ -92,7 +92,7 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
         resp = utils.request('GET', url, session=session)
 
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         form = soup.find('form', id='submission_data')
         if form is None:
             raise NotLoggedInError

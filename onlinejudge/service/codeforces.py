@@ -39,7 +39,7 @@ class CodeforcesService(onlinejudge.type.Service):
             logger.info('You have already signed in.')
             return
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         form = soup.find('form', id='enterForm')
         logger.debug('form: %s', str(form))
         username, password = get_credentials()
@@ -323,7 +323,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for tag in soup.find_all('div', class_=re.compile('^(in|out)put$')):  # Codeforces writes very nice HTML :)
             logger.debug('tag: %s', str(tag))
@@ -346,7 +346,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         select = soup.find('select', attrs={'name': 'programTypeId'})
         if select is None:
             raise NotLoggedInError
@@ -365,7 +365,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         form = soup.find('form', class_='submitForm')
         if form is None:
             logger.error('not logged in')
@@ -401,7 +401,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         else:
             logger.error('failure')
             # parse error messages
-            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
             msgs = []  # type: List[str]
             for span in soup.findAll('span', class_='error'):
                 msgs += [span.string]
