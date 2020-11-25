@@ -72,7 +72,6 @@ def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> b
     return bs4.NavigableString(res)
 
 
-# TODO: send referer by default
 class FormSender:
     def __init__(self, form: bs4.Tag, url: str):
         assert isinstance(form, bs4.Tag)
@@ -100,13 +99,17 @@ class FormSender:
     def unset(self, key: str) -> None:
         del self.payload[key]
 
-    def request(self, session: requests.Session, method: str = None, action: Optional[str] = None, raise_for_status: bool = True, **kwargs) -> requests.Response:
+    def request(self, session: requests.Session, method: str = None, action: Optional[str] = None, raise_for_status: bool = True, headers: Optional[Dict[str, str]] = None, **kwargs) -> requests.Response:
         if method is None:
             method = self.form['method'].upper()
         url = self.url
         if action is not None:
             url = urllib.parse.urljoin(self.url, action)
-        return request(method, url, session=session, raise_for_status=raise_for_status, data=self.payload, files=self.files, **kwargs)
+        if headers is None:
+            headers = {}
+        if 'Referer' not in headers:
+            headers['Referer'] = url
+        return request(method, url, session=session, raise_for_status=raise_for_status, data=self.payload, files=self.files, headers=headers, **kwargs)
 
 
 def dos2unix(s: str) -> str:

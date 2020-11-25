@@ -200,7 +200,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         form.set('lang', language_id)
         form.set_file('file', filename or 'code', code)
         form.unset('custom_test')
-        resp = form.request(headers={'referer': url}, session=session)
+        resp = form.request(session=session)
         resp.raise_for_status()
         # result
         if 'submissions' in resp.url:
