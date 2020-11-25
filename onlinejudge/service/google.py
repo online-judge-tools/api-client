@@ -93,7 +93,7 @@ class GoogleCodeJamProblem(onlinejudge.type.Problem):
             assert False
 
         # parse HTML
-        soup = bs4.BeautifulSoup(statement, utils.html_parser)
+        soup = bs4.BeautifulSoup(statement, utils.HTML_PARSER)
         io_contents = soup.find_all('pre', class_='io-content')
         if len(io_contents) % 2 != 0:
             raise SampleParseError("""the number of <pre class="io-content"> is not multiple of two""")

@@ -7,7 +7,7 @@ from onlinejudge.type import *
 
 def get_handmade_sample_cases(self, *, html: str) -> List[TestCase]:
     # parse
-    soup = bs4.BeautifulSoup(html, utils.html_parser)
+    soup = bs4.BeautifulSoup(html, utils.HTML_PARSER)
     samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
     for pre in soup.select('.sample pre'):
         it = self._parse_sample_tag(pre)

@@ -62,7 +62,7 @@ class TophProblem(onlinejudge.type.Problem):
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[onlinejudge.type.TestCase]:
         session = session or utils.get_default_session()
         resp = utils.request('GET', self.get_url(), session=session)
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for table in soup.find_all('table', class_="samples"):
             logger.debug('table: %s', str(table))
@@ -85,7 +85,7 @@ class TophProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         select = soup.find('select', attrs={'name': 'languageId'})
         if select is None:
             raise NotLoggedInError
@@ -103,7 +103,7 @@ class TophProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         form = soup.find('form')
         if form is None:
             logger.error('not logged in')

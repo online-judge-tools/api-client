@@ -88,7 +88,7 @@ class GetProblemAOJTest(unittest.TestCase):
 
 
 class GetProblemAOJSystemTest(unittest.TestCase):
-    def test_ITP1_1_B(self):
+    def test_itp1_1_b(self):
         url = 'http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP1_1_B'
         expected = {
             "status": "ok",

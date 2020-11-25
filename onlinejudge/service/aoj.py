@@ -80,7 +80,7 @@ class AOJProblem(onlinejudge.type.Problem):
             # list h3+pre
             zipper = onlinejudge._implementation.testcase_zipper.SampleZipper()
             expected_strings = ('入力例', '出力例', 'Sample Input', 'Sample Output')
-            soup = bs4.BeautifulSoup(html, utils.html_parser)
+            soup = bs4.BeautifulSoup(html, utils.HTML_PARSER)
             for pre in soup.find_all('pre'):
                 tag = pre.find_previous_sibling()
                 if tag and tag.name == 'h3' and tag.string and any(s in tag.string for s in expected_strings):

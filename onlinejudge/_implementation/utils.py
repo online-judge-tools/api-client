@@ -13,7 +13,7 @@ from onlinejudge.type import *
 from onlinejudge.utils import *  # re-export
 
 logger = getLogger(__name__)
-html_parser = 'lxml'
+HTML_PARSER = 'lxml'
 
 
 def previous_sibling_tag(tag: bs4.Tag) -> bs4.Tag:

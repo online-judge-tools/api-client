@@ -141,7 +141,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for pre in soup.select('.sample pre'):
             logger.debug('pre: %s', str(pre))
@@ -190,7 +190,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         url = self.get_url() + '/submit'
         resp = utils.request('GET', url, session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         form = soup.find('form', id='submit_form')
         if not form:
             logger.error('form not found')
@@ -209,7 +209,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
             return utils.DummySubmission(resp.url, problem=self)
         else:
             logger.error('failure')
-            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
             for div in soup.findAll('div', attrs={'role': 'alert'}):
                 logger.warning('yukicoder says: "%s"', div.string)
             raise SubmissionError
@@ -257,7 +257,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         for h4 in soup.find_all('h4'):
             if h4.string == '入力':
                 return h4.parent.find('pre').decode_contents(formatter=None)

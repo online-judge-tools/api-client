@@ -33,7 +33,7 @@ logger = getLogger(__name__)
 
 def _list_alert(resp: requests.Response, soup: Optional[bs4.BeautifulSoup] = None, print_: bool = False) -> List[str]:
     if soup is None:
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
     msgs = []  # type: List[str]
     for alert in soup.find_all('div', attrs={'role': 'alert'}):
         msg = ' '.join([s.strip() for s in alert.strings if s.strip()])
@@ -70,7 +70,7 @@ class AtCoderService(onlinejudge.type.Service):
         resp = _request('GET', url, session=session, allow_redirects=False)
 
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         form = soup.find('form', action='')
         if not form:
             raise LoginError('something wrong')
@@ -140,7 +140,7 @@ class AtCoderService(onlinejudge.type.Service):
             timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
 
             # parse
-            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
             if last_page is None:
                 last_page = int(soup.find('ul', class_='pagination').find_all('li')[-1].text)
                 logger.debug('last page: %s', last_page)
@@ -262,7 +262,7 @@ class AtCoderContestDetailedData(AtCoderContestData):
 
     @classmethod
     def _from_response(cls, *, contest: 'AtCoderContest', lang: str, session: requests.Session, response: requests.Response, timestamp: datetime.datetime):
-        soup = bs4.BeautifulSoup(response.content.decode(response.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(response.content.decode(response.encoding), utils.HTML_PARSER)
         name, _, _ = soup.find('title').text.rpartition(' - ')
         contest_duration = soup.find('small', class_='contest-duration')
         start_time, end_time = [cls._parse_start_time(a['href']) for a in contest_duration.find_all('a')]
@@ -366,7 +366,7 @@ class AtCoderContest(onlinejudge.type.Contest):
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
 
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         tbody = soup.find('tbody')
         return [AtCoderProblemData._from_table_row(tr, session=session, response=resp, timestamp=timestamp) for tr in tbody.find_all('tr')]
 
@@ -436,7 +436,7 @@ class AtCoderContest(onlinejudge.type.Contest):
             yield from submissions
 
     def _iterate_submission_data_from_response(self, *, resp: requests.Response, session: requests.Session, timestamp: datetime.datetime) -> Iterator['AtCoderSubmissionData']:
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         tbodies = soup.find_all('tbody')
         if len(tbodies) == 0:
             return  # No Submissions
@@ -557,7 +557,7 @@ class AtCoderProblemData(ProblemData):
 
     @classmethod
     def _from_html(cls, html: bytes, *, problem: 'AtCoderProblem', session: Optional[requests.Session] = None, response: Optional[requests.Response] = None, timestamp: Optional[datetime.datetime] = None) -> 'AtCoderProblemData':
-        soup = bs4.BeautifulSoup(html, utils.html_parser)
+        soup = bs4.BeautifulSoup(html, utils.HTML_PARSER)
         h2 = soup.find('span', class_='h2')
 
         alphabet, _, name = utils.get_direct_children_text(h2).strip().partition(' - ')
@@ -756,7 +756,7 @@ class AtCoderProblemDetailedData(AtCoderProblemData):
 
         """
 
-        soup = bs4.BeautifulSoup(html, utils.html_parser)
+        soup = bs4.BeautifulSoup(html, utils.HTML_PARSER)
         try:
             sample_cases = cls._parse_sample_cases(soup)  # type: Optional[List[TestCase]]
         except SampleParseError:
@@ -815,7 +815,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         """
         session = session or utils.get_default_session()
         resp = _request('GET', self.get_url(type='beta'), session=session)
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         return AtCoderProblemDetailedData._parse_sample_cases(soup)
 
     def get_url(self, *, type: Optional[str] = None, lang: Optional[str] = None) -> str:
@@ -895,7 +895,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
             raise NotLoggedInError
 
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.html_parser)
+        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         form = soup.find('form', action='/contests/{}/submit'.format(self.contest_id))
         if not form:
             raise SubmissionError('something wrong')

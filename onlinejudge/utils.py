@@ -18,7 +18,7 @@ logger = getLogger(__name__)
 user_data_dir = pathlib.Path(appdirs.user_data_dir('online-judge-tools'))
 user_cache_dir = pathlib.Path(appdirs.user_cache_dir('online-judge-tools'))
 
-_default_session = None  # Optional[requests.Session]
+_DEFAULT_SESSION = None  # Optional[requests.Session]
 
 
 # NOTE: this function should not be used internally; if used, we may make bugs that given sessions are ignored
@@ -30,10 +30,10 @@ def get_default_session() -> requests.Session:
     :note: the user agent is the default of the requests library.
     """
 
-    global _default_session
-    if _default_session is None:
-        _default_session = requests.session()
-    return _default_session
+    global _DEFAULT_SESSION
+    if _DEFAULT_SESSION is None:
+        _DEFAULT_SESSION = requests.session()
+    return _DEFAULT_SESSION
 
 
 default_cookie_path = user_data_dir / 'cookie.jar'
