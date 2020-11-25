@@ -1,5 +1,11 @@
 # Change Log
 
+## 10.6.0 / 2020-11-25
+
+-   [#116](https://github.com/online-judge-tools/api-client/pull/116) [breaking changes] finished Python 3.5 support
+    -   This breaks some environments, but such environments already reached EOL. The major version is not incremented.
+-   [#120](https://github.com/online-judge-tools/api-client/pull/120) fix an issue about submissions to Codeforces
+
 ## 10.5.0 / 2020-10-14
 
 -   [#112](https://github.com/online-judge-tools/api-client/pull/112) deprecate the feature to get detailed info from submissions on AtCoder. The code is broken by update of AtCoder and replaced with placeholders.
