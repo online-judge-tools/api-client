@@ -47,7 +47,7 @@ class AtCoderContestTest(unittest.TestCase):
         self.assertEqual(data.start_time.day, 13)
         self.assertEqual(data.duration.total_seconds(), 2 * 60 * 60)
         self.assertEqual(data.can_participate, 'All')
-        self.assertEqual(data.rated_range, ' ~ 2799')
+        self.assertEqual(data.rated_range, ' - 2799')
         self.assertEqual(data.penalty.total_seconds(), 5 * 60)
 
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/dp')
