@@ -41,6 +41,20 @@ class AOJService(onlinejudge.type.Service):
             return cls()
         return None
 
+    # TODO: Logging in via this URL doesn't work with Selenium. why?
+    # def get_url_of_login_page(self) -> str:
+    #     return 'https://onlinejudge.u-aizu.ac.jp/signin'
+
+    def is_logged_in(self, *, session: Optional[requests.Session] = None) -> bool:
+        session = session or utils.get_default_session()
+        url = 'https://judgeapi.u-aizu.ac.jp/self'
+        resp = utils.request('GET', url, session=session, raise_for_status=False)
+        if resp.status_code != 200:
+            return False
+        data = json.loads(resp.content)
+        logger.debug('self: %s', resp.content)
+        return 'id' in data
+
 
 class AOJProblem(onlinejudge.type.Problem):
     """
