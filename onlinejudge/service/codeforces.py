@@ -362,19 +362,25 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         """
 
         session = session or utils.get_default_session()
+
         # get
-        resp = utils.request('GET', self.get_url(), session=session)
+        url = self.get_contest().get_url() + '/submit'
+        resp = utils.request('GET', url, session=session)
+
         # parse
         soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
-        form = soup.find('form', class_='submitForm')
+        form = soup.find('form', class_='submit-form')
         if form is None:
             logger.error('not logged in')
             raise NotLoggedInError
         logger.debug('form: %s', str(form))
+
         # make data
         form = utils.FormSender(form, url=resp.url)
+        form.set('submittedProblemIndex', str(self.index))
         form.set('programTypeId', language_id)
         form.set_file('sourceFile', filename or 'code', code)
+
         # post
         preserved_user_agent = session.headers.get('User-Agent')
         logger.debug('User-Agent is temporarily disabled. The old User-Agent is %s', repr(preserved_user_agent))
@@ -382,17 +388,17 @@ class CodeforcesProblem(onlinejudge.type.Problem):
             if preserved_user_agent is not None:
                 del session.headers['User-Agent']
             resp = form.request(session=session, raise_for_status=False)
+            try:
+                resp.raise_for_status()
+            except requests.exceptions.HTTPError as e:
+                logger.exception(e)
+                if resp.status_code == 403:
+                    logger.warning('You may use wrong User-Agent: %s', repr(session.headers.get('User-Agent')))
+                raise e
         finally:
             if preserved_user_agent is not None:
                 session.headers['User-Agent'] = preserved_user_agent
-        try:
-            resp.raise_for_status()
-        except requests.exceptions.HTTPError as e:
-            logger.exception(e)
-            if resp.status_code == 403:
-                logger.warning('You may use wrong User-Agent: %s', repr(session.headers.get('User-Agent')))
-                raise SubmissionError('You may use wrong User-Agent: {}: {}'.format(repr(session.headers.get('User-Agent')), e))
-            raise e
+
         # result
         if resp.url.endswith('/my'):
             # example: https://codeforces.com/contest/598/my
