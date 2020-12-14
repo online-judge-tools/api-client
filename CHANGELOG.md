@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.6.1 / 2020-12-15
+
+-   [#125](https://github.com/online-judge-tools/api-client/pull/125) fix an issue about submissions to Codeforces again
+
 ## 10.6.0 / 2020-11-25
 
 -   [#116](https://github.com/online-judge-tools/api-client/pull/116) [breaking changes] finished Python 3.5 support
