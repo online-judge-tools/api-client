@@ -103,6 +103,8 @@ class FormSender:
         if method is None:
             method = self.form['method'].upper()
         url = self.url
+        if action is None and 'action' in self.form.attrs:
+            action = self.form.attrs['action']
         if action is not None:
             url = urllib.parse.urljoin(self.url, action)
         if headers is None:
