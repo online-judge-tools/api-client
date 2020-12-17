@@ -110,7 +110,7 @@ class FormSender:
         if headers is None:
             headers = {}
         if 'Referer' not in headers:
-            headers['Referer'] = url
+            headers['Referer'] = self.url
         return request(method, url, session=session, raise_for_status=raise_for_status, data=self.payload, files=self.files, headers=headers, **kwargs)
 
 
