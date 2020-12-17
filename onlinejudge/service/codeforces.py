@@ -357,62 +357,12 @@ class CodeforcesProblem(onlinejudge.type.Problem):
 
     def submit_code(self, code: bytes, language_id: LanguageId, *, filename: Optional[str] = None, session: Optional[requests.Session] = None) -> onlinejudge.type.Submission:
         """
-        :raises NotLoggedInError:
         :raises SubmissionError:
         """
 
-        session = session or utils.get_default_session()
-
-        # get
-        url = self.get_contest().get_url() + '/submit'
-        resp = utils.request('GET', url, session=session)
-
-        # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
-        form = soup.find('form', class_='submit-form')
-        if form is None:
-            logger.error('not logged in')
-            raise NotLoggedInError
-        logger.debug('form: %s', str(form))
-
-        # make data
-        form = utils.FormSender(form, url=resp.url)
-        form.set('submittedProblemIndex', str(self.index))
-        form.set('programTypeId', language_id)
-        form.set_file('sourceFile', filename or 'code', code)
-
-        # post
-        preserved_user_agent = session.headers.get('User-Agent')
-        logger.debug('User-Agent is temporarily disabled. The old User-Agent is %s', repr(preserved_user_agent))
-        try:
-            if preserved_user_agent is not None:
-                del session.headers['User-Agent']
-            resp = form.request(session=session, raise_for_status=False)
-            try:
-                resp.raise_for_status()
-            except requests.exceptions.HTTPError as e:
-                logger.exception(e)
-                if resp.status_code == 403:
-                    logger.warning('You may use wrong User-Agent: %s', repr(session.headers.get('User-Agent')))
-                raise e
-        finally:
-            if preserved_user_agent is not None:
-                session.headers['User-Agent'] = preserved_user_agent
-
-        # result
-        if resp.url.endswith('/my'):
-            # example: https://codeforces.com/contest/598/my
-            logger.info('success: result: %s', resp.url)
-            return utils.DummySubmission(resp.url, problem=self)
-        else:
-            logger.error('failure')
-            # parse error messages
-            soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
-            msgs = []  # type: List[str]
-            for span in soup.findAll('span', class_='error'):
-                msgs += [span.string]
-                logger.warning('Codeforces says: "%s"', span.string)
-            raise SubmissionError('it may be the "You have submitted exactly the same code before" error: ' + str(msgs))
+        msg = 'The feature to submit to Codeforces is now removed. Please read https://github.com/online-judge-tools/api-client/issues/127'
+        logger.error('%s', msg)
+        raise SubmissionError(msg)
 
     def get_url(self) -> str:
         table = {}
