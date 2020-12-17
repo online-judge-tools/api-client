@@ -1,5 +1,10 @@
 # Change Log
 
+## 10.7.0 / 2020-12-18
+
+-   [#128](https://github.com/online-judge-tools/api-client/pull/128) [breaking changes] remove the feature to submit code to Codeforces
+    -   The reason is described at [#127](https://github.com/online-judge-tools/api-client/issues/127)
+
 ## 10.6.1 / 2020-12-15
 
 -   [#125](https://github.com/online-judge-tools/api-client/pull/125) fix an issue about submissions to Codeforces again
