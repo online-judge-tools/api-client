@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.7.1 / 2020-12-25
+
+-   [#130](https://github.com/online-judge-tools/api-client/pull/130) fix an error on submissions to HackerRank ([@wapa5pow](https://github.com/wapa5pow))
+
 ## 10.7.0 / 2020-12-18
 
 -   [#128](https://github.com/online-judge-tools/api-client/pull/128) [breaking changes] remove the feature to submit code to Codeforces
