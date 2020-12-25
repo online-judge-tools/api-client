@@ -159,7 +159,7 @@ class HackerRankProblem(onlinejudge.type.Problem):
         csrftoken = soup.find('meta', attrs={'name': 'csrf-token'}).attrs['content']
         # post
         url = 'https://www.hackerrank.com/rest/contests/{}/challenges/{}/submissions'.format(self.contest_slug, self.challenge_slug)
-        payload = {'code': code, 'language': str(language_id), 'contest_slug': self.contest_slug}
+        payload = {'code': code.decode('utf-8'), 'language': str(language_id), 'contest_slug': self.contest_slug}
         logger.debug('payload: %s', payload)
         resp = utils.request('POST', url, session=session, json=payload, headers={'X-CSRF-Token': csrftoken})
         # parse
