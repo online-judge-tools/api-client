@@ -85,8 +85,11 @@ class CSAcademyProblem(onlinejudge.type.Problem):
         }
         resp = utils.request('POST', get_contest_task_url, session=session, files=payload, headers=headers)
         # parse
-        assert resp.encoding is None
-        contest_task = json.loads(resp.content.decode())  # NOTE: Should I memoize this?
+        try:
+            contest_task = json.loads(resp.content.decode())
+        except json.JSONDecodeError as e:
+            logger.exception(e)
+            raise SampleParseError('failed to parse the task JSON: {}'.format(e.msg))
         if contest_task.get('title') == 'Page not found':
             logger.error('something wrong')
             return []
