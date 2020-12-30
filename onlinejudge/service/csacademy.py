@@ -13,7 +13,7 @@ import requests
 
 import onlinejudge._implementation.utils as utils
 import onlinejudge.type
-from onlinejudge.type import TestCase
+from onlinejudge.type import SampleParseError, TestCase
 
 logger = getLogger(__name__)
 
@@ -62,8 +62,11 @@ class CSAcademyProblem(onlinejudge.type.Problem):
         contest_url = 'https://csacademy.com/contest/{}/'.format(self.contest_name)
         resp = utils.request('GET', contest_url, session=session, headers=headers)
         # parse config
-        assert resp.encoding is None
-        config = json.loads(resp.content.decode())  # NOTE: Should I memoize this? Is the CSAcademyRound class required?
+        try:
+            config = json.loads(resp.content.decode())  # NOTE: Should I memoize this? Is the CSAcademyRound class required?
+        except json.JSONDecodeError as e:
+            logger.exception(e)
+            raise SampleParseError('failed to parse the config JSON: {}'.format(e.msg))
         task_config = None
         for it in config['state']['contesttask']:
             if it['name'] == self.task_name:
@@ -82,8 +85,11 @@ class CSAcademyProblem(onlinejudge.type.Problem):
         }
         resp = utils.request('POST', get_contest_task_url, session=session, files=payload, headers=headers)
         # parse
-        assert resp.encoding is None
-        contest_task = json.loads(resp.content.decode())  # NOTE: Should I memoize this?
+        try:
+            contest_task = json.loads(resp.content.decode())
+        except json.JSONDecodeError as e:
+            logger.exception(e)
+            raise SampleParseError('failed to parse the task JSON: {}'.format(e.msg))
         if contest_task.get('title') == 'Page not found':
             logger.error('something wrong')
             return []
