@@ -3,7 +3,7 @@ import unittest
 from onlinejudge_api.main import main
 
 
-class GetProblemAtCoderProblemsTest(unittest.TestCase):
+class GetContestAtCoderProblemsTest(unittest.TestCase):
     def test_21fb8ee5(self):
         url = 'https://kenkoooo.com/atcoder/#/contest/show/21fb8ee5-c293-4c5b-8d3d-9169afdf6fcf'
         expected = {
