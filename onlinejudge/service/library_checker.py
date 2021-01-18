@@ -129,7 +129,7 @@ class LibraryCheckerProblem(onlinejudge.type.Problem):
         # example: https://judge.yosupo.jp/problem/unionfind
         result = urllib.parse.urlparse(url)
         if result.scheme in ('', 'http', 'https') \
-                and result.netloc == 'judge.yosupo.jp':
+                and result.netloc in ('judge.yosupo.jp', 'old.yosupo.jp'):
             m = re.match(r'/problem/(\w+)/?', result.path)
             if m:
                 return cls(problem_id=m.group(1))
