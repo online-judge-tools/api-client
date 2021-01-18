@@ -1,5 +1,11 @@
 # Change Log
 
+## 10.8.0 / 2021-01-19
+
+-   [#133](https://github.com/online-judge-tools/api-client/pull/133) allow [old.yosupo.jp](https://old.yosupo.jp/) as URLs for Library-Checker problems
+-   [#134](https://github.com/online-judge-tools/api-client/pull/134) support virtual contests of [AtCoder Problems](https://kenkoooo.com/atcoder)
+-   [#135](https://github.com/online-judge-tools/api-client/pull/135) update about `get-contest` subcommand; support yukicoder contests
+
 ## 10.7.1 / 2020-12-25
 
 -   [#130](https://github.com/online-judge-tools/api-client/pull/130) fix an error on submissions to HackerRank ([@wapa5pow](https://github.com/wapa5pow))
