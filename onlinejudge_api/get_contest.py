@@ -1,6 +1,7 @@
 from typing import *
 
 from onlinejudge.service.atcoder import AtCoderContest
+from onlinejudge.service.atcoder_problems import AtCoderProblemsContest
 from onlinejudge.service.codeforces import CodeforcesContest
 from onlinejudge.type import *
 
@@ -137,6 +138,12 @@ def main(contest: Contest, *, is_full: bool, session: requests.Session) -> Dict[
             result["raw"] = {
                 "json": data.json.decode(),
             }
+
+    elif isinstance(contest, AtCoderProblemsContest):
+        result = contest._download_data(session=session)
+        if not is_full:
+            assert 'raw' in result
+            del result["raw"]
 
     else:
         assert False
