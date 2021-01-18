@@ -8,6 +8,7 @@ the module for yukicoder (https://yukicoder.me/)
 
 import json
 import posixpath
+import string
 import urllib.parse
 from logging import getLogger
 from typing import *
@@ -93,6 +94,42 @@ class YukicoderContest(onlinejudge.type.Contest):
     """
     def __init__(self, *, contest_id: int):
         self.contest_id = contest_id
+
+    def _download_data(self, *, session: Optional[requests.Session] = None) -> Dict[str, Any]:
+        session = session or utils.get_default_session()
+
+        url = 'https://yukicoder.me/api/v1/problems'
+        resp = utils.request('GET', url, session=session)
+        problems = json.loads(resp.content)
+        problem_dict = {problem['ProblemId']: problem for problem in problems}
+
+        url = 'https://yukicoder.me/api/v1/contest/id/{}'.format(self.contest_id)
+        resp = utils.request('GET', url, session=session)
+        data = json.loads(resp.content)
+
+        result = {
+            'url': self.get_url(),
+            'name': data['Name'],
+            'problems': [],
+            'raw': resp.content.decode(),
+        }
+        for index, problem_id in enumerate(data['ProblemIdList']):
+            if problem_id in problem_dict:
+                name = problem_dict[problem_id]['Title']
+            else:
+                name = '問題名非公開'
+            result['problems'].append({
+                "url": YukicoderProblem(problem_id=problem_id).get_url(),
+                "name": name,
+                "context": {
+                    "contest": {
+                        "name": data['Name'],
+                        "url": self.get_url(),
+                    },
+                    "alphabet": string.ascii_uppercase[index],
+                },
+            })
+        return result
 
     def list_problems(self, *, session: Optional[requests.Session] = None) -> Sequence['YukicoderProblem']:
         """
