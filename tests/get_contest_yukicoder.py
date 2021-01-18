@@ -3,7 +3,7 @@ import unittest
 from onlinejudge_api.main import main
 
 
-class GetProblemYukicoderTest(unittest.TestCase):
+class GetContestYukicoderTest(unittest.TestCase):
     def test_294(self):
         url = 'https://yukicoder.me/contests/294'
         expected = {

@@ -11,6 +11,7 @@ def main():
     tests = pathlib.Path('tests')
     unstable = [
         tests / 'get_problem_codeforces.py',
+        tests / 'get_contest_codeforces.py',
         tests / 'get_problem_poj.py',
         tests / 'service_codeforces.py',
         tests / 'service_codechef.py',
