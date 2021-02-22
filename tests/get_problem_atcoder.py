@@ -1,9 +1,12 @@
+import os
 import unittest
 
 from onlinejudge_api.main import main
 
+DROPBOX_TOKEN = 'DROPBOX_TOKEN'
 
-class DownloadAtCoderTest(unittest.TestCase):
+
+class GetProblemAtCoderTest(unittest.TestCase):
     def test_icpc2013spring_a(self):
         """This problem contains both words `Input` and `Output` for the headings for sample outputs.
         """
@@ -256,4 +259,48 @@ class DownloadAtCoderTest(unittest.TestCase):
             "result": None,
         }
         actual = main(['get-problem', url], debug=True)
+        self.assertEqual(expected, actual)
+
+    @unittest.skipIf(DROPBOX_TOKEN not in os.environ, '$DROPBOX_TOKEN is required')
+    def test_abc100_a_system(self):
+        url = "https://atcoder.jp/contests/abc170/tasks/abc170_a"
+        expected = {
+            "status": "ok",
+            "messages": [],
+            "result": {
+                "url": "https://atcoder.jp/contests/abc170/tasks/abc170_a",
+                "tests": [{
+                    "input": "0 2 3 4 5\n",
+                    "output": "1\n",
+                    "name": "sample_01.txt"
+                }, {
+                    "input": "1 2 0 4 5\n",
+                    "output": "3\n",
+                    "name": "sample_02.txt"
+                }, {
+                    "input": "1 0 3 4 5\n",
+                    "output": "2\n",
+                    "name": "testcase_01.txt"
+                }, {
+                    "input": "1 2 3 0 5\n",
+                    "output": "4\n",
+                    "name": "testcase_02.txt"
+                }, {
+                    "input": "1 2 3 4 0\n",
+                    "output": "5\n",
+                    "name": "testcase_03.txt"
+                }],
+                "name": "Five Variables",
+                "context": {
+                    "contest": {
+                        "name": "AtCoder Beginner Contest 170",
+                        "url": "https://atcoder.jp/contests/abc170"
+                    },
+                    "alphabet": "A"
+                },
+                "memoryLimit": 1024,
+                "timeLimit": 2000
+            },
+        }
+        actual = main(['get-problem', '--system', url], debug=True)
         self.assertEqual(expected, actual)

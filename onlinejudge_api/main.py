@@ -39,6 +39,7 @@ import requests
 import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch as dispatch
 from onlinejudge.__about__ import __package_name__, __version__
+from onlinejudge.service.atcoder import AtCoderProblem
 from onlinejudge.service.yukicoder import YukicoderProblem, YukicoderService
 from onlinejudge.type import *
 
@@ -75,6 +76,7 @@ def get_parser() -> argparse.ArgumentParser:
 
         supported services with --system:
           Aizu Online Judge
+          AtCoder
           HackerRank
           Library Checker
           yukicoder
@@ -235,20 +237,34 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
     session.headers['User-Agent'] = parsed.user_agent
 
     # set yukicoder's token
+    YUKICODER_TOKEN = 'YUKICODER_TOKEN'  # pylint: disable=invalid-name
     if parsed.yukicoder_token is not None:
         parser.error("don't use --yukicoder-token. use $YUKICODER_TOKEN")
-    else:
-        parsed.yukicoder_token = os.environ.get('YUKICODER_TOKEN')
-        is_yukicoder = isinstance(problem, YukicoderProblem) or isinstance(service, YukicoderService)
-        if parsed.yukicoder_token and is_yukicoder:
-            session.headers['Authorization'] = 'Bearer {}'.format(parsed.yukicoder_token)
+    if YUKICODER_TOKEN in os.environ:
+        parsed.yukicoder_token = os.environ[YUKICODER_TOKEN]
+        if not debug:
+            del os.environ[YUKICODER_TOKEN]
+    is_yukicoder = isinstance(problem, YukicoderProblem) or isinstance(service, YukicoderService)
+    if parsed.yukicoder_token and is_yukicoder:
+        session.headers['Authorization'] = 'Bearer {}'.format(parsed.yukicoder_token)
+
+    # set Dropbox's token
+    DROPBOX_TOKEN = 'DROPBOX_TOKEN'  # pylint: disable=invalid-name
+    if DROPBOX_TOKEN in os.environ:
+        dropbox_token = os.environ[DROPBOX_TOKEN]
+        if not debug:
+            del os.environ[DROPBOX_TOKEN]
+    is_atcoder = isinstance(problem, AtCoderProblem)
+    if dropbox_token and is_atcoder and parsed.system:
+        session.headers['Authorization'] = 'Bearer {}'.format(dropbox_token)
 
     # set password to login from the environment variable
     if parsed.subcommand == 'login-service':
         if parsed.password is not None:
             parser.error("don't use --password. use $PASSWORD")
-        else:
-            parsed.password = os.environ.get('PASSWORD')
+        parsed.password = os.environ.get('PASSWORD')
+        if not debug:
+            del os.environ['PASSWORD']
 
     try:
         with utils.with_cookiejar(session, path=parsed.cookie) as session:
