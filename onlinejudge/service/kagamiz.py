@@ -104,8 +104,8 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
         form.set('code', code)
         try:
             resp = form.request(session=session)
-        except requests.exceptions.HTTPError:
-            raise SubmissionError
+        except requests.exceptions.HTTPError as e:
+            raise SubmissionError from e
 
         # result
         if '/submissions' in resp.url:

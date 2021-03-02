@@ -65,8 +65,7 @@ class CSAcademyProblem(onlinejudge.type.Problem):
         try:
             config = json.loads(resp.content.decode())  # NOTE: Should I memoize this? Is the CSAcademyRound class required?
         except json.JSONDecodeError as e:
-            logger.exception(e)
-            raise SampleParseError('failed to parse the config JSON: {}'.format(e.msg))
+            raise SampleParseError('failed to parse the config JSON: {}'.format(e.msg)) from e
         task_config = None
         for it in config['state']['contesttask']:
             if it['name'] == self.task_name:
@@ -88,8 +87,7 @@ class CSAcademyProblem(onlinejudge.type.Problem):
         try:
             contest_task = json.loads(resp.content.decode())
         except json.JSONDecodeError as e:
-            logger.exception(e)
-            raise SampleParseError('failed to parse the task JSON: {}'.format(e.msg))
+            raise SampleParseError('failed to parse the task JSON: {}'.format(e.msg)) from e
         if contest_task.get('title') == 'Page not found':
             logger.error('something wrong')
             return []

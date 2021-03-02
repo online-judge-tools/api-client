@@ -140,7 +140,7 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
 
     # interpreter
     lang_ids = list(filter(lambda lang_id: is_python_description(language_dict[lang_id]), lang_ids))
-    if any([parse_python_interpreter(language_dict[lang_id]) == 'pypy' for lang_id in lang_ids]):
+    if any(parse_python_interpreter(language_dict[lang_id]) == 'pypy' for lang_id in lang_ids):
         logger.info('PyPy is available for Python interpreter')
     if python_interpreter != 'all':
         lang_ids = list(filter(lambda lang_id: parse_python_interpreter(language_dict[lang_id]) == python_interpreter, lang_ids))
@@ -182,8 +182,7 @@ def guess_language_ids_of_python_file(filename: pathlib.Path, code: bytes, langu
     return lang_ids
 
 
-# pylint: disable=bad-whitespace
-other_languages_table = [
+other_languages_table: List[Dict[str, Any]] = [
      { 'names': [ 'awk'                   ], 'exts': [ 'awk'       ] },
      { 'names': [ 'bash'                  ], 'exts': [ 'sh'        ] },
      { 'names': [ 'brainfuck'             ], 'exts': [ 'bf'        ] },
@@ -224,8 +223,7 @@ other_languages_table = [
      { 'names': [ 'unlambda'              ], 'exts': [ 'unl'       ] },
      { 'names': [ 'vim script'            ], 'exts': [ 'vim'       ] },
      { 'names': [ 'visual basic'          ], 'exts': [ 'vb'        ] },
-]  # type: List[Dict[str, Any]]  # yapf: disable
-# pylint: enable=bad-whitespace
+]  # yapf: disable
 
 
 def guess_language_ids_of_file(filename: pathlib.Path, code: bytes, language_dict: Dict[str, str], *, cxx_latest: bool, cxx_compiler: str, python_version: str, python_interpreter: str) -> List[str]:
