@@ -250,6 +250,7 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
 
     # set Dropbox's token
     DROPBOX_TOKEN = 'DROPBOX_TOKEN'  # pylint: disable=invalid-name
+    dropbox_token: Optional[str] = None
     if DROPBOX_TOKEN in os.environ:
         dropbox_token = os.environ[DROPBOX_TOKEN]
         if not debug:
