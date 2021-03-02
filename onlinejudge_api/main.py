@@ -6,14 +6,14 @@ isort: skip_file
 # pylint: disable=unused-import,ungrouped-imports
 try:
     import onlinejudge.service
-except ImportError:
+except ImportError as e:
     import json
     print(json.dumps({
         "status": "error",
         "messages": ["Due to a known bug, the online-judge-tools is not yet properly installed. Please re-run $ pip3 install --force-reinstall online-judge-api-client"],
         "result": None,
     }))
-    raise SystemExit(1)
+    raise SystemExit(1) from e
 # pylint: enable=unused-import,ungrouped-imports
 
 import argparse
@@ -301,7 +301,7 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
             else:
                 assert False
 
-    except:
+    except Exception as e:
         etype, evalue, _ = sys.exc_info()
         logger.exception('%s', evalue)
         wrapped = {
@@ -313,7 +313,7 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
             return wrapped
         else:
             print(json.dumps(wrapped))
-            raise SystemExit(1)
+            raise SystemExit(1) from e
 
     else:
         if result is None:

@@ -212,7 +212,7 @@ class CodeforcesContest(onlinejudge.type.Contest):
         return [CodeforcesProblemData._from_json(row, response=resp, session=session, timestamp=timestamp) for row in data['result']['problems']]
 
     def list_problems(self, *, session: Optional[requests.Session] = None) -> Sequence['CodeforcesProblem']:
-        return tuple([data.problem for data in self.list_problem_data(session=session)])
+        return tuple(data.problem for data in self.list_problem_data(session=session))
 
     def download_data(self, *, session: Optional[requests.Session] = None) -> CodeforcesContestData:
         session = session or utils.get_default_session()

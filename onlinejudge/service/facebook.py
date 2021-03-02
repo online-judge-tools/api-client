@@ -78,8 +78,8 @@ class FacebookHackerCupProblem(onlinejudge.type.Problem):
         resp = utils.request('POST', url, session=session, data=data)
         try:
             result = json.loads(resp.content.decode())  # type: Dict[str, Any]
-        except json.decoder.JSONDecodeError:
-            raise onlinejudge.type.SampleParseError("The result of Facebook's API is empty. Did you set your User-Agent?")
+        except json.decoder.JSONDecodeError as e:
+            raise onlinejudge.type.SampleParseError("The result of Facebook's API is empty. Did you set your User-Agent?") from e
         contest_id = result['data']['contestSeries']['contestSeason']['contest']['id']
 
         # get sample URLs

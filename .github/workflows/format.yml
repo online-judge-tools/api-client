@@ -24,7 +24,7 @@ jobs:
       run: pylint --rcfile=setup.cfg onlinejudge onlinejudge_api tests setup.py
 
     - name: Run isort
-      run: isort --check-only --diff --recursive onlinejudge onlinejudge_api tests setup.py
+      run: isort --check-only --diff onlinejudge onlinejudge_api tests setup.py
 
     - name: Run yapf
       run: yapf --diff --recursive onlinejudge onlinejudge_api tests setup.py

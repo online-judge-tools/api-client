@@ -1,6 +1,5 @@
-from onlinejudge_api.main import main
-
 import onlinejudge.dispatch as dispatch
+from onlinejudge_api.main import main
 
 
 def is_logged_in(url: str, *, memo={}) -> bool:

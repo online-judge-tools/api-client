@@ -372,7 +372,7 @@ class AtCoderContest(onlinejudge.type.Contest):
 
     def list_problems(self, *, session: Optional[requests.Session] = None) -> Sequence['AtCoderProblem']:
         # Even without logging in, we can list problems of some contests via standings pages, but some contests have no standings pages
-        return tuple([data.problem for data in self.list_problem_data(session=session)])
+        return tuple(data.problem for data in self.list_problem_data(session=session))
 
     # yapf: disable
     def iterate_submission_data_where(
