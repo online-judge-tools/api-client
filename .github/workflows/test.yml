@@ -64,3 +64,5 @@ jobs:
       run: |
         oj-api -h
         pytest -v ${{ steps.load-balancing.outputs.files }}
+      env:
+        DROPBOX_TOKEN: ${{ secrets.DROPBOX_TOKEN }}
