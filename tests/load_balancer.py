@@ -13,6 +13,7 @@ def main():
         tests / 'get_problem_codeforces.py',
         tests / 'get_contest_codeforces.py',
         tests / 'get_problem_poj.py',
+        tests / 'get_problem_topcoder.py',
         tests / 'service_codeforces.py',
         tests / 'service_codechef.py',
     ]
