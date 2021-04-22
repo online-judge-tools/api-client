@@ -828,7 +828,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         # TODO: improve this function
         return self.problem_id[-1] == problem_folder_name.lower()[-1]
 
-    def _list_dropbox_folder(self, *, path: str, shared_link: str, session: requests.Session) -> List[Dict[str, str]]:
+    def _list_dropbox_folder(self, *, path: str, shared_link_url: str, session: requests.Session) -> List[Dict[str, str]]:
         """
         :raises requests.exceptions.HTTPError: if no such problem exists
 
@@ -841,7 +841,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         payload = {
             "path": path,
             "shared_link": {
-                "url": shared_link,
+                "url": shared_link_url,
             },
         }
         resp = utils.request('POST', url, json=payload, session=session, raise_for_status=False)
@@ -852,7 +852,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
             raise
         return json.loads(resp.content)['entries']
 
-    def _get_dropbox_shared_link_file(self, *, path: str, shared_link: str, session: requests.Session) -> bytes:
+    def _get_dropbox_shared_link_file(self, *, path: str, shared_link_url: str, session: requests.Session) -> bytes:
         """
         :raises requests.exceptions.HTTPError: if no such problem exists
 
@@ -865,7 +865,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
         headers = {
             "Dropbox-API-Arg": json.dumps({
                 "path": path,
-                "url": shared_link,
+                "url": shared_link_url,
             }),
         }
         resp = utils.request('POST', url, headers=headers, session=session, raise_for_status=False)
@@ -884,11 +884,11 @@ class AtCoderProblem(onlinejudge.type.Problem):
 
         # Dropbox API documentation: https://www.dropbox.com/developers/documentation/http/documentation
         session = session or utils.get_default_session()
-        shared_link = 'https://www.dropbox.com/sh/nx3tnilzqz7df8a/AAAYlTq2tiEHl5hsESw6-yfLa'
+        shared_link_url = 'https://www.dropbox.com/sh/nx3tnilzqz7df8a/AAAYlTq2tiEHl5hsESw6-yfLa'
 
         # list folders
         path = ""
-        contest_folders = self._list_dropbox_folder(path=path, shared_link=shared_link, session=session)
+        contest_folders = self._list_dropbox_folder(path=path, shared_link_url=shared_link_url, session=session)
 
         # find the content folder
         contest_folder: Optional[Dict[str, str]] = None
@@ -904,7 +904,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
 
         # list folders
         path = "/{}".format(contest_folder['name'])
-        problem_folders = self._list_dropbox_folder(path=path, shared_link=shared_link, session=session)
+        problem_folders = self._list_dropbox_folder(path=path, shared_link_url=shared_link_url, session=session)
 
         # find the problem folder
         problem_folder: Optional[Dict[str, str]] = None
@@ -920,16 +920,16 @@ class AtCoderProblem(onlinejudge.type.Problem):
 
         # list folders
         path = "/{}/{}/in".format(contest_folder['name'], problem_folder['name'])
-        in_files = self._list_dropbox_folder(path=path, shared_link=shared_link, session=session)
+        in_files = self._list_dropbox_folder(path=path, shared_link_url=shared_link_url, session=session)
 
         # zip files
         testcases: List[TestCase] = []
         for entry in in_files:
             logger.debug('entry: %s', entry)
             path_in = "/{}/{}/in/{}".format(contest_folder['name'], problem_folder['name'], entry['name'])
-            data_in = self._get_dropbox_shared_link_file(path=path_in, shared_link=shared_link, session=session)
+            data_in = self._get_dropbox_shared_link_file(path=path_in, shared_link_url=shared_link_url, session=session)
             path_out = "/{}/{}/out/{}".format(contest_folder['name'], problem_folder['name'], entry['name'])
-            data_out = self._get_dropbox_shared_link_file(path=path_out, shared_link=shared_link, session=session)
+            data_out = self._get_dropbox_shared_link_file(path=path_out, shared_link_url=shared_link_url, session=session)
             testcases.append(TestCase(
                 entry['name'],
                 path_in,
