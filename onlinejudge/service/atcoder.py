@@ -844,13 +844,26 @@ class AtCoderProblem(onlinejudge.type.Problem):
                 "url": shared_link_url,
             },
         }
-        resp = utils.request('POST', url, json=payload, session=session, raise_for_status=False)
-        try:
-            resp.raise_for_status()
-        except:
-            logger.debug('%s', resp.content.decode())
-            raise
-        return json.loads(resp.content)['entries']
+
+        entries: List[Dict[str, str]] = []
+        while True:
+            resp = utils.request('POST', url, json=payload, session=session, raise_for_status=False)
+            try:
+                resp.raise_for_status()
+            except:
+                logger.debug('%s', resp.content.decode())
+                raise
+            result = json.loads(resp.content)
+            entries.extend(result['entries'])
+
+            if result['has_more']:
+                url = 'https://api.dropboxapi.com/2/files/list_folder/continue'
+                payload = {
+                    "cursor": result['cursor'],
+                }
+            else:
+                break
+        return entries
 
     def _get_dropbox_shared_link_file(self, *, path: str, shared_link_url: str, session: requests.Session) -> bytes:
         """
