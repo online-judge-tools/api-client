@@ -65,4 +65,9 @@ jobs:
         oj-api -h
         pytest -v ${{ steps.load-balancing.outputs.files }}
       env:
+        ATCODER_USERNAME: ${{ secrets.ATCODER_USERNAME }}
+        ATCODER_PASSWORD: ${{ secrets.ATCODER_PASSWORD }}
         DROPBOX_TOKEN: ${{ secrets.DROPBOX_TOKEN }}
+        CODEFORCES_USERNAME: ${{ secrets.CODEFORCES_USERNAME }}
+        CODEFORCES_PASSWORD: ${{ secrets.CODEFORCES_PASSWORD }}
+        YUKICODER_TOKEN: ${{ secrets.YUKICODER_TOKEN }}
