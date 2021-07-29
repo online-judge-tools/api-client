@@ -52,6 +52,10 @@ class CodeChefProblemData(onlinejudge.type.ProblemData):
         self.data = data
 
     @property
+    def json(self) -> bytes:
+        return json.dumps(self.data).encode()
+
+    @property
     def problem(self) -> 'CodeChefProblem':
         return CodeChefProblem(contest_id=self.contest_id, problem_id=self.data['code'])
 
@@ -61,7 +65,9 @@ class CodeChefProblemData(onlinejudge.type.ProblemData):
 
     # TODO: Support problems with old formats. Our old parser may help it: https://github.com/online-judge-tools/api-client/pull/50/commits/a6c2c0808bc2b5ef5c81985877522b8e8ea92bd1
     @property
-    def sample_cases(self) -> List[onlinejudge.type.TestCase]:
+    def sample_cases(self) -> Optional[List[onlinejudge.type.TestCase]]:
+        if 'problemComponents' not in self.data:
+            return None
         testcases: List[onlinejudge.type.TestCase] = []
         for testcase in self.data['problemComponents']['sampleTestCases']:
             testcases.append(onlinejudge.type.TestCase(
@@ -79,6 +85,10 @@ class CodeChefContestData(onlinejudge.type.ContestData):
         self.data = data
 
     @property
+    def json(self) -> bytes:
+        return json.dumps(self.data).encode()
+
+    @property
     def contest(self) -> 'CodeChefContest':
         return CodeChefContest(contest_id=self.data['code'])
 
@@ -86,8 +96,8 @@ class CodeChefContestData(onlinejudge.type.ContestData):
     def name(self) -> str:
         return self.data['name']
 
-    def get_problems(self) -> List['CodeChefProblem']:
-        return [CodeChefProblem(contest_id=self.data['code'], problem_id=problem_id) for problem_id in self.data['problems'].keys()]
+    def get_problem_data(self) -> List['CodeChefProblemData']:
+        return [CodeChefProblemData(contest_id=self.data['code'], data=data) for data in self.data['problems'].values()]
 
 
 class CodeChefContest(onlinejudge.type.Contest):
@@ -113,7 +123,7 @@ class CodeChefContest(onlinejudge.type.Contest):
         return None
 
     def list_problems(self, *, session: Optional[requests.Session] = None) -> Sequence['CodeChefProblem']:
-        return self.download_data(session=session).get_problems()
+        return [problem_data.problem for problem_data in self.download_data(session=session).get_problem_data()]
 
     def download_data(self, *, session: Optional[requests.Session] = None) -> CodeChefContestData:
         session = session or utils.get_default_session()
@@ -148,7 +158,9 @@ class CodeChefProblem(onlinejudge.type.Problem):
         return CodeChefProblemData(contest_id=self.contest_id, data=data)
 
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[onlinejudge.type.TestCase]:
-        return self.download_data(session=session).sample_cases
+        sample_cases = self.download_data(session=session).sample_cases
+        assert sample_cases is not None
+        return sample_cases
 
     def get_url(self, *, contests: bool = True) -> str:
         return 'https://www.codechef.com/{}/problems/{}'.format(self.contest_id, self.problem_id)

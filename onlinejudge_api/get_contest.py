@@ -1,7 +1,9 @@
+import json
 from typing import *
 
 from onlinejudge.service.atcoder import AtCoderContest
 from onlinejudge.service.atcoder_problems import AtCoderProblemsContest
+from onlinejudge.service.codechef import CodeChefContest
 from onlinejudge.service.codeforces import CodeforcesContest
 from onlinejudge.service.yukicoder import YukicoderContest
 from onlinejudge.type import *
@@ -151,6 +153,25 @@ def main(contest: Contest, *, is_full: bool, session: requests.Session) -> Dict[
         if not is_full:
             assert 'raw' in result
             del result["raw"]
+
+    elif isinstance(contest, CodeChefContest):
+        data = contest.download_data(session=session)
+        result["url"] = data.url
+        result["name"] = data.name
+        for problem_data in data.get_problem_data():
+            data_ = {
+                "url": problem_data.url,
+                "name": problem_data.name,
+                "context": {
+                    "contest": {
+                        "name": data.name,
+                        "url": contest.get_url(),
+                    },
+                },
+            }
+            result["problems"].append(data_)
+        if is_full:
+            result["raw"] = json.loads(data.json)
 
     else:
         assert False
