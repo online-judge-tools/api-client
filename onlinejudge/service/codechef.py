@@ -46,13 +46,95 @@ class CodeChefService(onlinejudge.type.Service):
         return resp.status_code == 200
 
 
+class CodeChefProblemData(onlinejudge.type.ProblemData):
+    def __init__(self, *, contest_id: str, data: Dict[str, Any]):
+        self.contest_id = contest_id
+        self.data = data
+
+    @property
+    def problem(self) -> 'CodeChefProblem':
+        return CodeChefProblem(contest_id=self.contest_id, problem_id=self.data['code'])
+
+    @property
+    def name(self) -> str:
+        return self.data['name']
+
+    # TODO: Support problems with old formats. Our old parser may help it: https://github.com/online-judge-tools/api-client/pull/50/commits/a6c2c0808bc2b5ef5c81985877522b8e8ea92bd1
+    @property
+    def sample_cases(self) -> List[onlinejudge.type.TestCase]:
+        testcases: List[onlinejudge.type.TestCase] = []
+        for testcase in self.data['problemComponents']['sampleTestCases']:
+            testcases.append(onlinejudge.type.TestCase(
+                name='sample-{}'.format(testcase['id']),
+                input_name='input',
+                input_data=utils.textfile(testcase['input']).encode(),
+                output_name='output',
+                output_data=utils.textfile(testcase['output']).encode(),
+            ))
+        return testcases
+
+
+class CodeChefContestData(onlinejudge.type.ContestData):
+    def __init__(self, *, data: Dict[str, Any]):
+        self.data = data
+
+    @property
+    def contest(self) -> 'CodeChefContest':
+        return CodeChefContest(contest_id=self.data['code'])
+
+    @property
+    def name(self) -> str:
+        return self.data['name']
+
+    def get_problems(self) -> List['CodeChefProblem']:
+        return [CodeChefProblem(contest_id=self.data['code'], problem_id=problem_id) for problem_id in self.data['problems'].keys()]
+
+
+class CodeChefContest(onlinejudge.type.Contest):
+    def __init__(self, *, contest_id: str):
+        self.contest_id = contest_id
+
+    def get_url(self) -> str:
+        return 'https://www.codechef.com/{}'.format(self.contest_id)
+
+    def get_service(self) -> CodeChefService:
+        return CodeChefService()
+
+    @classmethod
+    def from_url(cls, url: str) -> Optional['CodeChefContest']:
+        # example: https://www.codechef.com/JAN20A
+        result = urllib.parse.urlparse(url)
+        if result.scheme in ('', 'http', 'https') \
+                and result.netloc == 'www.codechef.com':
+            m = re.match(r'/([0-9A-Z_a-z-]+)', result.path)
+            if m:
+                contest_id = m.group(1)
+                return cls(contest_id=contest_id)
+        return None
+
+    def list_problems(self, *, session: Optional[requests.Session] = None) -> Sequence['CodeChefProblem']:
+        return self.download_data(session=session).get_problems()
+
+    def download_data(self, *, session: Optional[requests.Session] = None) -> CodeChefContestData:
+        session = session or utils.get_default_session()
+
+        # get
+        url = 'https://www.codechef.com/api/contests/{}'.format(self.contest_id)
+        resp = utils.request('GET', url, session=session)
+        data = json.loads(resp.content)
+        if data['status'] != 'success':
+            logger.debug('json: %s', resp.content.decode())
+            raise SampleParseError('CodeChef API failed with: {}'.format(data.get('message')))
+
+        return CodeChefContestData(data=data)
+
+
 class CodeChefProblem(onlinejudge.type.Problem):
     def __init__(self, *, contest_id: str, problem_id: str):
         self.contest_id = contest_id
         self.problem_id = problem_id
 
-    # TODO: support problems with old formats
-    def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[onlinejudge.type.TestCase]:
+    def download_data(self, *, session: Optional[requests.Session] = None) -> CodeChefProblemData:
         session = session or utils.get_default_session()
 
         # get
@@ -63,23 +145,19 @@ class CodeChefProblem(onlinejudge.type.Problem):
             logger.debug('json: %s', resp.content.decode())
             raise SampleParseError('CodeChef API failed with: {}'.format(data.get('message')))
 
-        # convert
-        testcases: List[onlinejudge.type.TestCase] = []
-        for testcase in data['problemComponents']['sampleTestCases']:
-            testcases.append(onlinejudge.type.TestCase(
-                name='sample-{}'.format(testcase['id']),
-                input_name='input',
-                input_data=utils.textfile(testcase['input']).encode(),
-                output_name='output',
-                output_data=utils.textfile(testcase['output']).encode(),
-            ))
-        return testcases
+        return CodeChefProblemData(contest_id=self.contest_id, data=data)
+
+    def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[onlinejudge.type.TestCase]:
+        return self.download_data(session=session).sample_cases
 
     def get_url(self, *, contests: bool = True) -> str:
         return 'https://www.codechef.com/{}/problems/{}'.format(self.contest_id, self.problem_id)
 
     def get_service(self) -> CodeChefService:
         return CodeChefService()
+
+    def get_contest(self) -> CodeChefContest:
+        return CodeChefContest(contest_id=self.contest_id)
 
     @classmethod
     def from_url(cls, url: str) -> Optional['CodeChefProblem']:
@@ -98,4 +176,5 @@ class CodeChefProblem(onlinejudge.type.Problem):
 
 
 onlinejudge.dispatch.services += [CodeChefService]
+onlinejudge.dispatch.contests += [CodeChefContest]
 onlinejudge.dispatch.problems += [CodeChefProblem]
