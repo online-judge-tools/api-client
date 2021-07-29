@@ -3,16 +3,21 @@
 the module for CodeChef (https://www.codechef.com/)
 """
 
+import json
 import re
 import urllib.parse
+from logging import getLogger
 from typing import *
 
 import requests
 
 import onlinejudge._implementation.testcase_zipper
+import onlinejudge._implementation.utils as utils
 import onlinejudge.dispatch
 import onlinejudge.type
 from onlinejudge.type import SampleParseError
+
+logger = getLogger(__name__)
 
 
 class CodeChefService(onlinejudge.type.Service):
@@ -37,8 +42,29 @@ class CodeChefProblem(onlinejudge.type.Problem):
         self.contest_id = contest_id
         self.problem_id = problem_id
 
+    # TODO: support problems with old formats
     def download_sample_cases(self, *, session: Optional[requests.Session] = None) -> List[onlinejudge.type.TestCase]:
-        raise SampleParseError("removed. see https://github.com/online-judge-tools/api-client/issues/49")
+        session = session or utils.get_default_session()
+
+        # get
+        url = 'https://www.codechef.com/api/contests/{}/problems/{}'.format(self.contest_id, self.problem_id)
+        resp = utils.request('GET', url, session=session)
+        data = json.loads(resp.content)
+        if data['status'] != 'success':
+            logger.debug('json: %s', resp.content.decode())
+            raise SampleParseError('CodeChef API failed with: {}'.format(data.get('message')))
+
+        # convert
+        testcases: List[onlinejudge.type.TestCase] = []
+        for testcase in data['problemComponents']['sampleTestCases']:
+            testcases.append(onlinejudge.type.TestCase(
+                name='sample-{}'.format(testcase['id']),
+                input_name='input',
+                input_data=utils.textfile(testcase['input']).encode(),
+                output_name='output',
+                output_data=utils.textfile(testcase['output']).encode(),
+            ))
+        return testcases
 
     def get_url(self, *, contests: bool = True) -> str:
         return 'https://www.codechef.com/{}/problems/{}'.format(self.contest_id, self.problem_id)
