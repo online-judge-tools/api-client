@@ -36,6 +36,15 @@ class CodeChefService(onlinejudge.type.Service):
             return cls()
         return None
 
+    def get_url_of_login_page(self) -> str:
+        return 'https://www.codechef.com/'
+
+    def is_logged_in(self, *, session: Optional[requests.Session] = None) -> bool:
+        session = session or utils.get_default_session()
+        url = 'https://www.codechef.com/certificates/'
+        resp = utils.request('GET', url, session=session, raise_for_status=False)
+        return resp.status_code == 200
+
 
 class CodeChefProblem(onlinejudge.type.Problem):
     def __init__(self, *, contest_id: str, problem_id: str):
