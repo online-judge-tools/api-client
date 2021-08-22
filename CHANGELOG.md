@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.10.0 / 2021-08-23
+
+-   [#144](https://github.com/online-judge-tools/api-client/pull/144) add CodeChef support again
+
 ## 10.9.0 / 2021-04-23
 
 -   [#139](https://github.com/online-judge-tools/api-client/pull/139) support downloading system cases from AtCoder (helped by [@qryxip](https://github.com/qryxip))
