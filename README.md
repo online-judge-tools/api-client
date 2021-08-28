@@ -386,7 +386,7 @@ For end-users who don't develop any programs:
 -   Please use the [`oj` command](https://github.com/online-judge-tools/oj) instead of this `oj-api` command.
     -   The `oj-api` command is intended to be used as a backend of other programs. It's not a frontend which humans use directly.
 
-For developpers of programs which use `oj-api`:
+For developers of programs which use `oj-api`:
 
 -   Please be polite to judge servers.
     -   We are accessing the web pages using the unintended way, i.e. without GUI browsers. We should not forget that this is basically not welcomed.
