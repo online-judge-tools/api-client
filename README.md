@@ -381,14 +381,14 @@ $ USERNAME=chokudai PASSWORD=hoge oj-api login-service https://atcoder.jp/ | jq 
 
 ## Tips
 
-For end-users:
+For end-users who don't develop any programs:
 
 -   Please use the [`oj` command](https://github.com/online-judge-tools/oj) instead of this `oj-api` command.
-    -   The `oj-api` command is intended to be used as a backend of other tools. It's not a frontend.
+    -   The `oj-api` command is intended to be used as a backend of other programs. It's not a frontend which humans use directly.
 
-For developpers:
+For developpers of programs which use `oj-api`:
 
--   Please be polite to online judge servers.
+-   Please be polite to judge servers.
     -   We are accessing the web pages using the unintended way, i.e. without GUI browsers. We should not forget that this is basically not welcomed.
 -   Please be aware that this package uses [Semantic Versioning](https://semver.org/).
     -   The "public API" of this package is the documented features of `oj-api` command and the [documented modules](https://online-judge-tools.readthedocs.io/en/master/) of `onlinejudge` module.
