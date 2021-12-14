@@ -264,7 +264,7 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
         if parsed.password is not None:
             parser.error("don't use --password. use $PASSWORD")
         parsed.password = os.environ.get('PASSWORD')
-        if not debug:
+        if not parsed.check and not debug:
             del os.environ['PASSWORD']
 
     try:
