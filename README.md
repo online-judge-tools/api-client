@@ -23,6 +23,7 @@ $ pip3 install online-judge-api-client
 
 | website                                                                        | get sample cases   | get system cases   | get metadata       | get contest data   | login service      | submit code        |
 |--------------------------------------------------------------------------------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|
+| [Algo-Method](https://algo-method.com)                     | :heavy_check_mark: |                    |                    |                    |                    |                    |
 | [Aizu Online Judge](https://onlinejudge.u-aizu.ac.jp/home)                     | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |                    |
 | [Anarchy Golf](http://golf.shinh.org/)                                         | :heavy_check_mark: | :grey_question: (same to samples) |                    |                    |                    |                    |
 | [AtCoder](https://atcoder.jp/)                                                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
