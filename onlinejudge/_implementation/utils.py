@@ -67,8 +67,7 @@ def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> b
             html_tag = str(parent)
             return bs4.NavigableString('\n') if 'br' in html_tag else bs4.NavigableString('')
         else:
-            for child in children:
-                res += parse_content(child)
+            res = '\n'.join(parse_content(child) for child in children)
     return bs4.NavigableString(res)
 
 
