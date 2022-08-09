@@ -159,7 +159,7 @@ class GetProblemCodeforcesTest(unittest.TestCase):
             https://github.com/online-judge-tools/api-client/issues/153
         """
 
-        url = 'https://codeforces.com/contest/1710/problem/A'
+        url = 'https://codeforces.com/contest/1714/problem/A'
         expected = {
             "status": "ok",
             "messages": [],
