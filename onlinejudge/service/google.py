@@ -94,7 +94,8 @@ class GoogleCodeJamProblem(onlinejudge.type.Problem):
 
         # parse HTML
         soup = bs4.BeautifulSoup(statement, utils.HTML_PARSER)
-        io_contents = soup.find_all('pre', class_='io-content')
+        io_contents = soup.find_all('pre', class_='io-content')  # For Google Code Jam
+        io_contents += soup.find_all('pre', class_='sample-content-text')  # For kickstart
         if len(io_contents) % 2 != 0:
             raise SampleParseError("""the number of <pre class="io-content"> is not multiple of two""")
 
