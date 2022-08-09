@@ -155,7 +155,7 @@ class GetProblemCodeforcesTest(unittest.TestCase):
     def test_contest_1710_a(self):
         """Sample input consisting of multiple test cases has got a new format.
 
-        .. seelaso::
+        .. seealso::
             https://github.com/online-judge-tools/api-client/issues/153
         """
 
