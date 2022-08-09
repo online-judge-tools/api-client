@@ -236,7 +236,6 @@ class YukicoderProblem(onlinejudge.type.Problem):
         form = utils.FormSender(form, url=resp.url)
         form.set('lang', language_id)
         form.set_file('file', filename or 'code', code)
-        form.unset('custom_test')
         resp = form.request(session=session)
         resp.raise_for_status()
         # result
