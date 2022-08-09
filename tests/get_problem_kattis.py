@@ -31,12 +31,12 @@ class GetProblemKattisTest(unittest.TestCase):
         """test_amazingadventures() tests a problem whose domain is not "open.kattis.com".
         """
 
-        url = 'https://hanoi18.kattis.com/problems/amazingadventures'
+        url = 'https://hanoi18.kattis.com/contests/hanoi18/problems/amazingadventures'
         expected = {
             "status": "ok",
             "messages": [],
             "result": {
-                "url": "https://hanoi18.kattis.com/problems/amazingadventures",
+                "url": "https://open.kattis.com/contests/hanoi18/problems/amazingadventures",
                 "tests": [
                     {
                         "input": "3 3\n1 1\n3 3\n2 1\n2 2\n\n3 4\n1 1\n3 4\n2 1\n1 2\n\n2 2\n2 1\n2 2\n1 2\n1 1\n\n0 0\n",

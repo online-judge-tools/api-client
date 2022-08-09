@@ -36,7 +36,7 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         }
                     },
                     {
-                        "url": "https://atcoder.jp/contests/arc073/tasks/arc073_a",
+                        "url": "https://atcoder.jp/contests/abc060/tasks/arc073_a",
                         "name": "C. Sentou",
                         "context": {
                             "contest": {
@@ -58,7 +58,7 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         }
                     },
                     {
-                        "url": "https://atcoder.jp/contests/arc074/tasks/arc074_a",
+                        "url": "https://atcoder.jp/contests/abc062/tasks/arc074_a",
                         "name": "C. Chocolate Bar",
                         "context": {
                             "contest": {

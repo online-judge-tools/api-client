@@ -64,7 +64,7 @@ class TophProblem(onlinejudge.type.Problem):
         resp = utils.request('GET', self.get_url(), session=session)
         soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
-        for table in soup.find_all('table', class_="samples"):
+        for table in soup.find_all('table', class_="-samples"):
             logger.debug('table: %s', str(table))
             case = table.find('tbody').find('tr')
             assert len(list(case.children)) == 2
