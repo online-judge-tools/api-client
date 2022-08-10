@@ -152,6 +152,36 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
+    def test_contest_1710_a(self):
+        """Sample input consisting of multiple test cases has got a new format.
+
+        .. seealso::
+            https://github.com/online-judge-tools/api-client/issues/153
+        """
+
+        url = 'https://codeforces.com/contest/1714/problem/A'
+        expected = {
+            "status": "ok",
+            "messages": [],
+            "result": {
+                "url": "https://codeforces.com/contest/1714/problem/A",
+                "tests": [{
+                    "input": "3\n1 6 13\n8 0\n3 6 0\n12 30\n14 45\n6 0\n2 23 35\n20 15\n10 30\n",
+                    "output": "1 47\n0 0\n10 55\n"
+                }],
+                "name": "Everyone Loves to Sleep",
+                "context": {
+                    "contest": {
+                        "url": "https://codeforces.com/contest/1714",
+                        "name": "Codeforces Round #811 (Div. 3)"
+                    },
+                    "alphabet": "A"
+                }
+            },
+        }
+        actual = main(['get-problem', url], debug=True)
+        self.assertEqual(expected, actual)
+
     @unittest.skipIf(not (CODEFORCES_USERNAME in os.environ and CODEFORCES_PASSWORD in os.environ), 'credentails for Codeforces is required')
     def test_edu_2_2_1_a(self):
         """This tests an educational problem.
