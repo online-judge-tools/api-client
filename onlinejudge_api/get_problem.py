@@ -217,21 +217,19 @@ schema_compatibility = {
         },
         "tests": {
             "type": "array",
-            "items": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "input": {
-                            "type": "string",
-                        },
-                        "output": {
-                            "type": "string",
-                        },
+            "items": {
+                "type": "object",
+                "properties": {
+                    "input": {
+                        "type": "string",
                     },
-                    "required": ["input", "output"],
-                    "additionalProperties": False,
+                    "output": {
+                        "type": "string",
+                    },
                 },
-            ],
+                "required": ["input", "output"],
+                "additionalProperties": False,
+            },
         },
     },
     "required": [
