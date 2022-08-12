@@ -48,6 +48,55 @@ class GetProblemAtCoderTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
+    def test_icpc2013spring_a_compatibility(self):
+        """This test checks --compatbility option
+        """
+
+        url = 'http://jag2013spring.contest.atcoder.jp/tasks/icpc2013spring_a'
+        expected = {
+            "status": "ok",
+            "messages": [],
+            "result": {
+                "name": "A. Everlasting Zero",
+                "group": "Japan Alumni Group Spring Contest 2013",
+                "url": "https://atcoder.jp/contests/jag2013spring/tasks/icpc2013spring_a",
+                "interactive": False,
+                "memoryLimit": 128,
+                "timeLimit": 5000,
+                "tests": [{
+                    "input": "2 2\n2 \n1 >= 3\n2 <= 5\n2\n1 >= 4\n2 >= 3\n",
+                    "output": "Yes\n"
+                }, {
+                    "input": "2 2\n2 \n1 >= 5\n2 >= 5\n2\n1 <= 4\n2 <= 3\n",
+                    "output": "Yes\n"
+                }, {
+                    "input": "2 2\n2 \n1 >= 3\n2 <= 3\n2\n1 <= 2\n2 >= 5\n",
+                    "output": "No\n"
+                }, {
+                    "input": "1 2\n2\n1 <= 10\n1 >= 15\n",
+                    "output": "No\n"
+                }, {
+                    "input": "5 5\n3\n2 <= 1\n3 <= 1\n4 <= 1\n4\n2 >= 2\n3 <= 1\n4 <= 1\n5 <= 1\n3\n3 >= 2\n4 <= 1\n5 <= 1\n2\n4 >= 2\n5 <= 1\n1\n5 >= 2 \n",
+                    "output": "Yes\n"
+                }],
+                "testType": "single",
+                "input": {
+                    "type": "stdin",
+                },
+                "output": {
+                    "type": "stdout",
+                },
+                "languages": {
+                    "java": {
+                        "mainClass": "Main",
+                        "taskClass": "Task",
+                    },
+                },
+            },
+        }
+        actual = main(['get-problem', url, "--compatibility"], debug=True)
+        self.assertEqual(expected, actual)
+
     def test_arc035_a(self):
         """This problem uses <code> tags in the descriptoin text in the sample section.
         """
@@ -236,7 +285,7 @@ class GetProblemAtCoderTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_non_existing_problem(self):
-        """This tests an non-existing problem.
+        """This tests a non-existing problem.
         """
 
         url = 'http://abc001.contest.atcoder.jp/tasks/abc001_100'
@@ -249,7 +298,7 @@ class GetProblemAtCoderTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_impossible_problem(self):
-        """This tests a problem impossible to parse sample cases.
+        """This tests a problem of which it is impossible to parse sample cases.
         """
 
         url = 'https://chokudai001.contest.atcoder.jp/tasks/chokudai_001_a'
