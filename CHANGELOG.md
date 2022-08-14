@@ -1,5 +1,14 @@
 # Change Log
 
+## 10.10.1 / 2022-08-14
+
+-   [#146](https://github.com/online-judge-tools/api-client/pull/146) update "Tips" section of README.md
+-   [#158](https://github.com/online-judge-tools/api-client/pull/158) fix scraping, adapting to changes made by various sites
+-   [#159](https://github.com/online-judge-tools/api-client/pull/159) fix typos
+-   [#155](https://github.com/online-judge-tools/api-client/pull/155) adapt to new multi-case tests on Codeforces
+-   [#161](https://github.com/online-judge-tools/api-client/pull/161) migrate from imp to importlib
+-   [#162](https://github.com/online-judge-tools/api-client/pull/162) fix JSON schema for results with --compatibility option
+
 ## 10.10.0 / 2021-08-23
 
 -   [#144](https://github.com/online-judge-tools/api-client/pull/144) add CodeChef support again
