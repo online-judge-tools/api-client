@@ -69,6 +69,9 @@ def parse_content(parent: Union[bs4.NavigableString, bs4.Tag, bs4.Comment]) -> b
         else:
             for child in children:
                 res += parse_content(child)
+            if parent.name == 'div':
+                res += '\n'
+
     return bs4.NavigableString(res)
 
 

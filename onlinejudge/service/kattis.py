@@ -43,7 +43,9 @@ class KattisService(onlinejudge.type.Service):
 
 class KattisProblem(onlinejudge.type.Problem):
     def __init__(self, *, problem_id: str, contest_id: Optional[str] = None, domain: str = 'open.kattis.com'):
-        self.domain = domain
+        # Always retrive data from open.kattis.com.
+        # E.g. hanoi18.kattis.com seems to have stopped providing samples.zip.
+        self.domain = 'open.kattis.com'
         self.contest_id = contest_id
         self.problem_id = problem_id
 

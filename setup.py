@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
-import imp
+import importlib
+import importlib.util
 
 from setuptools import find_packages, setup
 
 
-def load_module(module_path):
-    path = None
-    for name in module_path.split('.'):
-        file, path, description = imp.find_module(name, path)
-        path = [path]
-    return imp.load_module(name, file, path[0], description)
+def load_module(name, location):
+    spec = importlib.util.spec_from_file_location(name, location)
+    version = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(version)
+    return version
 
 
-version = load_module('onlinejudge.__about__')
+about = load_module('onlinejudge.__about__', 'onlinejudge/__about__.py')
 
 setup(
-    name=version.__package_name__,
-    version=version.__version__,
-    author=version.__author__,
-    author_email=version.__email__,
-    url=version.__url__,
-    license=version.__license__,
-    description=version.__description__,
+    name=about.__package_name__,
+    version=about.__version__,
+    author=about.__author__,
+    author_email=about.__email__,
+    url=about.__url__,
+    license=about.__license__,
+    description=about.__description__,
     python_requires='>=3.6',
     install_requires=[
         'appdirs >= 1',

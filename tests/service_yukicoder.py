@@ -20,7 +20,7 @@ class YukicoderProblemTest(unittest.TestCase):
         self.assertEqual(YukicoderProblem.from_url('http://yukicoder.me/problems/no/123/').problem_no, 123)
         self.assertEqual(YukicoderProblem.from_url('http://yukicoder.me/problems/123').problem_id, 123)
 
-    def test_donwload_sample_cases(self):
+    def test_download_sample_cases(self):
         self.assertEqual(YukicoderProblem.from_url('http://yukicoder.me/problems/no/9000').download_sample_cases(), [
             TestCase(name='sample-1', input_name='サンプル1 入力', input_data=b'yukicoder\n', output_name='サンプル1 出力', output_data=b'Hello World!\n'),
         ])
@@ -45,7 +45,7 @@ class YukicoderProblemTest(unittest.TestCase):
             TestCase(name='sample-4', input_name='サンプル4 入力', input_data=b'\n', output_name='サンプル4 出力', output_data=b'1\n'),
         ])
 
-    def test_donwload_sample_cases_issue_355(self):
+    def test_download_sample_cases_issue_355(self):
         # see https://github.com/kmyk/online-judge-tools/issues/355
         self.assertEqual(YukicoderProblem.from_url('https://yukicoder.me/problems/no/649').download_sample_cases(), [
             TestCase(name='sample-1', input_name='サンプル1 入力', input_data=b'15 3\n1 3\n1 4\n1 5\n2\n2\n1 10\n1 10\n1 1\n2\n1 3\n2\n1 1000\n2\n1 0\n2\n', output_name='サンプル1 出力', output_data=b'5\n-1\n4\n3\n10\n3\n'),
@@ -54,7 +54,7 @@ class YukicoderProblemTest(unittest.TestCase):
             TestCase(name='sample-4', input_name='サンプル4 入力', input_data=b'1 1\n2\n', output_name='サンプル4 出力', output_data=b'-1\n'),
         ])
 
-    def test_donwload_sample_cases_issue_192(self):
+    def test_download_sample_cases_issue_192(self):
         # see https://github.com/kmyk/online-judge-tools/issues/192
         self.assertEqual(YukicoderProblem.from_url('https://yukicoder.me/problems/no/750').download_sample_cases(), [
             TestCase(name='sample-1', input_name='サンプル1 入力', input_data=b'6\n4 5\n3 7\n3 4\n-2 3\n9 1\n3 8\n', output_name='サンプル1 出力', output_data=b'9 1\n4 5\n3 4\n3 7\n3 8\n-2 3\n'),
@@ -113,7 +113,7 @@ class YukicoderProblemTest(unittest.TestCase):
             <h6>入力</h6>
             <pre></pre>
             <h6>出力</h6>
-            <pre>A<-- comment1 -->B<!-- comment2 -->C</pre>
+            <pre>A<!-- comment1 -->B<!-- comment2 -->C</pre>
         </div>
     </div>
 </div>
