@@ -263,9 +263,10 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
     if parsed.subcommand == 'login-service':
         if parsed.password is not None:
             parser.error("don't use --password. use $PASSWORD")
-        parsed.password = os.environ.get('PASSWORD')
-        if not parsed.check and not debug:
-            del os.environ['PASSWORD']
+        if not parsed.check:
+            parsed.password = os.environ.get('PASSWORD')
+            if not debug:
+                del os.environ['PASSWORD']
 
     try:
         with utils.with_cookiejar(session, path=parsed.cookie) as session:
