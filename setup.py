@@ -29,7 +29,6 @@ setup(
         'colorlog >= 4.1.0',
         'lxml >= 4',
         'requests >= 2',
-        'toml >= 0.10',
         'jsonschema >= 3.2',
     ],
     packages=find_packages(exclude=('tests', 'docs')),
