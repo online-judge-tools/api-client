@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import os
 import pathlib
 
 
@@ -25,7 +26,10 @@ def main():
     else:
         assert False
 
-    print('::set-output name=files::', *map(str, files))
+    GITHUB_OUTPUT = 'GITHUB_OUTPUT'  # pylint: disable=invalid-name
+    if GITHUB_OUTPUT in os.environ:
+        with open(os.environ[GITHUB_OUTPUT], 'a') as f:
+            print('files=', *map(str, files), file=f)
 
 
 if __name__ == '__main__':
