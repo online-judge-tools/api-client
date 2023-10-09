@@ -13,6 +13,8 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9]
         pattern: [stable]  # see test-unstable-workaround-*.yml
         exclude:
+        - os: ubuntu-latest
+          python-version: 3.6
         - os: macos-latest
           python-version: 3.7
         - os: macos-latest
