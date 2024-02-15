@@ -115,7 +115,7 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
                 url = 'https://kcs.miz-miz.biz/contest/{}/submissions?json=True'.format(self.contest_id)
                 resp = utils.request('GET', url, session=session)
                 submissions = json.loads(resp.content.decode(resp.encoding))
-                submission_id = max([submission['submission_id'] for submission in submissions])
+                submission_id = max(submission['submission_id'] for submission in submissions)
                 submission_url = 'https://kcs.miz-miz.biz/contest/{}/code/{}'.format(self.contest_id, submission_id)
             except:
                 logger.exception('failed to find the individual submission page. use the list page of all submissions instead.')

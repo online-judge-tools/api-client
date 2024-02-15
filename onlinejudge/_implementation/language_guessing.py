@@ -120,7 +120,7 @@ def guess_language_ids_of_cplusplus_file(filename: pathlib.Path, code: bytes, la
         saved_lang_ids = lang_ids
         lang_ids = []
         for compiler in ('gcc', 'clang'):  # use the latest for each compiler
-            ids = list(filter(lambda lang_id: parse_cplusplus_compiler(language_dict[lang_id]) in (compiler, None), saved_lang_ids))
+            ids = [lang_id for lang_id in saved_lang_ids if parse_cplusplus_compiler(language_dict[lang_id]) in (compiler, None)]
             if not ids:
                 continue
             ids.sort(key=lambda lang_id: (parse_cplusplus_version(language_dict[lang_id]) or '', language_dict[lang_id]))

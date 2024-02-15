@@ -1,7 +1,6 @@
 import unittest
 
 from onlinejudge.service.facebook import FacebookHackerCupProblem, FacebookHackerCupService
-from onlinejudge.type import TestCase
 
 
 class FacebookHackerCupSerivceTest(unittest.TestCase):

@@ -28,7 +28,7 @@ def main():
 
     GITHUB_OUTPUT = 'GITHUB_OUTPUT'  # pylint: disable=invalid-name
     if GITHUB_OUTPUT in os.environ:
-        with open(os.environ[GITHUB_OUTPUT], 'a') as f:
+        with open(os.environ[GITHUB_OUTPUT], 'a', encoding='utf-8') as f:
             print('files=', *map(str, files), file=f)
 
 

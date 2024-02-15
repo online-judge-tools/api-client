@@ -2,7 +2,7 @@
 import importlib
 import importlib.util
 
-from setuptools import find_packages, setup
+from setuptools import find_packages, setup  # pylint: disable=import-error
 
 
 def load_module(name, location):

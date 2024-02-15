@@ -6,14 +6,14 @@ isort: skip_file
 # pylint: disable=unused-import,ungrouped-imports
 try:
     import onlinejudge.service
-except ImportError as e:
+except ImportError as ex:
     import json
     print(json.dumps({
         "status": "error",
         "messages": ["Due to a known bug, the online-judge-tools is not yet properly installed. Please re-run $ pip3 install --force-reinstall online-judge-api-client"],
         "result": None,
     }))
-    raise SystemExit(1) from e
+    raise SystemExit(1) from ex
 # pylint: enable=unused-import,ungrouped-imports
 
 import argparse

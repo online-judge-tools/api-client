@@ -21,7 +21,7 @@ class SubmitYukicoderTest(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tempdir:
             path = pathlib.Path(tempdir) / filename
-            with open(path, 'w') as fh:
+            with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(code)
             language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
             data = main(['submit-code', '--file', str(path), '--language', language_id, url], debug=True)
@@ -43,7 +43,7 @@ class SubmitYukicoderTest(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tempdir:
             path = pathlib.Path(tempdir) / filename
-            with open(path, 'w') as fh:
+            with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(code)
             language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
             data = main(['submit-code', '--file', str(path), '--language', language_id, url], debug=True)
