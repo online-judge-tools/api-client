@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 import unittest
 
 import requests
@@ -39,7 +40,9 @@ class AtCoderContestTest(unittest.TestCase):
 
     def test_load_details(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/keyence2019')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data(lang='en').name, 'KEYENCE Programming Contest 2019')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data(lang='ja').name, 'キーエンス プログラミング コンテスト 2019')
         data = contest.download_data()
         self.assertEqual(data.start_time.year, 2019)
@@ -51,7 +54,9 @@ class AtCoderContestTest(unittest.TestCase):
         self.assertEqual(data.penalty.total_seconds(), 5 * 60)
 
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/dp')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data(lang='ja').name, 'Educational DP Contest / DP まとめコンテスト')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data(lang='en').name, 'Educational DP Contest')
         data = contest.download_data()
         self.assertEqual(data.start_time.year, 2019)
@@ -64,19 +69,29 @@ class AtCoderContestTest(unittest.TestCase):
 
     def test_get_penalty_a_singular_form(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/chokudai_S002')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data().penalty.total_seconds(), 60)  # Penalty is written as "1 minute", not  "1 minutes"
 
     def test_list_problems(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/agc028')
+        time.sleep(0.5)
         problems = contest.list_problems()
         self.assertEqual(len(problems), 7)
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().alphabet, 'A')
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().name, 'Two Abbreviations')
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().time_limit_msec, 2000)
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().memory_limit_byte, 1024 * 1000 * 1000)
+        time.sleep(0.5)
         self.assertEqual(problems[5].download_data().alphabet, 'F')
+        time.sleep(0.5)
         self.assertEqual(problems[5].problem_id, 'agc028_f')
+        time.sleep(0.5)
         self.assertEqual(problems[6].download_data().alphabet, 'F2')
+        time.sleep(0.5)
         self.assertEqual(problems[6].problem_id, 'agc028_f2')
 
     def test_list_problems_with_float_values(self):
@@ -86,27 +101,42 @@ class AtCoderContestTest(unittest.TestCase):
         """
 
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/dwacon2018-final-open')
+        time.sleep(0.5)
         problems = contest.list_problems()
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().time_limit_msec, 2525)
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().memory_limit_byte, 246 * 1000 * 1000)
+        time.sleep(0.5)
         self.assertEqual(problems[1].download_data().time_limit_msec, 5252)
+        time.sleep(0.5)
         self.assertEqual(problems[1].download_data().memory_limit_byte, 512 * 1000 * 1000)
 
     def test_list_problems_time_limit_is_less_than_msec(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/joi2019ho')
+        time.sleep(0.5)
         problems = contest.list_problems()
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().time_limit_msec, 1000)
+        time.sleep(0.5)
         self.assertEqual(problems[1].download_data().time_limit_msec, 1000)
+        time.sleep(0.5)
         self.assertEqual(problems[2].download_data().time_limit_msec, 500)
+        time.sleep(0.5)
         self.assertEqual(problems[3].download_data().time_limit_msec, 1000)
+        time.sleep(0.5)
         self.assertEqual(problems[4].download_data().time_limit_msec, 2000)
 
     def test_list_problems_memory_limit_is_zero(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/future-contest-2019-final-open')
+        time.sleep(0.5)
         problems = contest.list_problems()
+        time.sleep(0.5)
         self.assertEqual(problems[0].download_data().memory_limit_byte, 1024 * 1000 * 1000)  # 1024 MB
+        time.sleep(0.5)
         self.assertEqual(problems[1].download_data().memory_limit_byte, 0)  # 0 KB
 
+    @unittest.skip('Breaking change in AtCoder')
     def test_iterate_submissions(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/code-festival-2014-exhibition-open')
         submissions = list(contest.iterate_submissions())
@@ -116,9 +146,13 @@ class AtCoderContestTest(unittest.TestCase):
 
     def test_get_contest_without_penalty(self):
         contest = AtCoderContest.from_url('https://atcoder.jp/contests/otemae2019')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data(lang='ja').name, '大手前プロコン 2019')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data().penalty.total_seconds(), 0)  # This contest has no penalty
+        time.sleep(0.5)
         self.assertEqual(contest.download_data(lang='en').name, 'Otemae High School Programming Contest 2019')
+        time.sleep(0.5)
         self.assertEqual(contest.download_data().penalty.total_seconds(), 0)  # This contest has no penalty
 
 
@@ -156,6 +190,7 @@ class AtCoderProblemTest(unittest.TestCase):
 
     def test_load_details(self):
         problem = AtCoderProblem.from_url('https://atcoder.jp/contests/abc118/tasks/abc118_a')
+        time.sleep(0.5)
         data = problem.download_data()
         self.assertEqual(data.alphabet, 'A')
         self.assertEqual(data.name, 'B +/- A')
@@ -164,11 +199,15 @@ class AtCoderProblemTest(unittest.TestCase):
         self.assertEqual(data.score, 100)
 
     def test_get_alphabet(self):
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/agc028/tasks/agc028_f').download_data().alphabet, 'F')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/agc028/tasks/agc028_f2').download_data().alphabet, 'F2')
 
     def test_get_score(self):
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/future-contest-2018-final/tasks/future_contest_2018_final_a').download_data().score, 50000000)
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/abc001/tasks/abc001_4').download_data().score, None)
 
     def test_get_score_latex(self):
@@ -177,15 +216,20 @@ class AtCoderProblemTest(unittest.TestCase):
             https://github.com/kmyk/online-judge-tools/issues/411
         """
 
+        time.sleep(0.5)
         self.assertIsNone(AtCoderProblem.from_url('https://atcoder.jp/contests/wupc2019/tasks/wupc2019_a').download_data().score)
 
     def test_get_time_limit_is_less_than_msec(self):
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/joi2019ho/tasks/joi2019ho_c').download_data().time_limit_msec, 500)
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/future-contest-2019-qual/tasks/future_contest_2019_qual_b').download_data().time_limit_msec, 0)
 
     def test_get_memory_limit_is_zero(self):
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/future-contest-2019-qual/tasks/future_contest_2019_qual_b').download_data().memory_limit_byte, 0)
 
+    @unittest.skip('Breaking change in AtCoder')
     def test_iterate_submissions(self):
         problem = AtCoderProblem.from_url('https://atcoder.jp/contests/abc119/tasks/abc119_c')
         submissions = problem.iterate_submissions()
@@ -206,6 +250,7 @@ class AtCoderSubmissionTest(unittest.TestCase):
 class AtCoderProblemDataTest(unittest.TestCase):
     def test_from_html_very_old(self):
         url = 'https://atcoder.jp/contests/utpc2011/tasks/utpc2011_1'
+        time.sleep(0.5)
         resp = requests.get(url)
         html = resp.content.decode(resp.apparent_encoding)
         data = AtCoderProblemDetailedData.from_html(html, problem=AtCoderProblem.from_url(url))
@@ -227,6 +272,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
 
     def test_from_html_old(self):
         url = 'https://atcoder.jp/contests/abc003/tasks/abc003_4'
+        time.sleep(0.5)
         resp = requests.get(url)
         html = resp.content.decode(resp.apparent_encoding)
         data = AtCoderProblemDetailedData.from_html(html, problem=AtCoderProblem.from_url(url))
@@ -249,6 +295,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
 
     def test_from_html_standard(self):
         url = 'https://atcoder.jp/contests/abc114/tasks/abc114_d'
+        time.sleep(0.5)
         resp = requests.get(url)
         html = resp.content.decode(resp.apparent_encoding)
         data = AtCoderProblemDetailedData.from_html(html, problem=AtCoderProblem.from_url(url))
@@ -270,6 +317,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
 
     def test_from_html_with_empty_output(self):
         url = 'https://atcoder.jp/contests/agc036/tasks/agc036_b'
+        time.sleep(0.5)
         resp = requests.get(url)
         html = resp.content.decode(resp.apparent_encoding)
         data = AtCoderProblemDetailedData.from_html(html, problem=AtCoderProblem.from_url(url))
@@ -292,6 +340,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
 
     def test_from_html_without_sample_cases(self):
         url = 'https://atcoder.jp/contests/tenka1-2013-quala/tasks/tenka1_2013_qualA_a'
+        time.sleep(0.5)
         resp = requests.get(url)
         html = resp.content.decode(resp.apparent_encoding)
         data = AtCoderProblemDetailedData.from_html(html, problem=AtCoderProblem.from_url(url))
@@ -309,6 +358,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
 
     def test_from_html_issue_414(self):
         url = 'https://atcoder.jp/contests/fuka5/tasks/fuka_graphcut'
+        time.sleep(0.5)
         resp = requests.get(url)
         html = resp.content.decode(resp.apparent_encoding)
         data = AtCoderProblemDetailedData.from_html(html, problem=AtCoderProblem.from_url(url))
@@ -401,6 +451,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
 
     def test_download_sample_cases_pre_without_prettyprint_insection(self):
         # see: https://github.com/kmyk/online-judge-tools/issues/625
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/tdpc/tasks/tdpc_fibonacci').download_sample_cases(), [
             TestCase(name='sample-1', input_name='Sample Input 1', input_data=b'2 10\n', output_name='Sample Output 1', output_data=b'55\n'),
             TestCase(name='sample-2', input_name='Sample Input 2', input_data=b'3 10\n', output_name='Sample Output 2', output_data=b'105\n'),
@@ -408,6 +459,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
 
     def test_download_sample_cases_s8pc_broken_html(self):
         # see: https://github.com/kmyk/online-judge-tools/issues/615
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/s8pc-4/tasks/s8pc_4_d').download_sample_cases(), [
             TestCase(name='sample-1', input_name='Sample Input 1', input_data=b'4\n1 2\n2 3\n2 4\n', output_name='Sample Output 1', output_data=b'2.0\n1.0\n2.0\n2.0\n'),
             TestCase(name='sample-2', input_name='Sample Input 2', input_data=b'4\n1 2\n2 4\n4 3\n', output_name='Sample Output 2', output_data=b'3.0\n1.5\n3.0\n1.5\n'),
@@ -421,6 +473,7 @@ class AtCoderProblemDataTest(unittest.TestCase):
     def test_download_sample_cases_ttpc2015_inserted_p_tag(self):
         # see: https://github.com/kmyk/online-judge-tools/pull/724
         # see: https://github.com/kmyk/online-judge-tools/issues/726
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/ttpc2015/tasks/ttpc2015_i').download_sample_cases(), [
             TestCase(name='sample-1', input_name='入力例1', input_data=b'5\n4 2 3 1 5\n', output_name='出力例1', output_data=b'3\n2 4\n1 2\n2 4\n'),
         ])
@@ -448,12 +501,17 @@ class AtCoderProblemGetInputFormatTest(unittest.TestCase):
             </div>
         """
 
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/agc001/tasks/agc001_d').download_data().input_format, '<var>N</var> <var>M</var>\r\n<var>A_1</var> <var>A_2</var> <var>...</var> <var>A_M</var>\r\n')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/agc002/tasks/agc002_d').download_data().input_format, '\r\n<var>N</var> <var>M</var>\r\n<var>a_1</var> <var>b_1</var>\r\n<var>a_2</var> <var>b_2</var>\r\n<var>:</var>\r\n<var>a_M</var> <var>b_M</var>\r\n<var>Q</var>\r\n<var>x_1</var> <var>y_1</var> <var>z_1</var>\r\n<var>x_2</var> <var>y_2</var> <var>z_2</var>\r\n<var>:</var>\r\n<var>x_Q</var> <var>y_Q</var> <var>z_Q</var>\r\n')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/agc003/tasks/agc003_d').download_data().input_format, '<var>N</var>\r\n<var>s_1</var>\r\n:\r\n<var>s_N</var>\r\n')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/agc004/tasks/agc004_d').download_data().input_format, '<var>N</var> <var>K</var>\r\n<var>a_1</var> <var>a_2</var> <var>...</var> <var>a_N</var>\r\n')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/agc005/tasks/agc005_d').download_data().input_format, '<var>N</var> <var>K</var>\r\n')
-
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://beta.atcoder.jp/contests/arc083/tasks/arc083_a').download_data().input_format, '<var>A</var> <var>B</var> <var>C</var> <var>D</var> <var>E</var> <var>F</var>\r\n')
 
     def test_old_problem(self):
@@ -471,8 +529,11 @@ class AtCoderProblemGetInputFormatTest(unittest.TestCase):
             </section>
         """
 
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/arc001/tasks/arc001_1').download_data().input_format, '\r\n<var>N</var>\r\n<var>c_1c_2c_3…c_N</var>\r\n')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/arc002/tasks/arc002_3').download_data().input_format, '\r\n<var>N</var>\r\n<var>c_{1}c_{2}...c_{N}</var>\r\n')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/arc034/tasks/arc034_4').download_data().input_format, '\r\n<var>A</var> <var>B</var> <var>C</var>\r\n<var>a_1</var> <var>a_2</var> .. <var>a_A</var>\r\n<var>b_1</var> <var>b_2</var> .. <var>b_B</var>\r\n')
 
     def test_dwacon_problem(self):
@@ -490,13 +551,17 @@ class AtCoderProblemGetInputFormatTest(unittest.TestCase):
             </div>
         """
 
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/dwacon2018-final/tasks/dwacon2018_final_a').download_data().input_format, '\r\n<var>H</var> <var>M</var> <var>S</var>\r\n<var>C_1</var> <var>C_2</var>\r\n')
+        time.sleep(0.5)
         self.assertEqual(AtCoderProblem.from_url('https://atcoder.jp/contests/dwacon2018-final/tasks/dwacon2018_final_b').download_data().input_format, '\r\n<var>N</var> <var>K</var>\r\n<var>v_1</var> <var>...</var> <var>v_N</var>\r\n')
 
     def test_problem_without_input(self):
+        time.sleep(0.5)
         self.assertIsNone(AtCoderProblem.from_url('https://atcoder.jp/contests/tenka1-2013-quala/tasks/tenka1_2013_qualA_a').download_data().input_format)
 
     def test_problem_without_input_format(self):
+        time.sleep(0.5)
         self.assertIsNone(AtCoderProblem.from_url('https://atcoder.jp/contests/joi2006ho/tasks/joi2006ho_a').download_data().input_format)
 
 

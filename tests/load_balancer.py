@@ -17,7 +17,7 @@ def main():
         tests / 'get_problem_topcoder.py',
         tests / 'service_codeforces.py',
         tests / 'service_codechef.py',
-        tests / 'submit_code_yukicoder.py'
+        tests / 'submit_code_yukicoder.py',
     ]
 
     if args.keyword == 'unstable':

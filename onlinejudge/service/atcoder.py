@@ -132,13 +132,17 @@ class AtCoderService(onlinejudge.type.Service):
         assert lang in ('ja', 'en')
         session = session or utils.get_default_session()
         last_page = None
+        first = True
         for page in itertools.count(1):  # 1-based
             if last_page is not None and page > last_page:
                 break
 
             # get
             url = 'https://atcoder.jp/contests/archive?lang={}&page={}'.format(lang, page)
+            if not first:
+                time.sleep(0.1)
             resp = _request('GET', url, session=session)
+            first = False
             timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
 
             # parse
@@ -429,6 +433,7 @@ class AtCoderContest(onlinejudge.type.Contest):
         for page in pages or itertools.count(1):
             params_page = ({'page': str(page)} if page >= 2 else {})
             url = base_url + '?' + urllib.parse.urlencode({**params, **params_page})
+            time.sleep(0.1)
             resp = _request('GET', url, session=session)
             timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
 

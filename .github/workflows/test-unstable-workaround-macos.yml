@@ -52,3 +52,5 @@ jobs:
       run: |
         oj-api -h
         pytest -v ${{ steps.load-balancing.outputs.files }}
+      env:
+        YUKICODER_TOKEN: ${{ secrets.YUKICODER_TOKEN }}
