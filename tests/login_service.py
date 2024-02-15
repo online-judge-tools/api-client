@@ -35,7 +35,7 @@ class LoginServiceAtCoderTest(unittest.TestCase):
 
     The user for test is: https://atcoder.jp/users/onlinejudgetools
     """
-    @unittest.skipIf(not (ATCODER_USERNAME in os.environ and ATCODER_PASSWORD in os.environ), 'credentails for AtCoder is required')
+    @unittest.skipIf(not (os.getenv(ATCODER_USERNAME) and os.getenv(ATCODER_PASSWORD)), 'credentails for AtCoder is required')
     def test_login_success(self) -> None:
         url = 'https://atcoder.jp/'
         expected = {"status": "ok", "messages": [], "result": {"loggedIn": True}}
@@ -60,7 +60,7 @@ class LoginServiceCodeforcesTest(unittest.TestCase):
 
     The user for test is: https://codeforces.com/profile/online-judge-tools
     """
-    @unittest.skipIf(not (CODEFORCES_USERNAME in os.environ and CODEFORCES_PASSWORD in os.environ), 'credentails for Codeforces is required')
+    @unittest.skipIf(not (os.getenv(CODEFORCES_USERNAME) and os.getenv(CODEFORCES_PASSWORD)), 'credentails for Codeforces is required')
     def test_login_success(self) -> None:
         url = 'https://codeforces.com/'
         expected = {"status": "ok", "messages": [], "result": {"loggedIn": True}}

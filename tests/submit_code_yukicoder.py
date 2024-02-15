@@ -6,10 +6,10 @@ import unittest
 
 from onlinejudge_api.main import main
 
-YUKICODER_TOKEN = os.environ.get('YUKICODER_TOKEN')
+YUKICODER_TOKEN = 'YUKICODER_TOKEN'
 
 
-@unittest.skipIf(YUKICODER_TOKEN is None, '$YUKICODER_TOKEN is required')
+@unittest.skipIf(not os.getenv(YUKICODER_TOKEN), '$YUKICODER_TOKEN is required')
 class SubmitYukicoderTest(unittest.TestCase):
     def test_9000(self):
         url = 'https://yukicoder.me/problems/no/9000'

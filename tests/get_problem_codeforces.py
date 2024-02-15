@@ -182,7 +182,7 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
-    @unittest.skipIf(not (CODEFORCES_USERNAME in os.environ and CODEFORCES_PASSWORD in os.environ), 'credentails for Codeforces is required')
+    @unittest.skipIf(not (os.getenv(CODEFORCES_USERNAME) and os.getenv(CODEFORCES_PASSWORD)), 'credentails for Codeforces is required')
     def test_edu_2_2_1_a(self):
         """This tests an educational problem.
 

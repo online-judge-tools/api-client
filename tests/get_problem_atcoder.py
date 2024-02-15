@@ -310,7 +310,7 @@ class GetProblemAtCoderTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
-    @unittest.skipIf(DROPBOX_TOKEN not in os.environ, '$DROPBOX_TOKEN is required')
+    @unittest.skipIf(not os.getenv(DROPBOX_TOKEN), '$DROPBOX_TOKEN is required')
     def test_abc100_a_system(self):
         url = "https://atcoder.jp/contests/abc170/tasks/abc170_a"
         expected = {
@@ -354,7 +354,7 @@ class GetProblemAtCoderTest(unittest.TestCase):
         actual = main(['get-problem', '--system', url], debug=True)
         self.assertEqual(expected, actual)
 
-    @unittest.skipIf(DROPBOX_TOKEN not in os.environ, '$DROPBOX_TOKEN is required')
+    @unittest.skipIf(not os.getenv(DROPBOX_TOKEN), '$DROPBOX_TOKEN is required')
     def test_agc015_d_system(self):
         """This problem has many system cases.
         """
