@@ -82,7 +82,7 @@ class FormSender:
         self.form = form
         self.url = url
         self.payload = {}  # type: Dict[str, str]
-        self.files = {}  # type: Dict[str, IO[Any]]
+        self.files = {}  # type: Dict[str, bytes]
         for input in self.form.find_all('input'):
             logger.debug('input: %s', str(input))
             if input.attrs.get('type') in ['checkbox', 'radio']:
