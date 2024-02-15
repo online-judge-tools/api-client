@@ -16,14 +16,16 @@ class SubmitYukicoderTest(unittest.TestCase):
         filename = 'main.py'
         code = textwrap.dedent(r"""
             #!/usr/bin/env python3
-            print "Hello World!"
+            print("Hello World!")
         """)
 
         with tempfile.TemporaryDirectory() as tempdir:
             path = pathlib.Path(tempdir) / filename
             with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(code)
-            language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            # Skip guess-language-id because https://yukicoder.me/api/v1/languages returns invalid result.
+            # language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            language_id = 'python3'
             data = main(['submit-code', '--file', str(path), '--language', language_id, url], debug=True)
             self.assertEqual(data['status'], 'ok')
 
@@ -45,6 +47,8 @@ class SubmitYukicoderTest(unittest.TestCase):
             path = pathlib.Path(tempdir) / filename
             with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(code)
-            language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            # Skip guess-language-id because https://yukicoder.me/api/v1/languages returns invalid result.
+            # language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            language_id = 'cpp17'
             data = main(['submit-code', '--file', str(path), '--language', language_id, url], debug=True)
             self.assertEqual(data['status'], 'ok')

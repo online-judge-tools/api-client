@@ -17,6 +17,7 @@ def main():
         tests / 'get_problem_topcoder.py',
         tests / 'service_codeforces.py',
         tests / 'service_codechef.py',
+        tests / 'submit_code_yukicoder.py'
     ]
 
     if args.keyword == 'unstable':
@@ -30,6 +31,8 @@ def main():
     if GITHUB_OUTPUT in os.environ:
         with open(os.environ[GITHUB_OUTPUT], 'a', encoding='utf-8') as f:
             print('files=', *map(str, files), file=f)
+    else:
+        print('::set-output name=files::', *map(str, files))
 
 
 if __name__ == '__main__':

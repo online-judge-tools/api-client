@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 /.vscode/
+/*_workaround_for_conflict/

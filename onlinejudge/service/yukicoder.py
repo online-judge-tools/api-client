@@ -255,6 +255,7 @@ class YukicoderProblem(onlinejudge.type.Problem):
         url = 'https://yukicoder.me/api/v1/languages'
         resp = utils.request('GET', url, session=session)
         data = json.loads(resp.content.decode())
+        assert all(language['Id'] for language in data)
         return [Language(language['Id'], language['Name'] + ' (' + language['Ver'] + ')') for language in data]
 
     def get_url(self) -> str:
