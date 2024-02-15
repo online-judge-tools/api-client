@@ -44,7 +44,7 @@ class POJProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         in_pre, out_pre = soup.find_all('pre', class_='sio')
         in_p = in_pre.find_previous_sibling('p', class_='pst')
         out_p = out_pre.find_previous_sibling('p', class_='pst')

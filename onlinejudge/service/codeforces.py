@@ -39,7 +39,7 @@ class CodeforcesService(onlinejudge.type.Service):
             logger.info('You have already signed in.')
             return
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         form = soup.find('form', id='enterForm')
         logger.debug('form: %s', str(form))
         username, password = get_credentials()
@@ -86,7 +86,7 @@ class CodeforcesService(onlinejudge.type.Service):
         url = 'https://codeforces.com/api/contest.list?gym={}'.format('true' if is_gym else 'false')
         resp = utils.request('GET', url, session=session)
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
-        data = json.loads(resp.content.decode(resp.encoding))
+        data = json.loads(resp.text)
         assert data['status'] == 'OK'
         for row in data['result']:
             yield CodeforcesContestData._from_json(row, response=resp, session=session, timestamp=timestamp)
@@ -207,7 +207,7 @@ class CodeforcesContest(onlinejudge.type.Contest):
         url = 'https://codeforces.com/api/contest.standings?contestId={}&from=1&count=1'.format(self.contest_id)
         resp = utils.request('GET', url, session=session)
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
-        data = json.loads(resp.content.decode(resp.encoding))
+        data = json.loads(resp.text)
         assert data['status'] == 'OK'
         return [CodeforcesProblemData._from_json(row, response=resp, session=session, timestamp=timestamp) for row in data['result']['problems']]
 
@@ -219,7 +219,7 @@ class CodeforcesContest(onlinejudge.type.Contest):
         url = 'https://codeforces.com/api/contest.standings?contestId={}&from=1&count=1'.format(self.contest_id)
         resp = utils.request('GET', url, session=session)
         timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone()
-        data = json.loads(resp.content.decode(resp.encoding))
+        data = json.loads(resp.text)
         assert data['status'] == 'OK'
         return CodeforcesContestData._from_json(data['result']['contest'], response=resp, session=session, timestamp=timestamp)
 
@@ -323,7 +323,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for tag in soup.find_all('div', class_=re.compile('^(in|out)put$')):  # Codeforces writes very nice HTML :)
             logger.debug('tag: %s', str(tag))
@@ -346,7 +346,7 @@ class CodeforcesProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         select = soup.find('select', attrs={'name': 'programTypeId'})
         if select is None:
             raise NotLoggedInError

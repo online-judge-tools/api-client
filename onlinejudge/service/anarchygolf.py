@@ -41,7 +41,7 @@ class AnarchyGolfProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for h2 in soup.find_all('h2'):
             it = self._parse_sample_tag(h2)

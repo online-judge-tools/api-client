@@ -53,7 +53,7 @@ class SPOJProblem(onlinejudge.type.Problem):
 
         url = 'https://www.spoj.com/problems/{}'.format(self.problem_id)
         resp = utils.request('GET', url, session=session)
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         samples = onlinejudge._implementation.testcase_zipper.SampleZipper()
         for pre, h3 in self._find_sample_tags(soup):
             s = utils.textfile(utils.dos2unix(utils.parse_content(pre).lstrip()))

@@ -155,7 +155,7 @@ class HackerRankProblem(onlinejudge.type.Problem):
         # get
         resp = utils.request('GET', self.get_url(), session=session)
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         csrftoken = soup.find('meta', attrs={'name': 'csrf-token'}).attrs['content']
         # post
         url = 'https://www.hackerrank.com/rest/contests/{}/challenges/{}/submissions'.format(self.contest_slug, self.challenge_slug)

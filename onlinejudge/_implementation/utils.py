@@ -102,7 +102,7 @@ class FormSender:
     def unset(self, key: str) -> None:
         del self.payload[key]
 
-    def request(self, session: requests.Session, method: str = None, action: Optional[str] = None, raise_for_status: bool = True, headers: Optional[Dict[str, str]] = None, **kwargs) -> requests.Response:
+    def request(self, session: requests.Session, method: Optional[str] = None, action: Optional[str] = None, raise_for_status: bool = True, headers: Optional[Dict[str, str]] = None, **kwargs) -> requests.Response:
         if method is None:
             method = self.form['method'].upper()
         url = self.url
