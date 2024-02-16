@@ -17,7 +17,7 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         "name": "Mishka and Contest",
                         "context": {
                             "contest": {
-                                "name": "Codeforces Round #490 (Div. 3)",
+                                "name": "Codeforces Round 490 (Div. 3)",
                                 "url": "https://codeforces.com/contest/999"
                             },
                             "alphabet": "A"
@@ -28,7 +28,7 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         "name": "Reversing Encryption",
                         "context": {
                             "contest": {
-                                "name": "Codeforces Round #490 (Div. 3)",
+                                "name": "Codeforces Round 490 (Div. 3)",
                                 "url": "https://codeforces.com/contest/999"
                             },
                             "alphabet": "B"
@@ -39,7 +39,7 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         "name": "Alphabetic Removals",
                         "context": {
                             "contest": {
-                                "name": "Codeforces Round #490 (Div. 3)",
+                                "name": "Codeforces Round 490 (Div. 3)",
                                 "url": "https://codeforces.com/contest/999"
                             },
                             "alphabet": "C"
@@ -50,7 +50,7 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         "name": "Equalize the Remainders",
                         "context": {
                             "contest": {
-                                "name": "Codeforces Round #490 (Div. 3)",
+                                "name": "Codeforces Round 490 (Div. 3)",
                                 "url": "https://codeforces.com/contest/999"
                             },
                             "alphabet": "D"
@@ -61,7 +61,7 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         "name": "Reachability from the Capital",
                         "context": {
                             "contest": {
-                                "name": "Codeforces Round #490 (Div. 3)",
+                                "name": "Codeforces Round 490 (Div. 3)",
                                 "url": "https://codeforces.com/contest/999"
                             },
                             "alphabet": "E"
@@ -72,14 +72,14 @@ class GetContestAtCoderProblemsTest(unittest.TestCase):
                         "name": "Cards and Joy",
                         "context": {
                             "contest": {
-                                "name": "Codeforces Round #490 (Div. 3)",
+                                "name": "Codeforces Round 490 (Div. 3)",
                                 "url": "https://codeforces.com/contest/999"
                             },
                             "alphabet": "F"
                         }
                     },
                 ],
-                "name": "Codeforces Round #490 (Div. 3)"
+                "name": "Codeforces Round 490 (Div. 3)"
             },
         }
         actual = main(['get-contest', url], debug=True)

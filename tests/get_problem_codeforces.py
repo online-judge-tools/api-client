@@ -52,7 +52,7 @@ class GetProblemCodeforcesTest(unittest.TestCase):
                 "name": "Summer Dichotomy",
                 "context": {
                     "contest": {
-                        "name": "Codeforces Round #300",
+                        "name": "Codeforces Round 300",
                         "url": "https://codeforces.com/contest/538"
                     },
                     "alphabet": "H"
@@ -112,7 +112,7 @@ class GetProblemCodeforcesTest(unittest.TestCase):
                 "name": "Petya and Origami",
                 "context": {
                     "contest": {
-                        "name": "Codeforces Round #524 (Div. 2)",
+                        "name": "Codeforces Round 524 (Div. 2)",
                         "url": "https://codeforces.com/contest/1080"
                     },
                     "alphabet": "A"
@@ -173,7 +173,7 @@ class GetProblemCodeforcesTest(unittest.TestCase):
                 "context": {
                     "contest": {
                         "url": "https://codeforces.com/contest/1714",
-                        "name": "Codeforces Round #811 (Div. 3)"
+                        "name": "Codeforces Round 811 (Div. 3)"
                     },
                     "alphabet": "A"
                 }
@@ -182,7 +182,7 @@ class GetProblemCodeforcesTest(unittest.TestCase):
         actual = main(['get-problem', url], debug=True)
         self.assertEqual(expected, actual)
 
-    @unittest.skipIf(not (CODEFORCES_USERNAME in os.environ and CODEFORCES_PASSWORD in os.environ), 'credentails for Codeforces is required')
+    @unittest.skipIf(not (os.getenv(CODEFORCES_USERNAME) and os.getenv(CODEFORCES_PASSWORD)), 'credentails for Codeforces is required')
     def test_edu_2_2_1_a(self):
         """This tests an educational problem.
 

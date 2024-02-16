@@ -70,7 +70,7 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
         resp = utils.request('GET', url, session=session)
 
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         select = soup.find('select', attrs={'name': 'language'})
         if select is None:
             raise NotLoggedInError
@@ -92,7 +92,7 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
         resp = utils.request('GET', url, session=session)
 
         # parse
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
         form = soup.find('form', id='submission_data')
         if form is None:
             raise NotLoggedInError
@@ -114,8 +114,8 @@ class KagamizContestSystemProblem(onlinejudge.type.Problem):
             try:
                 url = 'https://kcs.miz-miz.biz/contest/{}/submissions?json=True'.format(self.contest_id)
                 resp = utils.request('GET', url, session=session)
-                submissions = json.loads(resp.content.decode(resp.encoding))
-                submission_id = max([submission['submission_id'] for submission in submissions])
+                submissions = json.loads(resp.text)
+                submission_id = max(submission['submission_id'] for submission in submissions)
                 submission_url = 'https://kcs.miz-miz.biz/contest/{}/code/{}'.format(self.contest_id, submission_id)
             except:
                 logger.exception('failed to find the individual submission page. use the list page of all submissions instead.')

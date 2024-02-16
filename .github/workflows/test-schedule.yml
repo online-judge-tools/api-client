@@ -1,0 +1,10 @@
+name: test-schedule
+
+on:
+  schedule:
+    - cron: '30 18 * * MON'  # At 03:30 on Tuesday in JST
+
+jobs:
+  scheduled:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit

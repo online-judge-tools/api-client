@@ -73,7 +73,7 @@ class TopcoderProblem(onlinejudge.type.Problem):
         resp = utils.request('GET', url, session=session)
 
         # parse HTML
-        soup = bs4.BeautifulSoup(resp.content.decode(resp.encoding), utils.HTML_PARSER)
+        soup = bs4.BeautifulSoup(resp.text, utils.HTML_PARSER)
 
         problem_texts = soup.find_all('td', class_='problemText')
         if len(problem_texts) != 1:

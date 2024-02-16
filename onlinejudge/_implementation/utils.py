@@ -82,7 +82,7 @@ class FormSender:
         self.form = form
         self.url = url
         self.payload = {}  # type: Dict[str, str]
-        self.files = {}  # type: Dict[str, IO[Any]]
+        self.files = {}  # type: Dict[str, bytes]
         for input in self.form.find_all('input'):
             logger.debug('input: %s', str(input))
             if input.attrs.get('type') in ['checkbox', 'radio']:
@@ -102,7 +102,7 @@ class FormSender:
     def unset(self, key: str) -> None:
         del self.payload[key]
 
-    def request(self, session: requests.Session, method: str = None, action: Optional[str] = None, raise_for_status: bool = True, headers: Optional[Dict[str, str]] = None, **kwargs) -> requests.Response:
+    def request(self, session: requests.Session, method: Optional[str] = None, action: Optional[str] = None, raise_for_status: bool = True, headers: Optional[Dict[str, str]] = None, **kwargs) -> requests.Response:
         if method is None:
             method = self.form['method'].upper()
         url = self.url

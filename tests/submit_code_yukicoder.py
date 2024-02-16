@@ -6,24 +6,26 @@ import unittest
 
 from onlinejudge_api.main import main
 
-YUKICODER_TOKEN = os.environ.get('YUKICODER_TOKEN')
+YUKICODER_TOKEN = 'YUKICODER_TOKEN'
 
 
-@unittest.skipIf(YUKICODER_TOKEN is None, '$YUKICODER_TOKEN is required')
+@unittest.skipIf(not os.getenv(YUKICODER_TOKEN), '$YUKICODER_TOKEN is required')
 class SubmitYukicoderTest(unittest.TestCase):
     def test_9000(self):
         url = 'https://yukicoder.me/problems/no/9000'
         filename = 'main.py'
         code = textwrap.dedent(r"""
             #!/usr/bin/env python3
-            print "Hello World!"
+            print("Hello World!")
         """)
 
         with tempfile.TemporaryDirectory() as tempdir:
             path = pathlib.Path(tempdir) / filename
-            with open(path, 'w') as fh:
+            with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(code)
-            language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            # Skip guess-language-id because https://yukicoder.me/api/v1/languages returns invalid result.
+            # language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            language_id = 'python3'
             data = main(['submit-code', '--file', str(path), '--language', language_id, url], debug=True)
             self.assertEqual(data['status'], 'ok')
 
@@ -43,8 +45,10 @@ class SubmitYukicoderTest(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tempdir:
             path = pathlib.Path(tempdir) / filename
-            with open(path, 'w') as fh:
+            with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(code)
-            language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            # Skip guess-language-id because https://yukicoder.me/api/v1/languages returns invalid result.
+            # language_id = main(['guess-language-id', '--file', str(path), url], debug=True)['result']['id']
+            language_id = 'cpp17'
             data = main(['submit-code', '--file', str(path), '--language', language_id, url], debug=True)
             self.assertEqual(data['status'], 'ok')

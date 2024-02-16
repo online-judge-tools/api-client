@@ -51,7 +51,7 @@ class CodeforcesContestTest(unittest.TestCase):
         data = contest.download_data()
         self.assertEqual(data.duration_seconds, 7200)
         self.assertEqual(data.frozen, False)
-        self.assertEqual(data.name, 'Codeforces Round #578 (Div. 2)')
+        self.assertEqual(data.name, 'Codeforces Round 578 (Div. 2)')
         self.assertEqual(data.phase, 'FINISHED')
         self.assertEqual(data.start_time_seconds, 1565526900)
         self.assertEqual(data.type, 'CF')
