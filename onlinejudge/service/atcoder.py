@@ -918,7 +918,7 @@ class AtCoderProblem(onlinejudge.type.Problem):
                 contest_folder = entry
         if contest_folder is None:
             raise SampleParseError('no folder matches the contest')
-        logger.info('contest folder found: %s', entry)
+        logger.info('contest folder found: %s', contest_folder)
 
         # list folders
         path = "/{}".format(contest_folder['name'])
