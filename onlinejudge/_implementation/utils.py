@@ -174,10 +174,15 @@ def request(method: str, url: str, session: requests.Session, raise_for_status: 
     logger.info('network: %s: %s', method, url)
     if 'data' in kwargs:
         logger.debug('network: data: %s', repr(kwargs['data']))  # TODO: prepare a nice filter. This may contain credentials.
+    if 'json' in kwargs:
+        logger.debug('network: json: %s', repr(kwargs['json']))  # TODO: prepare a nice filter. This may contain credentials.
     resp = session.request(method, url, **kwargs)
     if resp.url != url:
         logger.info('network: redirected to: %s', resp.url)
-    logger.info('network: %s %s', resp.status_code, http.client.responses[resp.status_code])  # e.g. "200 OK" or "503 Service Unavailable"
+    if resp.status_code in http.client.responses:
+        logger.info('network: %s %s', resp.status_code, http.client.responses[resp.status_code])  # e.g. "200 OK" or "503 Service Unavailable"
+    else:
+        logger.info('network: %s', resp.status_code)
     if raise_for_status:
         resp.raise_for_status()
     return resp

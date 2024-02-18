@@ -11,6 +11,7 @@ import onlinejudge.service.google
 import onlinejudge.service.hackerrank
 import onlinejudge.service.kagamiz
 import onlinejudge.service.kattis
+import onlinejudge.service.leetcode
 import onlinejudge.service.library_checker
 import onlinejudge.service.poj
 import onlinejudge.service.spoj

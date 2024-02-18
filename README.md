@@ -36,6 +36,7 @@ $ pip3 install online-judge-api-client
 | [HackerRank](https://www.hackerrank.com/)                                      | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :grey_question: | :heavy_check_mark: |
 | [Kagamiz Contest System](https://kcs.miz-miz.biz/)                             | :x:                |                    |                    |                    | :grey_question:    | :heavy_check_mark: |
 | [Kattis](https://open.kattis.com/)                                             | :heavy_check_mark: |                    |                    |                    |                    |                    |
+| [LeetCode](https://leetcode.com/)                                              | :heavy_check_mark: |                    |                    |                    |                    | :heavy_check_mark: |
 | [Library Checker](https://judge.yosupo.jp/)                                    | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    |                    |
 | [PKU JudgeOnline](http://poj.org/)                                             | :heavy_check_mark: |                    |                    |                    |                    |                    |
 | [Sphere Online Judge](https://www.spoj.com/)                                   | :heavy_check_mark: |                    |                    |                    |                    |                    |
