@@ -58,6 +58,7 @@ def get_parser() -> argparse.ArgumentParser:
     # get-problem
     epilog = textwrap.dedent("""\
         supported services:
+          Algo-Method
           Aizu Online Judge
           Anarchy Golf
           AtCoder
