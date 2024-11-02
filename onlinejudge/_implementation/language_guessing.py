@@ -193,6 +193,7 @@ other_languages_table: List[Dict[str, Any]] = [
      { 'names': [ 'common lisp'           ], 'exts': [ 'lisp', 'lsp', 'cl' ] },
      { 'names': [ 'crystal'               ], 'exts': [ 'cr'        ] },
      { 'names': [ 'd'                     ], 'exts': [ 'd'         ], 'split': True },
+     { 'names': [ 'elixir'                ], 'exts': [ 'ex', 'exs' ] },
      { 'names': [ 'f#'                    ], 'exts': [ 'fs'        ] },
      { 'names': [ 'fortran'               ], 'exts': [ 'for', 'f', 'f90', 'f95', 'f03' ] },
      { 'names': [ 'go'                    ], 'exts': [ 'go'        ], 'split': True },
