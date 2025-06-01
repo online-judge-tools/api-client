@@ -67,7 +67,7 @@ schema = {
         },
         "memoryLimit": {
             "type": "integer",
-            "description": "in megabytes (MB), not in mebibytes (MiB); Decimals are truncated for compatibility to competitive-companion",
+            "description": "in mebibytes (MiB), not in megabytes (MB); Decimals are truncated for compatibility to competitive-companion",
         },
         "timeLimit": {
             "type": "integer",
@@ -316,7 +316,7 @@ def main(problem: Problem, *, is_system: bool, is_compatibility: bool, is_full: 
             },
             "alphabet": data.alphabet,
         }
-        result["memoryLimit"] = data.memory_limit_byte // 1000 // 1000
+        result["memoryLimit"] = data.memory_limit_byte // 1024 // 1024
         result["timeLimit"] = data.time_limit_msec
         if is_full:
             result["raw"] = {

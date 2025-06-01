@@ -542,10 +542,10 @@ class AtCoderProblemData(ProblemData):
             time_limit_msec = int(float(utils.remove_suffix(tds[2].text, ' sec')) * 1000)
         else:
             assert False
-        if tds[3].text.endswith(' KB'):
-            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' KB')) * 1000)
-        elif tds[3].text.endswith(' MB'):
-            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' MB')) * 1000 * 1000)  # TODO: confirm this is MB truly, not MiB
+        if tds[3].text.endswith(' KiB'):
+            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' KiB')) * 1024)
+        elif tds[3].text.endswith(' MiB'):
+            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' MiB')) * 1024 * 1024)  # TODO: confirm this is MB truly, not MiB
         else:
             assert False
         if len(tds) == 5:
@@ -583,15 +583,15 @@ class AtCoderProblemData(ProblemData):
             assert False
 
         # When login as the admin, a link is added after memory limit. See https://github.com/online-judge-tools/api-client/issues/90
-        parsed_memory_limit = re.search(r'^(メモリ制限|Memory Limit): ([0-9.]+) (KB|MB)', memory_limit)
+        parsed_memory_limit = re.search(r'^(メモリ制限|Memory Limit): ([0-9.]+) (KiB|MiB)', memory_limit)
         assert parsed_memory_limit
 
         memory_limit_value = parsed_memory_limit.group(2)
         memory_limit_unit = parsed_memory_limit.group(3)
-        if memory_limit_unit == 'KB':
-            memory_limit_byte = int(float(memory_limit_value) * 1000)
-        elif memory_limit_unit == 'MB':
-            memory_limit_byte = int(float(memory_limit_value) * 1000 * 1000)
+        if memory_limit_unit == 'KiB':
+            memory_limit_byte = int(float(memory_limit_value) * 1024)
+        elif memory_limit_unit == 'MiB':
+            memory_limit_byte = int(float(memory_limit_value) * 1024 * 1024)
         else:
             assert False
 
@@ -1160,7 +1160,7 @@ class AtCoderSubmissionData(SubmissionData):
         status = tds[6].text
         if len(tds) == 10:
             exec_time_msec = int(utils.remove_suffix(tds[7].text, ' ms'))  # type: Optional[int]
-            memory_byte = int(utils.remove_suffix(tds[8].text, ' KB')) * 1000  # type: Optional[int]
+            memory_byte = int(utils.remove_suffix(tds[8].text, ' KiB')) * 1024  # type: Optional[int]
         else:
             exec_time_msec = None
             memory_byte = None
