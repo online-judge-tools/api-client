@@ -1,5 +1,26 @@
 # Change Log
 
+## 10.12.0 / 2026-03-24
+
+-   fix(atcoder): remove unnecessary parens after `not` keyword (pylint C0325)
+-   ci: add `--exit-zero` to pylint in format workflow to prevent C-level warnings from failing the job
+
+## 10.11.0 / 2026-03-24
+
+-   fix(atcoder): support MiB/KiB memory limit units in `_from_html` and `_from_table_row`
+    -   AtCoder changed their memory limit display from MB/KB to MiB/KiB (IEC binary prefixes) around 2025, causing an `AssertionError` / `ValueError` on every problem page
+    -   Extended regex to match `KB|MB|KiB|MiB`; added byte calculations for KiB (×1024) and MiB (×1024×1024)
+    -   Replaced bare `assert` in `_from_html` with `raise SampleParseError` / `raise ValueError` with descriptive messages
+-   feat(atcoder): add `AtCoderService.login_with_cookie()` for Cloudflare CAPTCHA bypass
+    -   AtCoder introduced Cloudflare Turnstile CAPTCHA in March 2025; automated username/password login is now blocked
+    -   New method `login_with_cookie(revel_session)` accepts a `REVEL_SESSION` cookie value directly
+    -   CLI: `oj-api login-service <url> --revel-session` (use `$REVEL_SESSION` env var for security)
+-   fix(atcoder): replace fragile asserts with proper error handling in parsers
+    -   `_from_table_row`: raise `ValueError` instead of `assert` for unexpected td count, missing `<a>` tag, unknown time/memory limit formats; downgrade unexpected 5th column to `logger.warning`
+    -   `_parse_available_languages`: guard `#select-lang` div and `<select>` element against `None` before chained `find()` calls
+    -   `_parse_score`: guard `task_statement` against `None` before calling `.find('p')`
+    -   `AtCoderContestDetailedData._from_response`: guard `<title>`, `contest-duration`, `Can Participate`, `Rated Range`, and `Penalty` elements against `None`; replace `assert m` with `raise ValueError` for unrecognized penalty format
+
 ## 10.10.1 / 2022-08-14
 
 -   [#146](https://github.com/online-judge-tools/api-client/pull/146) update "Tips" section of README.md

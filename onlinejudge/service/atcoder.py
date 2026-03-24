@@ -92,6 +92,25 @@ class AtCoderService(onlinejudge.type.Service):
             logger.error('Username or Password is incorrect.')
             raise LoginError
 
+    def login_with_cookie(self, revel_session: str, *, session: Optional[requests.Session] = None) -> None:
+        """
+        Login using a REVEL_SESSION cookie value directly.
+
+        This is an alternative to :py:meth:`login` for cases where Cloudflare CAPTCHA
+        blocks automated username/password login (introduced on AtCoder in March 2025).
+        Obtain the cookie value from your browser's DevTools after logging in manually:
+        Application > Cookies > https://atcoder.jp > REVEL_SESSION
+
+        :param revel_session: the value of the REVEL_SESSION cookie
+        :raises LoginError:
+        """
+
+        session = session or utils.get_default_session()
+        session.cookies.set('REVEL_SESSION', revel_session, domain='atcoder.jp')
+        if not self.is_logged_in(session=session):
+            raise LoginError('REVEL_SESSION cookie is invalid or expired')
+        logger.info('Welcome,')
+
     def get_url_of_login_page(self) -> str:
         return 'https://atcoder.jp/login'
 
@@ -269,21 +288,37 @@ class AtCoderContestDetailedData(AtCoderContestData):
     @classmethod
     def _from_response(cls, *, contest: 'AtCoderContest', lang: str, session: requests.Session, response: requests.Response, timestamp: datetime.datetime):
         soup = bs4.BeautifulSoup(response.text, utils.HTML_PARSER)
-        name, _, _ = soup.find('title').text.rpartition(' - ')
+        title_tag = soup.find('title')
+        name, _, _ = (title_tag.text if title_tag else '').rpartition(' - ')
         contest_duration = soup.find('small', class_='contest-duration')
-        start_time, end_time = [cls._parse_start_time(a['href']) for a in contest_duration.find_all('a')]
+        if contest_duration is None:
+            raise ValueError('could not find contest-duration element on contest page')
+        duration_links = contest_duration.find_all('a')
+        if len(duration_links) < 2:
+            raise ValueError('could not find start/end time links in contest-duration element')
+        start_time, end_time = [cls._parse_start_time(str(a['href'])) for a in duration_links[:2]]
         duration = end_time - start_time
-        _, _, can_participate = soup.find('span', text=re.compile(r'^(Can Participate|参加対象): ')).text.partition(': ')
-        _, _, rated_range = soup.find('span', text=re.compile(r'^(Rated Range|Rated対象): ')).text.partition(': ')
+        can_participate_tag = soup.find('span', text=re.compile(r'^(Can Participate|参加対象): '))
+        if can_participate_tag is None:
+            raise ValueError('could not find Can Participate element on contest page')
+        _, _, can_participate = can_participate_tag.text.partition(': ')
+        rated_range_tag = soup.find('span', text=re.compile(r'^(Rated Range|Rated対象): '))
+        if rated_range_tag is None:
+            raise ValueError('could not find Rated Range element on contest page')
+        _, _, rated_range = rated_range_tag.text.partition(': ')
 
-        penalty_text = soup.find('span', text=re.compile(r'^(Penalty|ペナルティ): ')).text
+        penalty_tag = soup.find('span', text=re.compile(r'^(Penalty|ペナルティ): '))
+        if penalty_tag is None:
+            raise ValueError('could not find Penalty element on contest page')
+        penalty_text = penalty_tag.text
         if lang == 'en' and penalty_text == 'Penalty: None':
             minutes = 0
         elif lang == 'ja' and penalty_text == 'ペナルティ: なし':
             minutes = 0
         else:
             m = re.match(r'(Penalty|ペナルティ): (\d+)( minutes?|分)', penalty_text)
-            assert m
+            if not m:
+                raise ValueError('unrecognized penalty format: {!r}'.format(penalty_text))
             minutes = int(m.group(2))
         penalty = datetime.timedelta(minutes=minutes)
 
@@ -530,10 +565,15 @@ class AtCoderProblemData(ProblemData):
     @classmethod
     def _from_table_row(cls, tr: bs4.Tag, *, session: requests.Session, response: requests.Response, timestamp: datetime.datetime) -> 'AtCoderProblemData':
         tds = tr.find_all('td')
-        assert 4 <= len(tds) <= 5
-        path = tds[1].find('a')['href']
+        if not 4 <= len(tds) <= 5:
+            raise ValueError('unexpected number of <td> tags in task list row: {}'.format(len(tds)))
+        a_tag = tds[1].find('a')
+        if a_tag is None:
+            raise ValueError('could not find <a> tag in task list row')
+        path = str(a_tag['href'])
         problem = AtCoderProblem.from_url('https://atcoder.jp' + path)
-        assert problem is not None
+        if problem is None:
+            raise ValueError('could not parse AtCoder problem URL: {}'.format(path))
         alphabet = tds[0].text
         name = tds[1].text
         if tds[2].text.endswith(' msec'):
@@ -541,15 +581,19 @@ class AtCoderProblemData(ProblemData):
         elif tds[2].text.endswith(' sec'):
             time_limit_msec = int(float(utils.remove_suffix(tds[2].text, ' sec')) * 1000)
         else:
-            assert False
+            raise ValueError('unrecognized time limit format: {!r}'.format(tds[2].text))
         if tds[3].text.endswith(' KB'):
             memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' KB')) * 1000)
         elif tds[3].text.endswith(' MB'):
-            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' MB')) * 1000 * 1000)  # TODO: confirm this is MB truly, not MiB
+            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' MB')) * 1000 * 1000)
+        elif tds[3].text.endswith(' KiB'):
+            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' KiB')) * 1024)
+        elif tds[3].text.endswith(' MiB'):
+            memory_limit_byte = int(float(utils.remove_suffix(tds[3].text, ' MiB')) * 1024 * 1024)
         else:
-            assert False
-        if len(tds) == 5:
-            assert tds[4].text.strip() in ('', 'Submit', '提出')
+            raise ValueError('unrecognized memory limit format: {!r}'.format(tds[3].text))
+        if len(tds) == 5 and tds[4].text.strip() not in ('', 'Submit', '提出'):
+            logger.warning('unexpected value in 5th column of task list row: %r', tds[4].text)
 
         return AtCoderProblemData(
             alphabet=alphabet,
@@ -574,17 +618,19 @@ class AtCoderProblemData(ProblemData):
             if time_limit.startswith(time_limit_prefix):
                 break
         else:
-            assert False
+            raise SampleParseError('unrecognized time limit prefix: {!r}'.format(time_limit))
         if time_limit.endswith(' msec'):
             time_limit_msec = int(utils.remove_suffix(utils.remove_prefix(time_limit, time_limit_prefix), ' msec'))
         elif time_limit.endswith(' sec'):
             time_limit_msec = int(float(utils.remove_suffix(utils.remove_prefix(time_limit, time_limit_prefix), ' sec')) * 1000)
         else:
-            assert False
+            raise SampleParseError('unrecognized time limit suffix: {!r}'.format(time_limit))
 
         # When login as the admin, a link is added after memory limit. See https://github.com/online-judge-tools/api-client/issues/90
-        parsed_memory_limit = re.search(r'^(メモリ制限|Memory Limit): ([0-9.]+) (KB|MB)', memory_limit)
-        assert parsed_memory_limit
+        # AtCoder changed units from MB/KB to MiB/KiB (IEC binary prefixes) around 2025
+        parsed_memory_limit = re.search(r'^(メモリ制限|Memory Limit): ([0-9.]+) (KB|MB|KiB|MiB)', memory_limit)
+        if not parsed_memory_limit:
+            raise SampleParseError('unrecognized memory limit format: {!r}'.format(memory_limit))
 
         memory_limit_value = parsed_memory_limit.group(2)
         memory_limit_unit = parsed_memory_limit.group(3)
@@ -592,8 +638,12 @@ class AtCoderProblemData(ProblemData):
             memory_limit_byte = int(float(memory_limit_value) * 1000)
         elif memory_limit_unit == 'MB':
             memory_limit_byte = int(float(memory_limit_value) * 1000 * 1000)
+        elif memory_limit_unit == 'KiB':
+            memory_limit_byte = int(float(memory_limit_value) * 1024)
+        elif memory_limit_unit == 'MiB':
+            memory_limit_byte = int(float(memory_limit_value) * 1024 * 1024)
         else:
-            assert False
+            raise SampleParseError('unrecognized memory limit unit: {!r}'.format(memory_limit_unit))
 
         return AtCoderProblemData(
             alphabet=alphabet,
@@ -732,7 +782,14 @@ class AtCoderProblemDetailedData(AtCoderProblemData):
         form = soup.find('form', action='/contests/{}/submit'.format(problem.contest_id))
         if form is None:
             return None
-        select = form.find('div', id='select-lang').find('select', attrs={'name': 'data.LanguageId'})  # NOTE: AtCoder can vary languages depending on tasks, even in one contest. here, ignores this fact.
+        div = form.find('div', id='select-lang')
+        if div is None:
+            logger.warning('could not find #select-lang div in submit form')
+            return None
+        select = div.find('select', attrs={'name': 'data.LanguageId'})  # NOTE: AtCoder can vary languages depending on tasks, even in one contest. here, ignores this fact.
+        if select is None:
+            logger.warning('could not find language select element in submit form')
+            return None
         languages = []  # type: List[Language]
         for option in select.find_all('option'):
             # As of May 1st 2020, the first option does not have a value element.
@@ -743,6 +800,8 @@ class AtCoderProblemDetailedData(AtCoderProblemData):
     @classmethod
     def _parse_score(cls, soup: bs4.BeautifulSoup) -> Optional[int]:
         task_statement = soup.find('div', id='task-statement')
+        if task_statement is None:
+            return None
         p = task_statement.find('p')  # first
         if p is not None and p.text.startswith('配点 : '):
             score = utils.remove_suffix(utils.remove_prefix(p.text, '配点 : '), ' 点')

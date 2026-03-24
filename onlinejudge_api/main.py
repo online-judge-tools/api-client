@@ -162,6 +162,7 @@ def get_parser() -> argparse.ArgumentParser:
     subparser.add_argument('url')
     subparser.add_argument('--username', default=os.environ.get('USERNAME'), help='specify the username.  (default: $USERNAME)')
     subparser.add_argument('--password', help="specify the password. This option is a dummy. For a security reason, use the $PASSWORD envvar.  (default: $PASSWORD)")
+    subparser.add_argument('--revel-session', help="specify the REVEL_SESSION cookie value for AtCoder. This option is a dummy. For a security reason, use the $REVEL_SESSION envvar.  (default: $REVEL_SESSION)")
     subparser.add_argument('--check', action='store_true', help='check whether you are logged in or not')
 
     # submit-code
@@ -259,14 +260,19 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
     if dropbox_token and is_atcoder and parsed.system:
         session.headers['Authorization'] = 'Bearer {}'.format(dropbox_token)
 
-    # set password to login from the environment variable
+    # set password / revel-session to login from the environment variable
     if parsed.subcommand == 'login-service':
         if parsed.password is not None:
             parser.error("don't use --password. use $PASSWORD")
+        if parsed.revel_session is not None:
+            parser.error("don't use --revel-session. use $REVEL_SESSION")
         if not parsed.check:
             parsed.password = os.environ.get('PASSWORD')
-            if not debug:
+            if 'PASSWORD' in os.environ and not debug:
                 del os.environ['PASSWORD']
+            parsed.revel_session = os.environ.get('REVEL_SESSION')
+            if 'REVEL_SESSION' in os.environ and not debug:
+                del os.environ['REVEL_SESSION']
 
     try:
         with utils.with_cookiejar(session, path=parsed.cookie) as session:
@@ -297,7 +303,7 @@ def main(args: Optional[List[str]] = None, *, debug: bool = False) -> Dict[str, 
             elif parsed.subcommand == 'login-service':
                 if service is None:
                     raise ValueError("unsupported URL: {}".format(repr(parsed.url)))
-                result = login_service.main(service, username=parsed.username, password=parsed.password, check_only=parsed.check, session=session)
+                result = login_service.main(service, username=parsed.username, password=parsed.password, revel_session=parsed.revel_session, check_only=parsed.check, session=session)
                 schema = login_service.schema
 
             elif parsed.subcommand == 'submit-code':
